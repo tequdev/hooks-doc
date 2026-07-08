@@ -3,3 +3,4 @@ hook-docs/.vitepress/dist
 hook-docs/.vitepress/cache
 *.log
 .DS_Store
+mise.local.toml

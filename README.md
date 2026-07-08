@@ -6,7 +6,7 @@ site is just VitePress's default theme pointed at that directory.
 
 ## Requirements
 
-This repo uses [mise](https://mise.jdx.dev/) to manage the required tooling:
+This repo uses [mise](https://mise.jdx.dev/) with `mise.local.toml` to manage the required tooling:
 
 - Node.js 22.23.1
 - pnpm 11.10.0
