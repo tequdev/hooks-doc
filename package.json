@@ -1,0 +1,30 @@
+{
+  "name": "hooks-doc",
+  "version": "1.0.0",
+  "description": "Documentation site for the Xahau Hook API docs, built with VitePress",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev hook-docs",
+    "build": "vitepress build hook-docs",
+    "preview": "vitepress preview hook-docs",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome format --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.10.0",
+      "onFail": "download"
+    }
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitepress": "^1.6.4"
+  }
+}
