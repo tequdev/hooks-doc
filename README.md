@@ -6,12 +6,15 @@ site is just VitePress's default theme pointed at that directory.
 
 ## Requirements
 
-- Node.js (tested on Node 22)
-- [pnpm](https://pnpm.io/) (see `devEngines` in `package.json`)
+This repo uses [mise](https://mise.jdx.dev/) to manage the required tooling:
+
+- Node.js 22.23.1
+- pnpm 11.10.0
 
 ## Getting started
 
 ```sh
+mise install
 pnpm install
 pnpm dev          # start the VitePress dev server, http://localhost:5173
 ```
