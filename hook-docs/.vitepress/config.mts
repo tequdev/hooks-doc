@@ -50,6 +50,86 @@ function titleOf(filePath: string): string {
   return path.basename(filePath, ".md");
 }
 
+function stripMarkdownComments(text: string): string {
+  return text.replace(/<!--[\s\S]*?-->/g, "");
+}
+
+function toPosixPath(filePath: string): string {
+  return filePath.split(path.sep).join("/");
+}
+
+function isWithinDocsRoot(filePath: string): boolean {
+  const relative = path.relative(docsRoot, filePath);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
+
+interface MiddlewareRequest {
+  method?: string;
+  url?: string;
+}
+
+interface MiddlewareResponse {
+  statusCode: number;
+  setHeader(name: string, value: string): void;
+  end(body?: string): void;
+}
+
+interface MiddlewareServer {
+  middlewares: {
+    use(handler: (req: MiddlewareRequest, res: MiddlewareResponse, next: () => void) => void): void;
+  };
+}
+
+function handleRawMarkdownRequest(
+  req: MiddlewareRequest,
+  res: MiddlewareResponse,
+  next: () => void,
+): void {
+  if (req.method !== "GET" && req.method !== "HEAD") return next();
+  if (!req.url) return next();
+
+  const url = new URL(req.url, "http://localhost");
+  let pathname: string;
+  try {
+    pathname = decodeURIComponent(url.pathname);
+  } catch {
+    return next();
+  }
+
+  if (!pathname.endsWith(".md")) return next();
+
+  const filePath = path.resolve(docsRoot, `.${pathname}`);
+  if (!isWithinDocsRoot(filePath) || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+    return next();
+  }
+
+  res.statusCode = 200;
+  res.setHeader("Content-Type", "text/plain; charset=utf-8");
+  res.end(stripMarkdownComments(fs.readFileSync(filePath, "utf8")));
+}
+
+function rawMarkdownPlugin(): any {
+  return {
+    name: "hooks-docs-raw-markdown",
+    configureServer(server: MiddlewareServer) {
+      server.middlewares.use(handleRawMarkdownRequest);
+    },
+    configurePreviewServer(server: MiddlewareServer) {
+      server.middlewares.use(handleRawMarkdownRequest);
+    },
+    generateBundle() {
+      for (const filePath of collectMarkdownFiles(docsRoot)) {
+        const relPath = toPosixPath(path.relative(docsRoot, filePath));
+        this.emitFile({
+          type: "asset",
+          fileName: relPath,
+          source: stripMarkdownComments(fs.readFileSync(filePath, "utf8")),
+        });
+      }
+    },
+  };
+}
+
 function loadDocs(): DocMeta[] {
   return collectMarkdownFiles(docsRoot)
     .map((filePath) => {
@@ -138,6 +218,10 @@ export default defineConfig({
     if (id === "README.md") return "index.md";
     if (id.endsWith("/README.md")) return `${id.slice(0, -"README.md".length)}index.md`;
     return id;
+  },
+
+  vite: {
+    plugins: [rawMarkdownPlugin()],
   },
 
   themeConfig: {
