@@ -20,10 +20,10 @@ if (!hookSetObj.isFieldPresent(sfHookOn))
     ...
 ```
 
-Once `featureHookOnV2` is enabled, a create may supply **either** `sfHookOn`
-alone **or** the `sfHookOnIncoming`/`sfHookOnOutgoing` pair, but never both —
-see [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md) for the
-mutual-exclusivity rule and confirming test cases.
+Once `featureHookOnV2` is enabled, a create/install/update may supply **either**
+`sfHookOn` alone **or** the `sfHookOnIncoming`/`sfHookOnOutgoing` pair, but never
+both — see [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md) for
+the mutual-exclusivity rule and confirming test cases.
 
 **Runtime semantics — the bit layout.** The check is `hook::canHook` in
 `src/xrpld/app/hook/detail/applyHook.cpp:806-825`, quoted here in full because the
