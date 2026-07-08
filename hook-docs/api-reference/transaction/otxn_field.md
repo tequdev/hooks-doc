@@ -24,13 +24,21 @@ length). With `write_ptr == 0` and `write_len == 0`: the field value packed into
 `OUT_OF_BOUNDS` (-1) for a bad buffer; `INVALID_FIELD` (-17) if `field_id` resolves to
 `sfInvalid`; `DOESNT_EXIST` (-5) if the field is not present on the transaction;
 `TOO_SMALL` (-4) if the buffer is too small for the field; `TOO_BIG` (-3) if you request the
-int64 form for a field larger than 8 bytes; `INTERNAL_ERROR` (-2) on a serialization
-inconsistency.
+int64 form for a field larger than 8 bytes, or if the encoded value would set the sign bit;
+`INTERNAL_ERROR` (-2) on a serialization inconsistency.
+
+<!--
+Evidence:
+- xahaud: src/xrpld/app/hook/detail/applyHook.cpp
+- xahaud: src/xrpld/app/hook/detail/HookAPI.cpp
+- commit: bb244ef7729503a0317bcff0f8fdaa93ca5cb7d2
+- notes: otxn_field serializes the requested field, returns DOESNT_EXIST for absent fields and INVALID_FIELD for unknown codes, and the int64 conversion rejects values longer than 8 bytes or with bit 63 set.
+-->
 
 **Common failure patterns.**
 - Passing `write_ptr == 0` with a non-zero `write_len` → `INVALID_ARGUMENT`.
-- Asking for the int64 form (`0, 0, field`) of a field bigger than 8 bytes (e.g. an account
-  or a hash) → `TOO_BIG`.
+- Asking for the int64 form (`0, 0, field`) of a field bigger than 8 bytes, or whose
+  serialized integer would set the sign bit (for example, some 8-byte values) → `TOO_BIG`.
 - A buffer smaller than the serialized field → `TOO_SMALL`.
 - An unrecognised or invalid `field_id` → `INVALID_FIELD`; a valid but absent field →
   `DOESNT_EXIST`.
