@@ -45,7 +45,7 @@ hook chain. See `../overview.md` for the lifecycle table.
 | `HookOnIncoming` | `UINT256` (94) | `sfHook`, `ltHOOK_DEFINITION` | `soeOPTIONAL` in both |
 | `HookOnOutgoing` | `UINT256` (93) | `sfHook`, `ltHOOK_DEFINITION` | `soeOPTIONAL` in both |
 | `HookCanEmit` | `UINT256` (96) | `sfHook`, `ltHOOK_DEFINITION` | `soeOPTIONAL` in both |
-| `HookApiVersion` | `UINT16` (20) | `sfHook`, `ltHOOK_DEFINITION` | `soeOPTIONAL` on `sfHook`, `soeREQUIRED` on `ltHOOK_DEFINITION` |
+| `HookApiVersion` | `UINT16` (20) | `SetHook` create input (`sfHook`); `ltHOOK_DEFINITION` only | `soeOPTIONAL` on create input, `soeREQUIRED` on `ltHOOK_DEFINITION` |
 | `HookName` | `VL` (97) | `sfHook` **only** (never `ltHOOK_DEFINITION`); also a common field on **every** transaction type | `soeOPTIONAL` |
 | `Flags` | `UINT32` (2) | `sfHook`; auto-attached to every `ltHOOK_DEFINITION`/ledger entry (not listed explicitly in its macro); also a distinct, unrelated top-level field on every transaction | `soeOPTIONAL` |
 
@@ -132,7 +132,7 @@ explained and every rule cited.
 | [HookOn](hookon.md) | Selects which transaction types cause a hook to fire. |
 | [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md) | Splits `HookOn` into independent incoming/outgoing bit fields. |
 | [HookCanEmit](hookcanemit.md) | Restricts which transaction types a hook is permitted to `emit()`. |
-| [HookApiVersion](hookapiversion.md) | Declares the Hook API ABI version; on this branch, must be `0`, and only legal on `hsoCREATE`. |
+| [HookApiVersion](hookapiversion.md) | Declares the Hook API ABI version; on this branch, must be `0`, and is stored only on `ltHOOK_DEFINITION` after create. |
 | [HookName](hookname.md) | Names one installed hook so any transaction can target it directly. |
 | [flags.md](flags.md) | The `hsf*` control/persistent bits (`hsfOVERRIDE`, `hsfNSDELETE`, `hsfCOLLECT`) carried in each `sfHook` object's own `Flags`. |
 | [operations-field-matrix.md](operations-field-matrix.md) | Per-operation field legality matrix (see "Start here" above). |

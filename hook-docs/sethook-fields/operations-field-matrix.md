@@ -126,11 +126,10 @@ condition" above) makes the object something other than NOOP.
     `sfHookOnIncoming` and `sfHookOnOutgoing` together (and they must
     differ) — never a mix of `sfHookOn` with either directional field. See
     [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md).
-[^onv2-gate]: Unlike `hsoCREATE`, `validateHookSetEntry`'s `hsoINSTALL`
-    (`SetHook.cpp:339-367`) and `hsoUPDATE` (`SetHook.cpp:369-411`)
-    branches contain **no `featureHookOnV2` check and no
-    Incoming/Outgoing-pairing requirement** — see "Amendment gates and a
-    verified deviation" below.
+[^onv2-gate]: Directional `HookOn` fields are only valid when
+    `featureHookOnV2` is enabled and **both** `sfHookOnIncoming` and
+    `sfHookOnOutgoing` are supplied together with different values. See
+    [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md).
 [^canemit]: Gated globally: any non-blank `sfHook` object carrying
     `sfHookCanEmit` without `featureHookCanEmit` enabled is `temDISABLED`,
     independent of which operation it is (`SetHook.cpp:811-813`). See
@@ -271,46 +270,18 @@ condition" above) makes the object something other than NOOP.
 - At apply time, the chain slot is left exactly as it was (existing hook
   copied through verbatim, or a blank placeholder if none existed).
 
-## Amendment gates and a verified deviation from a plausible reading of the code
+## Amendment gates
 
 - `featureHooks` (`include/xrpl/protocol/detail/features.macro:99`) gates
   the entire transaction type (`SetHook.cpp:733-739`).
+- `featureHookOnV2` (`features.macro:67`) governs the directional
+  `HookOn` form: use plain `sfHookOn`, or use the
+  `sfHookOnIncoming`/`sfHookOnOutgoing` pair with different values. See
+  [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md).
 - `featureHookCanEmit` (`features.macro:78`) and `featureNamedHooks`
   (`features.macro:39`) each gate their field **globally**, on every
   non-blank `sfHook` object regardless of inferred operation
-  (`SetHook.cpp:811-817`) — not scoped to `hsoCREATE`.
-- `featureHookOnV2` (`features.macro:67`) is checked in exactly one place
-  in the entire file: inside `hsoCREATE`'s validation
-  (`SetHook.cpp:461-508`), to decide whether `sfHookOn` may be omitted in
-  favor of the Incoming/Outgoing pair, and once more at apply time
-  (`SetHook.cpp:1846`) to decide which fields a *new* `ltHOOK_DEFINITION`
-  stores. **`hsoINSTALL` and `hsoUPDATE` contain no `featureHookOnV2`
-  check anywhere** — `grep -n "featureHookOnV2"
-  src/xrpld/app/tx/detail/SetHook.cpp` returns only those two create-time
-  sites. Structurally, this means a genuine `hsoINSTALL` (targeting an
-  existing hash via `sfHookHash`, no `sfCreateCode`) or a genuine
-  `hsoUPDATE` (no hash, no code) can carry `sfHookOnIncoming`/
-  `sfHookOnOutgoing` — individually, with no pairing requirement either —
-  independent of whether `featureHookOnV2` is enabled on the network.
-  `SetHook_test.cpp:1397-1441` ("Test hook on v2" / "Disabled") exercises
-  scenarios *labeled* "install" and "update" that reject these fields
-  pre-amendment, but those test cases are built with the `hso()` test
-  helper (`src/test/jtx/impl/hook.cpp:71-92`), which always sets
-  `sfCreateCode` — so every case in that test is actually still an
-  `hsoCREATE` (or an `hsoCREATE` that falls through to `hsoINSTALL` at
-  apply time after hash deduplication), not a bare `sfHookHash`-only
-  install or a bare hash/code-free update. No test in this file exercises
-  a literal `sfHookHash`-only install or a literal hash/code-free update
-  carrying `sfHookOnIncoming`/`sfHookOnOutgoing` while `featureHookOnV2`
-  is disabled. This is reported here as a documentation-relevant gap
-  between the plausible expectation ("the amendment gates the fields
-  everywhere") and what the source and test suite actually establish
-  ("the amendment is only checked at create time"); it is not asserted to
-  be exploitable, since in practice no `ltHOOK_DEFINITION` created before
-  `featureHookOnV2` was ever enabled would have `sfHookOnIncoming`/
-  `sfHookOnOutgoing` stored on it for an `hsoINSTALL` to inherit — but an
-  `hsoUPDATE` writing a fresh entry-level override does not depend on the
-  definition having those fields at all.
+  (`SetHook.cpp:811-817`).
 
 ## Related documents
 
