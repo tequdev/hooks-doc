@@ -147,9 +147,10 @@ export default defineConfig({
 
   themeConfig: {
     nav: [
+      { text: "Home", link: "/" },
       { text: "Overview", link: "/overview" },
-      { text: "API Reference", link: "/api-reference/control/" },
-      { text: "Examples", link: "/examples/payment-filter" },
+      { text: "API Reference", link: "/api-reference/" },
+      { text: "Examples", link: "/examples/" },
     ],
     sidebar: buildSidebar(),
     search: { provider: "local" },
