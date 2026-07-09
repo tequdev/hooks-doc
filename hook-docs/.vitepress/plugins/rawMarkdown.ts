@@ -4,6 +4,7 @@ import * as path from "node:path";
 import type { Plugin } from "vitepress";
 
 interface MiddlewareRequest {
+  headers?: Record<string, string | string[] | undefined>;
   method?: string;
   url?: string;
 }
@@ -58,6 +59,13 @@ function handleRawMarkdownRequest(
   if (!req.url) return next();
 
   const url = new URL(req.url, "http://localhost");
+  // VitePress loads pages by importing their `.md` URLs as JavaScript
+  // modules. Let Vite handle those requests; this middleware is only for
+  // clients requesting the Markdown document itself.
+  if (url.searchParams.has("import") || req.headers?.["sec-fetch-dest"] === "script") {
+    return next();
+  }
+
   let pathname: string;
   try {
     pathname = decodeURIComponent(url.pathname);
