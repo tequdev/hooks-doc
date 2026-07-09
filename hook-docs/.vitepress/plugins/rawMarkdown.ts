@@ -1,5 +1,7 @@
+/** biome-ignore-all lint/correctness/noVoidTypeReturn: we need to return void to satisfy the type */
 import * as fs from "node:fs";
 import * as path from "node:path";
+import type { Plugin } from "vitepress";
 
 interface MiddlewareRequest {
   method?: string;
@@ -66,7 +68,11 @@ function handleRawMarkdownRequest(
   if (!pathname.endsWith(".md")) return next();
 
   const filePath = path.resolve(docsRoot, `.${pathname}`);
-  if (!isWithinDocsRoot(docsRoot, filePath) || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+  if (
+    !isWithinDocsRoot(docsRoot, filePath) ||
+    !fs.existsSync(filePath) ||
+    !fs.statSync(filePath).isFile()
+  ) {
     return next();
   }
 
@@ -75,14 +81,18 @@ function handleRawMarkdownRequest(
   res.end(stripMarkdownComments(fs.readFileSync(filePath, "utf8")));
 }
 
-export function rawMarkdownPlugin(docsRoot: string): any {
+export function rawMarkdownPlugin(docsRoot: string): Plugin {
   return {
     name: "hooks-docs-raw-markdown",
     configureServer(server: MiddlewareServer) {
-      server.middlewares.use((req, res, next) => handleRawMarkdownRequest(docsRoot, req, res, next));
+      server.middlewares.use((req, res, next) =>
+        handleRawMarkdownRequest(docsRoot, req, res, next),
+      );
     },
     configurePreviewServer(server: MiddlewareServer) {
-      server.middlewares.use((req, res, next) => handleRawMarkdownRequest(docsRoot, req, res, next));
+      server.middlewares.use((req, res, next) =>
+        handleRawMarkdownRequest(docsRoot, req, res, next),
+      );
     },
     generateBundle() {
       for (const filePath of collectMarkdownFiles(docsRoot)) {
