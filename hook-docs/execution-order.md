@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Execution Order"
+---
+
 # Execution Order and Hook Chains
 
 A single Xahau transaction can trigger hooks on more than one account, in more
