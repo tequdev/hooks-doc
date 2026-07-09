@@ -1,17 +1,18 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.2/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true
   },
   "files": {
-    "ignore": [
-      "node_modules",
-      "pnpm-lock.yaml",
-      "hook-docs/**/*.md",
-      "hook-docs/.vitepress/cache",
-      "hook-docs/.vitepress/dist"
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/pnpm-lock.yaml",
+      "!**/hook-docs/**/*.md",
+      "!**/hook-docs/.vitepress/cache",
+      "!**/hook-docs/.vitepress/dist"
     ]
   },
   "formatter": {
@@ -20,13 +21,10 @@
     "indentWidth": 2,
     "lineWidth": 100
   },
-  "organizeImports": {
-    "enabled": true
-  },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "preset": "recommended"
     }
   },
   "javascript": {
