@@ -19,15 +19,17 @@ const NAMED_PREFIXES = ["api-reference", "examples"] as const;
 const SIDEBAR_ORDER = [
   // Guides: concepts first, then implementation, deployment, and lookup material.
   "overview",
-  "xfl",
-  "tsh",
   "execution-order",
-  "best-practices",
-  "compiling",
-  "sethook-fields",
+  "tsh",
   "fees",
+  "xfl",
+  "compiling",
+  "best-practices",
+
+  "sethook-fields",
   "macros",
   "tools",
+
   "other-languages",
   "glossary",
 
