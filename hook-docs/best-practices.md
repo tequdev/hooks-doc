@@ -24,15 +24,15 @@ worked [examples/](examples/) that demonstrate each idea.
 
 | Rule | Enforced by | Failure mode |
 |---|---|---|
-| [`_g` guard first in every loop](#guard-discipline-_g-first-in-every-loop) | `include/xrpl/hook/Guard.h` (`SetHook` validator) | Install rejected (`GUARD_MISSING`) if the loop doesn't open with `_g`; `GUARD_VIOLATION (-16)` at runtime if an unguarded/over-iterating path executes anyway |
-| [No user-defined function calls / no `call_indirect`](#no-user-defined-functions--inline-everything) | `include/xrpl/hook/Guard.h` (`CALL_ILLEGAL`, `CALL_INDIRECT`) | `SetHook` rejected (`temMALFORMED`) |
-| [`memory.grow`, `memory.copy`, `memory.fill` are disallowed](#no-memorygrow-memorycopy-memoryfill) | `include/xrpl/hook/Guard.h` (`MEMORY_GROW`, and `memory.copy`/`memory.fill` under `fix20250131`) | `SetHook` rejected (`temMALFORMED`) |
+| [`_g` guard first in every loop](#guard-discipline-g-first-in-every-loop) | `include/xrpl/hook/Guard.h` (`SetHook` validator) | Install rejected (`GUARD_MISSING`) if the loop doesn't open with `_g`; `GUARD_VIOLATION (-16)` at runtime if an unguarded/over-iterating path executes anyway |
+| [No user-defined function calls / no `call_indirect`](#no-user-defined-functions-—-inline-everything) | `include/xrpl/hook/Guard.h` (`CALL_ILLEGAL`, `CALL_INDIRECT`) | `SetHook` rejected (`temMALFORMED`) |
+| [`memory.grow`, `memory.copy`, `memory.fill` are disallowed](#no-memory-grow-memory-copy-memory-fill) | `include/xrpl/hook/Guard.h` (`MEMORY_GROW`, and `memory.copy`/`memory.fill` under `fix20250131`) | `SetHook` rejected (`temMALFORMED`) |
 | [Block/loop nesting depth ≤ 16 (32 post-`fixGuardDepth32`)](#bound-nesting-depth) | `include/xrpl/hook/Guard.h` (`NESTING_LIMIT`) | `SetHook` rejected (`temMALFORMED`) |
 | [Guard-checked worst-case instruction count < 65,535](#keep-hooks-small-and-under-the-instruction-cap) | `include/xrpl/hook/Guard.h` (`INSTRUCTION_EXCESS`) | `SetHook` rejected (`temMALFORMED`) |
 | [Compiled WASM ≤ 65,535 bytes](#keep-hooks-small-and-under-the-instruction-cap) | `src/xrpld/app/tx/detail/SetHook.cpp` (`hook::maxHookWasmSize`, `WASM_TOO_BIG`) | `SetHook` rejected (`temMALFORMED`) |
 | [Hook chain ≤ 10 hooks per account](#other-install-time-limits) | `src/xrpld/app/tx/detail/SetHook.cpp` (`hook::maxHookChainLength`) | `SetHook` rejected (`temMALFORMED`) |
 | [HookParameter key ≤ 32 bytes, value ≤ 256 bytes](#other-install-time-limits) | `src/xrpld/app/tx/detail/SetHook.cpp` (`hook::maxHookParameterKeySize/ValueSize`) | `SetHook` rejected (`temMALFORMED`) |
-| [`etxn_reserve` before any `emit`, and never emit more than reserved](#emission-caveats-reserve-first-fee-via-etxn_fee_base) | `src/xrpld/app/hook/detail/HookAPI.cpp` (`etxn_reserve`, `emit`) | `emit` returns `PREREQUISITE_NOT_MET (-9)` if you never reserved, `TOO_MANY_EMITTED_TXN (-13)` if you exceed the reserved count |
+| [`etxn_reserve` before any `emit`, and never emit more than reserved](#emission-caveats-reserve-first-fee-via-etxn-fee-base) | `src/xrpld/app/hook/detail/HookAPI.cpp` (`etxn_reserve`, `emit`) | `emit` returns `PREREQUISITE_NOT_MET (-9)` if you never reserved, `TOO_MANY_EMITTED_TXN (-13)` if you exceed the reserved count |
 | [State writes respect reserve, size, and modification-count limits](#mind-the-reserve-and-state-limits) | `src/xrpld/app/hook/detail/HookAPI.cpp` (`set_state_cache`), `src/xrpld/app/hook/detail/applyHook.cpp` (`state_set`) | `RESERVE_INSUFFICIENT (-38)`, `TOO_BIG (-3)`, `TOO_MANY_STATE_MODIFICATIONS (-44)`, or `TOO_MANY_NAMESPACES (-45)` |
 | [Foreign-account state writes need a grant](#foreign-state-reads-are-open-writes-need-a-grant) | `src/xrpld/app/hook/detail/HookAPI.cpp` (`state_foreign_set`) | `NOT_AUTHORIZED (-34)`, and a subsequent retry in the same hook execution returns `PREVIOUS_FAILURE_PREVENTS_RETRY (-35)` |
 
