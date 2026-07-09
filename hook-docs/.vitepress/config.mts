@@ -60,9 +60,10 @@ function loadDocs(): DocMeta[] {
     .sort((a, b) => a.slug.localeCompare(b.slug));
 }
 
-/** Build a one-level index/children tree: a doc is a child of another doc whose
- * slug equals its own parent directory (e.g. "control/accept" is a child of
- * the index page "control"). Mirrors a directory's README.md acting as its index. */
+/** Build an index/children tree: a doc is a child of another doc whose slug
+ * equals its own parent directory (e.g. "api-reference/control/accept" is a
+ * child of the index page "api-reference/control"). Mirrors a directory's
+ * README.md acting as its index. */
 function buildTree(docs: DocMeta[]) {
   const slugSet = new Set(docs.map((d) => d.slug));
   const childrenBySlug = new Map<string, DocMeta[]>();
@@ -89,7 +90,7 @@ function toSidebarItem(
   const item: DefaultTheme.SidebarItem = { text: doc.title, link: `/${doc.slug}` };
   if (children && children.length > 0) {
     item.collapsed = false;
-    item.items = children.map((child) => ({ text: child.title, link: `/${child.slug}` }));
+    item.items = children.map((child) => toSidebarItem(child, childrenBySlug));
   }
   return item;
 }
