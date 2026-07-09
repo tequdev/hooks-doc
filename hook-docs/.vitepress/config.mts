@@ -19,6 +19,7 @@ const NAMED_PREFIXES = ["api-reference", "examples"] as const;
 const SIDEBAR_ORDER = [
   // Guides: concepts first, then implementation, deployment, and lookup material.
   "overview",
+  "xfl",
   "best-practices",
   "sethook-fields",
   "macros",

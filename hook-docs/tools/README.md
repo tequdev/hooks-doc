@@ -14,6 +14,11 @@ Third-party and community tools that help you build Xahau Hooks.
   `uint8_t txn[N]` template, `*_OUT` pointer macros for each mutable field, and
   a `PREPARE_TXN()` macro that fills in the fixed emit fields. Live at
   <https://tx-builder.xahau.tools/>.
+- **[Binary Visualizer](binary-visualizer.md)** — paste a serialized blob (hex,
+  base64, or JSON) — a transaction, ledger entry, or manifest — and it walks
+  the bytes field by field, showing each field's type-code, field-code, and
+  payload, with a dedicated bit-level breakdown for `Amount` fields. Live at
+  <https://binary-visualizer.xahau.tools/>.
 
 ## Related documents
 

@@ -36,7 +36,7 @@ Definitions are grounded in repository source (`include/xrpl/hook/Enum.h`,
 | **Strong execution** | The pre-apply execution mode: the hook runs before the transaction is applied and may `rollback` to reject it (`isStrong` in `applyHook.h`; emission flag `hefSTRONG = 0x1`). See [overview.md](overview.md). |
 | **TSH (Transactional Stake Holder)** | An account with a stake in a transaction (beyond the sending account) that can therefore have its hooks fire for that transaction. TSHs may be added as **weak** (observe only) or strong participants; the `SetHookTSH_test.cpp` suite exercises weak TSHs (`addWeakTSH`). Governed by `TSHFlags` (`tshROLLBACK`, `tshCOLLECT`, `tshMIXED` in `Enum.h`). **Unverified — needs confirmation:** the precise strong-vs-weak TSH firing rules per transaction type are not fully restated here; see `SetHookTSH_test.cpp`. |
 | **Weak execution** | A post-apply re-execution requested by a strong hook via `hook_again()`. It observes the applied result and cannot roll it back (`executeAgainAsWeak` comment in `applyHook.h`). See [overview.md](overview.md). |
-| **XFL** | Xahau's fixed-precision floating-point representation for ledger amounts, encoded as an `int64_t` of exponent + mantissa. Built and manipulated with the `float_*` functions. See [api-reference/float-and-amount.md](api-reference/float/README.md). |
+| **XFL** | Xahau's fixed-precision floating-point representation for ledger amounts, encoded as an `int64_t` of exponent + mantissa. Built and manipulated with the `float_*` functions. See [xfl.md](xfl.md). |
 
 ## Related documents
 
