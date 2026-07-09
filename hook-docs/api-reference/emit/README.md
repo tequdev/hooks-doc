@@ -9,10 +9,10 @@ construct, price, and emit a new transaction of its own, plus the counters that 
 transactions deterministic and loop-safe.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary.md](../../glossary.md); the values quoted below come from
-`include/xrpl/hook/Enum.h` and `hook/error.h`, and every behaviour is taken from the
-implementations in `src/xrpld/app/hook/detail/applyHook.cpp` and
-`src/xrpld/app/hook/detail/HookAPI.cpp`.
+error table in [../../glossary.md](../../glossary.md).
+<!-- the values quoted below come from `include/xrpl/hook/Enum.h` and `hook/error.h`, and
+every behaviour is taken from the implementations in
+`src/xrpld/app/hook/detail/applyHook.cpp` and `src/xrpld/app/hook/detail/HookAPI.cpp` -->
 
 > **There is no `invoke` Hook API.** `ttINVOKE` (`99`, `hook/tts.h`) is a *transaction type*
 > that triggers hooks, not an API function. Do not look for an `invoke()` call — hooks emit
@@ -58,7 +58,8 @@ eventual outcome.
 ### Burden, generation, and the anti-emission-loop mechanism
 
 Two counters ride along in `sfEmitDetails` and exist specifically to stop hooks from emitting
-transactions forever (verified in `HookAPI::emit`, `etxn_burden`, `etxn_generation`):
+transactions forever:
+<!-- verified in `HookAPI::emit`, `etxn_burden`, `etxn_generation` -->
 
 - **Generation** — [`etxn_generation()`](etxn_generation.md) returns `otxn_generation() + 1`.
   A user-submitted transaction has generation `0`; a transaction it emits carries generation
@@ -95,10 +96,13 @@ int64_t cbak(uint32_t r)
 }
 ```
 
-The only fact the code guarantees about the argument is bit 0: `emitFailure = isCallback &&
-(wasmParam & 1)` in `applyHook.cpp`. A callback may itself emit further transactions, but it
+The only fact the code guarantees about the argument is bit 0: it is set when the emitted
+transaction failed.
+<!-- emitFailure = isCallback && (wasmParam & 1) in `applyHook.cpp` -->
+A callback may itself emit further transactions, but it
 must call [`etxn_reserve`](etxn_reserve.md) again first — a fresh execution starts with no
-reservation (see the `cbak` in `SetHook_test.cpp`, "Test emit").
+reservation.
+<!-- see the `cbak` in `SetHook_test.cpp`, "Test emit" -->
 
 ---
 

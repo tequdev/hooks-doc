@@ -35,10 +35,11 @@ account already failed authorization once this execution; `RESERVE_INSUFFICIENT`
 `TOO_MANY_STATE_MODIFICATIONS` (-44); `TOO_MANY_NAMESPACES` (-45);
 `INTERNAL_ERROR` (-2).
 
-**How the grant check works (from `HookAPI.cpp`).**
+**How the grant check works.** <!-- Source: `HookAPI.cpp`. -->
 When the target account differs from the hook account, `state_foreign_set` looks up the
-foreign account's hook object (`keylet::hook(account)`) and scans each installed hook for
-`sfHookGrants`. A grant authorizes the write if:
+foreign account's hook object and scans each installed hook for `sfHookGrants`.
+<!-- The hook object is looked up with `keylet::hook(account)`. -->
+A grant authorizes the write if:
 
 - the granting hook's namespace matches the namespace you are writing to (the grant applies to
   the granter's `sfHookNamespace`, taken from the hook object or its `HookDefinition`), and
@@ -47,9 +48,9 @@ foreign account's hook object (`keylet::hook(account)`) and scans each installed
   account.
 
 If no matching grant is found the write returns `NOT_AUTHORIZED` and, importantly, the hook
-is given **only one attempt**: `foreignStateSetDisabled` is set, so subsequent foreign writes
-in the same execution return `PREVIOUS_FAILURE_PREVENTS_RETRY`. A successful grant is cached
-per (account, namespace) so later writes skip the expensive scan.
+is given **only one attempt**, so subsequent foreign writes in the same execution return
+`PREVIOUS_FAILURE_PREVENTS_RETRY`. <!-- The internal `foreignStateSetDisabled` flag is set. -->
+A successful grant is cached per (account, namespace) so later writes skip the expensive scan.
 
 **Common failure patterns.**
 - Attempting a foreign write with no grant → `NOT_AUTHORIZED`, and every later foreign write

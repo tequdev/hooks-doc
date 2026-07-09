@@ -26,7 +26,8 @@ for (int i = 0; GUARD(32), i < 32; ++i)   // promises <=32 iterations
 ```
 
 The `GUARD(...), condition` idiom runs the guard every iteration, then evaluates the
-real condition. This is the canonical pattern seen throughout `SetHook_test.cpp`.
+real condition. This is the canonical pattern seen throughout the xahaud test suite.
+<!-- SetHook_test.cpp -->
 
 ## GUARDM
 

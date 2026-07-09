@@ -10,7 +10,7 @@ the hook chain.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
 error table in [../../glossary.md](../../glossary.md); the values quoted below come from
-`include/xrpl/hook/Enum.h` and `hook/error.h`.
+<!-- include/xrpl/hook/Enum.h and --> `hook/error.h`.
 
 ---
 
@@ -29,13 +29,16 @@ and return the special sentinel codes `RC_ACCEPT` (-20) or `RC_ROLLBACK` (-19) t
 which stops execution. Code after an `accept`/`rollback` call in the same path never runs.
 
 If a hook function returns normally (falls off the end of `hook()`) without calling either,
-the default exit type is `ROLLBACK` (see `applyHook.cpp`, where the result is initialised
-with `exitType = ROLLBACK` "unless the hook calls accept()"). Under the `fixXahauV3`
+the default exit type is `ROLLBACK`. Under the `fixXahauV3`
 amendment the default becomes `WASM_ERROR` instead; either way, not calling `accept`
 rejects the transaction. **Always call `accept` explicitly on the success path.**
 
-Each hook execution records a metadata entry (`sfHookExecution`) that captures the outcome
-(verified in `applyHook.cpp`):
+<!-- see applyHook.cpp: the result is initialised with exitType = ROLLBACK "unless the
+hook calls accept()". -->
+
+Each hook execution records a metadata entry (`sfHookExecution`) that captures the outcome:
+
+<!-- verified in applyHook.cpp -->
 
 - `sfHookResult` — the exit type as a `uint8_t` (`ExitType`: `WASM_ERROR=1`, `ROLLBACK=2`,
   `ACCEPT=3`; `UNSET=0`).
@@ -61,12 +64,14 @@ hooks halt.
 Two enforcement points exist:
 
 1. **Install time (static validation).** When a hook is set, the server runs the guard
-   validator in `include/xrpl/hook/Guard.h` (`check_guard`) over the WASM. It walks the code
+   validator over the WASM. It walks the code
    section and, for every `loop` opcode (`0x03`), requires the *immediately following*
    instructions to be exactly `i32.const <guard_id>`, `i32.const <maxiter>`, `call _g`. A
    loop that is missing this prologue, that specifies `maxiter == 0`, or that calls a
    function other than `_g` there is **rejected** and the `SetHook` fails (log codes such as
    `GUARD_MISSING`). There is a hard limit of 1024 guard calls per hook.
+
+   <!-- validator: include/xrpl/hook/Guard.h (check_guard) -->
 
 2. **Run time (dynamic enforcement).** During execution `_g` counts calls per `guard_id`. If
    a guarded loop exceeds its declared `maxiter`, `_g` sets the exit type to `ROLLBACK` with

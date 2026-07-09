@@ -38,7 +38,7 @@ returns `0`. A value too small to show at the requested scale returns `0`. Error
 int64_t drops = float_int(amount_xah, 6, 0);   // XAH -> drops
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test float_int").**
+**Practical example.** <!-- Adapted from `SetHook_test.cpp`, "Test float_int". -->
 
 ```c
 ASSERT(float_int(-1, 0, 0)            == INVALID_FLOAT);        // not a valid XFL

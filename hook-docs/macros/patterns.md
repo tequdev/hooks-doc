@@ -5,7 +5,8 @@ sidebarTitle: "Recommended patterns"
 # Recommended patterns
 
 The macros above are building blocks; these are the idioms that combine them safely.
-Most are lifted directly from the test hooks in `src/test/app/SetHook_test.cpp`.
+Most are lifted directly from the xahaud test hooks.
+<!-- src/test/app/SetHook_test.cpp -->
 
 ## 1. Always check return values (negative = error)
 

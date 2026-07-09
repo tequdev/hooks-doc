@@ -71,9 +71,9 @@ DONE(result)   // returns the 8 raw bytes of `result`; no trailing ';'
 ```
 
 Rollback (no message) if the condition is false. **Statement** (a `{}` block). This is
-the workhorse of the test hooks: nearly every API call in `SetHook_test.cpp` is wrapped
-as `ASSERT(some_api(...) == expected);`. The rollback code is the failing line, which
-makes it easy to see which assertion tripped.
+the workhorse of the test hooks: nearly every API call in the xahaud test suite is
+wrapped as `ASSERT(some_api(...) == expected);`. <!-- SetHook_test.cpp --> The
+rollback code is the failing line, which makes it easy to see which assertion tripped.
 
 ```c
 ASSERT(hook_account(SBUF(acc)) == 20);   // rolls back at this line if not 20

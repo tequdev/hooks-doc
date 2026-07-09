@@ -33,7 +33,9 @@ another weak pass from within a weak pass).
 hook_again();   // schedule a post-apply weak re-execution
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test hook_again").**
+**Practical example.**
+
+<!-- adapted from SetHook_test.cpp, "Test hook_again" -->
 
 ```c
 int64_t hook(uint32_t r)

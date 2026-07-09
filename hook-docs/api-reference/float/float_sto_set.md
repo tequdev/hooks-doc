@@ -36,7 +36,8 @@ field-header prefix is detected but the buffer is too short to contain the amoun
 int64_t xfl = float_sto_set((uint32_t)amount_buf, amount_len);
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test float_sto").**
+**Practical example.**
+<!-- Adapted from `SetHook_test.cpp`, "Test float_sto". -->
 
 ```c
 // After float_sto wrote a 49-byte sfAmount into buf, read it straight back:

@@ -23,8 +23,9 @@ if the slot is empty; `INTERNAL_ERROR` (-2) if the slot entry is corrupt.
 
 **Caveats / notes.**
 <!-- evidence: the implementation literally serializes the slot entry on every call and carries an `RH TODO` to cache the size (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:2152-2155`). -->
-- Size is computed by re-serializing the object each call (see the `RH TODO` note in
-  `HookAPI.cpp` about caching); prefer calling it once and reusing the result.
+- Size is computed by re-serializing the object each call (there's a noted `RH TODO` to cache
+  it internally); prefer calling it once and reusing the result.
+<!-- RH TODO note is in `HookAPI.cpp` -->
 - Use it to size a buffer before calling [`slot`](slot.md).
 
 **Minimal example.**

@@ -9,9 +9,8 @@ ledger objects, emit new transactions, and ultimately `accept` (apply) or
 This doc set describes the **C / WebAssembly Hook API** as it exists in this
 repository (branch `dev`). Every claim here is grounded in repository source —
 primarily `hook/extern.h`, `hook/error.h`, `hook/macro.h`, `hook/hookapi.h`,
-`include/xrpl/hook/Enum.h`, `include/xrpl/hook/hook_api.macro`, the Hook
-execution engine under `src/xrpld/app/hook/`, and the example hooks embedded in
-`src/test/app/SetHook_test.cpp`.
+the Hook execution engine, and the example hooks embedded in the test suite.
+<!-- include/xrpl/hook/Enum.h, include/xrpl/hook/hook_api.macro, src/xrpld/app/hook/, and src/test/app/SetHook_test.cpp -->
 
 **Who this is for:** developers writing Hook smart contracts in C, and anyone
 who needs an accurate reference for the 75 Hook API functions, their error
@@ -76,20 +75,28 @@ in [overview.md](overview.md) and is repeated per function where relevant.
 
 ## Source of truth
 
-These documents were derived from the following repository sources (repo root
-`https://github.com/Xahau/xahaud`):
+These documents were derived from the developer-facing Hook API headers
+(repo root `https://github.com/Xahau/xahaud`):
 
 - `hook/extern.h` — canonical developer-facing declarations of all 75 API functions.
 - `hook/error.h` — developer-facing error `#define`s.
 - `hook/macro.h` — helper macros.
 - `hook/hookapi.h` — top-level include; `KEYLET_*` and `COMPARE_*` constants.
 - `hook/sfcodes.h`, `hook/tts.h`, `hook/ls_flags.h`, `hook/tx_flags.h` — field, transaction-type, and flag codes.
+
+The `hook_return_code` enum, limits, keylet codes, exit types, HookSet log
+codes, SetHook operations/flags, guard-validation rules, amendment gating
+(`featureHooksUpdate1`, `featureHooksUpdate2`), and the Hook execution engine
+itself round out the picture, and the example hooks referenced throughout
+this doc set come from the project's own test suite.
+<!--
 - `include/xrpl/hook/Enum.h` — `hook_return_code` enum, limits, keylet codes, exit types, HookSet log codes, SetHook operations/flags.
 - `include/xrpl/hook/hook_api.macro` — WasmEdge registration and amendment gating (`featureHooksUpdate1`, `featureHooksUpdate2`).
 - `include/xrpl/hook/Guard.h` — guard validation rules.
 - `src/xrpld/app/hook/applyHook.h` and `src/xrpld/app/hook/detail/applyHook.cpp` — the Hook execution engine.
 - `src/test/app/SetHook_test.cpp` — real example hooks (between the `R"[test.hook](` and `)[test.hook]"` markers).
 - `src/test/app/build_test_hooks.sh` — the test-hook compilation pipeline.
+-->
 
 The consolidated, cross-checked inventory these docs build on is
 `.claude/plans/hook-docs/api-inventory.md`.

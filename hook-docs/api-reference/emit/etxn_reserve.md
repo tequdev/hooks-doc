@@ -38,7 +38,8 @@ already made this execution; `TOO_SMALL` (-4) if `count < 1`; `TOO_BIG` (-3) if
 etxn_reserve(1);   // this hook will emit exactly one transaction
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test etxn_reserve").**
+**Practical example.**
+<!-- adapted from `SetHook_test.cpp`, "Test etxn_reserve" -->
 
 ```c
 int64_t hook(uint32_t r)

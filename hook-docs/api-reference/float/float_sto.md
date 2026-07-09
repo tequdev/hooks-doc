@@ -25,7 +25,8 @@ int64_t float_sto(uint32_t write_ptr, uint32_t write_len,
 | `float1` | `int64_t` | The XFL amount to serialize. |
 | `field_code` | `uint32_t` | Output field selector — see below. |
 
-**`field_code` values (verified in `HookAPI::float_sto`).**
+**`field_code` values.**
+<!-- Verified in `HookAPI::float_sto`. -->
 
 - `0` — serialize a **native (XAH) drops** amount (8 bytes, no currency/issuer). Currency and
   issuer must both be absent.
@@ -68,7 +69,8 @@ int64_t n = float_sto((uint32_t)buf, sizeof(buf),
                       amount, /* sfAmount */ (6U << 16U) + 1U);
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test float_sto").**
+**Practical example.**
+<!-- Adapted from `SetHook_test.cpp`, "Test float_sto". -->
 
 ```c
 uint8_t buf[50];

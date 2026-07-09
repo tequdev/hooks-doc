@@ -11,9 +11,10 @@ single "Ledger and Slot APIs" page; that page has been split in two, and this pa
 the ledger-info half.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary.md](../../glossary.md); values come from `include/xrpl/hook/Enum.h`
-and `hook/error.h`. Implementations live in `src/xrpld/app/hook/detail/HookAPI.cpp` (core
-logic) and `src/xrpld/app/hook/detail/applyHook.cpp` (WASM-facing wrappers).
+error table in [../../glossary.md](../../glossary.md); values come from <!-- include/xrpl/hook/Enum.h and -->
+`hook/error.h`. The implementation is split between core lookup/read logic and the
+WASM-facing wrappers that marshal arguments across the guest boundary.
+<!-- core logic: `src/xrpld/app/hook/detail/HookAPI.cpp`; WASM-facing wrappers: `src/xrpld/app/hook/detail/applyHook.cpp` -->
 
 ---
 

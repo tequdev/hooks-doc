@@ -42,7 +42,9 @@ uint8_t val[256];
 int64_t n = hook_param((uint32_t)val, sizeof(val), SBUF("param0"));
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test hook_param").**
+**Practical example.**
+
+<!-- adapted from SetHook_test.cpp, "Test hook_param" -->
 
 ```c
 uint8_t* names[]  = { "param0", "param1", /* ... */ };

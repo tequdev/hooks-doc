@@ -32,8 +32,10 @@ iteration count exceeds `maxiter`, it sets the hook's exit type to `ROLLBACK`, e
   guard early; use distinct ids (the `GUARD`/`GUARDM` macros handle this via `__LINE__`).
 
 **Caveats / notes.**
-- `_g` must be the very first call inside each loop body — this is enforced statically by
-  `check_guard` in `include/xrpl/hook/Guard.h`, not merely a convention.
+- `_g` must be the very first call inside each loop body — this is enforced statically at
+  install time, not merely a convention.
+
+  <!-- enforced by check_guard in include/xrpl/hook/Guard.h -->
 - Every hook should also call `_g(1,1)` once at the top of `hook()`.
 - Prefer the `GUARD(maxiter)` / `GUARDM(maxiter, n)` macros over raw `_g` calls; they
   generate a unique `guard_id` from `__LINE__`. Use `GUARDM` when two loops share a line.

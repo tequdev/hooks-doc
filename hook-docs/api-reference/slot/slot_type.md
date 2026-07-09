@@ -16,7 +16,8 @@ int64_t slot_type(uint32_t slot_no, uint32_t flags);
 | `slot_no` | `uint32_t` | Slot to inspect. |
 | `flags` | `uint32_t` | `0` = return the field code; `1` = amount-native check (see below). |
 
-**Return value.** Behaviour depends on `flags` (from `applyHook.cpp`/`HookAPI.cpp`):
+**Return value.** Behaviour depends on `flags`:
+<!-- behaviour implemented in `applyHook.cpp`/`HookAPI.cpp` -->
 
 - **`flags == 0`** — returns the slot's field code, `(type << 16) | index` (the `fieldCode` of
   the field's `SField`).

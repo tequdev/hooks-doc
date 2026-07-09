@@ -28,7 +28,7 @@ int64_t meta_slot(uint32_t slot_no);
 - The slotted object is the transaction's `TxMeta`; drill into it with
   [`slot_subfield`](slot_subfield.md) / [`slot_subarray`](slot_subarray.md) the same way as any
   other slotted object.
-- `meta_slot` is available without an amendment gate in this branch (`hook_api.macro`).
+- `meta_slot` is available without an amendment gate in this branch<!-- (hook_api.macro) -->.
 
 **Minimal example.**
 

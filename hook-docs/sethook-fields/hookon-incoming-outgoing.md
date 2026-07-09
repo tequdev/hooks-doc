@@ -9,17 +9,18 @@ differently depending on whether the triggering transaction is outgoing from
 the hook's own account or incoming to it (from some other account's
 transaction).
 
-**Amendment gating:** both fields require `featureHookOnV2`
+**Amendment gating:** both fields require `featureHookOnV2`<!--
 (`include/xrpl/protocol/detail/features.macro:67`, `Supported::yes,
-VoteBehavior::DefaultNo`). Before the amendment, only plain `HookOn` is
+VoteBehavior::DefaultNo`) -->. Before the amendment, only plain `HookOn` is
 accepted; supplying `HookOnIncoming`/`HookOnOutgoing` without the amendment is
-rejected (`temMALFORMED`, confirmed by the `!hookOnV2 ? ter(temMALFORMED) :
-ter(tesSUCCESS)` assertions at `SetHook_test.cpp:1408-1437`).
+rejected (`temMALFORMED`).<!-- confirmed by the `!hookOnV2 ? ter(temMALFORMED) :
+ter(tesSUCCESS)` assertions at `SetHook_test.cpp:1408-1437` -->
 
-**Validation rules (`SetHook.cpp:458-508`):**
+**Validation rules:**<!-- (`SetHook.cpp:458-508`) -->
 - If `sfHookOn` is **absent** on a create, `featureHookOnV2` must be enabled
   and **both** `sfHookOnOutgoing` and `sfHookOnIncoming` must be present,
-  and they must be **different from each other**:
+  and they must be **different from each other**.
+  <!--
   ```cpp
   auto const outgoing = hookSetObj.getFieldH256(sfHookOnOutgoing);
   auto const incoming = hookSetObj.getFieldH256(sfHookOnIncoming);
@@ -29,48 +30,53 @@ ter(tesSUCCESS)` assertions at `SetHook_test.cpp:1408-1437`).
       return false;
   }
   ```
+  -->
   (If they were required to be equal, you should simply use plain `HookOn`
   instead; the pair only exists to let the two directions diverge.)
 - If `sfHookOn` **is** present, neither `sfHookOnOutgoing` nor
   `sfHookOnIncoming` may also be present (`temMALFORMED` otherwise) — the two
   forms are mutually exclusive at the object level.
-- Both rules are exercised directly in `SetHook_test.cpp:1471-1518`
+<!-- - Both rules are exercised directly in `SetHook_test.cpp:1471-1518`
   ("Only Incomig/Outgoing HookOn", "One Incomig/Outgoing HookOn and HookOn",
-  "Incoming == Outgoing", "HookOn and both Fields" — all `temMALFORMED`).
+  "Incoming == Outgoing", "HookOn and both Fields" — all `temMALFORMED`). -->
 - `hsoDELETE` and `hsoNSDELETE` operations must **not** carry any of `HookOn`,
-  `HookOnIncoming`, or `HookOnOutgoing` (`SetHook.cpp:263-330`).
+  `HookOnIncoming`, or `HookOnOutgoing`.<!-- (`SetHook.cpp:263-330`) -->
 
 **Direction semantics — what "incoming" and "outgoing" mean.** The perspective
 is always the account the hook is installed on, and it is decided by the
-caller, not by the field-resolution code. `Transactor::calculateHookChainFee`
-and `Transactor::executeHookChain` both take an `isOutgoing` flag:
+caller, not by the field-resolution code: whichever code resolves the hook
+chain passes an explicit `isOutgoing` flag.<!-- `Transactor::calculateHookChainFee`
+and `Transactor::executeHookChain` both take an `isOutgoing` flag -->
 
+<!--
 ```cpp
 // Transactor.cpp:307-308 (fee) and :1372-1373 (execution) — identical pattern
 uint256 hookOn = hook::getHookOn(
     hookObj, hookDef, isOutgoing ? sfHookOnOutgoing : sfHookOnIncoming);
 ```
+-->
 
 The call sites resolve `isOutgoing`:
 - The hook chain on the transaction's **own** `sfAccount` is evaluated with
-  `isOutgoing = true` → uses `HookOnOutgoing`
+  `isOutgoing = true` → uses `HookOnOutgoing`.<!--
   (`Transactor.cpp:393-395`: `calculateHookChainFee(view, tx,
-  keylet::hook(tx.getAccountID(sfAccount)), true)`).
+  keylet::hook(tx.getAccountID(sfAccount)), true)`) -->
 - The hook chains on other **transactional stakeholders** (accounts with a
-  stake in the transaction besides the sender — e.g. a `Destination`, found via
-  `hook::getTransactionalStakeHolders`) are evaluated with `isOutgoing = false`
-  → uses `HookOnIncoming` (`Transactor.cpp:399-405`).
-- `ClaimReward.cpp:165-167` independently confirms this reading: the hook
-  installed on the reward *issuer* (not the transaction's `Account`) is checked
-  against `sfHookOnIncoming`, because a `ClaimReward` transaction is incoming
-  to the issuer, not sent by it.
+  stake in the transaction besides the sender — e.g. a `Destination`) are
+  evaluated with `isOutgoing = false` → uses `HookOnIncoming`.<!--
+  found via `hook::getTransactionalStakeHolders` (`Transactor.cpp:399-405`) -->
+- This reading is also consistent with `ClaimReward`: the hook installed on
+  the reward *issuer* (not the transaction's `Account`) is checked against
+  `sfHookOnIncoming`, because a `ClaimReward` transaction is incoming to the
+  issuer, not sent by it.<!-- `ClaimReward.cpp:165-167` independently confirms
+  this reading -->
 
 So: **outgoing** = this account is the transaction's sender (`sfAccount`);
 **incoming** = this account is some other stakeholder of the transaction (e.g.
 a payment destination), and the transaction arrived at it without it being the
 sender.
 
-**Worked/verified example (`SetHook_test.cpp:1558-1596`):** a hook installed on
+**Worked example:**<!-- verified against `SetHook_test.cpp:1558-1596` --> a hook installed on
 `alice` with `HookOnOutgoing` armed only for `ttPAYMENT` and `HookOnIncoming`
 armed only for `ttINVOKE`:
 

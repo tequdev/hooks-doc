@@ -64,8 +64,8 @@ if (emit((uint32_t)hash, 32, (uint32_t)tx, tx_len) != 32)
     rollback(SBUF("emit failed"), 1);
 ```
 
-**Practical example — a complete single emission (adapted from `SetHook_test.cpp`,
-"Test emit").**
+**Practical example — a complete single emission.**
+<!-- adapted from `SetHook_test.cpp`, "Test emit" -->
 
 ```c
 int64_t hook(uint32_t r)

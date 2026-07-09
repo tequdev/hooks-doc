@@ -5,22 +5,25 @@ content hash, so a `SetHook` entry can install that code onto an account's
 hook chain without resubmitting the bytes (`hsoINSTALL`), and so `hsoCREATE`
 can deduplicate identical WASM across the whole ledger via reference counting.
 
-**Field declaration:** `UINT256`, code 31
-(`include/xrpl/protocol/detail/sfields.macro:206`):
+**Field declaration:** `UINT256`, code 31.
+<!-- include/xrpl/protocol/detail/sfields.macro:206
 
 ```cpp
 TYPED_SFIELD(sfHookHash,                 UINT256,   31)
 ```
+-->
 
-`soeOPTIONAL` on `sfHook` (`src/libxrpl/protocol/InnerObjectFormats.cpp:92`)
-and `soeREQUIRED` on `sfHookGrant`
-(`InnerObjectFormats.cpp:107` — see [HookGrants](hookgrants.md)) and on
-`ltHOOK_DEFINITION` (`include/xrpl/protocol/detail/ledger_entries.macro:95`,
-where it identifies the definition object itself).
+`soeOPTIONAL` on `sfHook` and `soeREQUIRED` on `sfHookGrant`
+(see [HookGrants](hookgrants.md)) and on `ltHOOK_DEFINITION`, where it
+identifies the definition object itself.
+<!-- src/libxrpl/protocol/InnerObjectFormats.cpp:92 (sfHook),
+InnerObjectFormats.cpp:107 (sfHookGrant);
+include/xrpl/protocol/detail/ledger_entries.macro:95 (ltHOOK_DEFINITION) -->
 
-**Operation inference.** `SetHook::inferOperation`
-(`src/xrpld/app/tx/detail/SetHook.cpp:210-245`) reads presence of `sfHookHash`
-and `sfCreateCode` together:
+**Operation inference.** The operation inference logic reads presence of
+`sfHookHash` and `sfCreateCode` together: if both are present the object is
+`hsoINVALID`; if only `sfHookHash` is present, it's `hsoINSTALL`.
+<!-- `SetHook::inferOperation` (src/xrpld/app/tx/detail/SetHook.cpp:210-245):
 
 ```cpp
 if (hasHash && hasCode)  // Both HookHash and CreateCode: invalid
@@ -28,18 +31,21 @@ if (hasHash && hasCode)  // Both HookHash and CreateCode: invalid
 else if (hasHash)  // Hookhash only: install
     return hsoINSTALL;
 ```
+-->
 
-Both present is `hsoINVALID` → `temMALFORMED`
-(`SetHook.cpp:613-620`, "SetHook must provide only one of sfCreateCode or
-sfHookHash"), confirmed by `SetHook_test.cpp:2226-2237` ("Cannot have both
-CreateCode and HookHash") and by the direct `inferOperation` unit test at
-`SetHook_test.cpp:3053-3060`. `sfHookHash` alone infers `hsoINSTALL`
-(`SetHook_test.cpp:3029-3035`).
+Both present is `hsoINVALID` → `temMALFORMED` ("SetHook must provide only
+one of sfCreateCode or sfHookHash"), confirmed by dedicated test coverage
+("Cannot have both CreateCode and HookHash") and by a direct unit test of
+`inferOperation`. `sfHookHash` alone infers `hsoINSTALL`.
+<!-- SetHook.cpp:613-620; SetHook_test.cpp:2226-2237; SetHook_test.cpp:3053-3060;
+SetHook_test.cpp:3029-3035 -->
 
 **Existence check (preclaim).** For every `sfHook` entry carrying
-`sfHookHash`, `SetHook::preclaim` requires the referenced
-`ltHOOK_DEFINITION` to already exist on the ledger, independent of which
-operation it turns out to be (`SetHook.cpp:704-728`):
+`sfHookHash`, `preclaim` requires the referenced `ltHOOK_DEFINITION` to
+already exist on the ledger, independent of which operation it turns out to
+be. If it doesn't, the transaction fails with `terNO_HOOK` ("Malformed
+transaction: No hook exists with the specified hash.").
+<!-- `SetHook::preclaim`, SetHook.cpp:704-728:
 
 ```cpp
 if (!ctx.view.exists(keylet::hookDefinition(hash)))
@@ -48,41 +54,46 @@ if (!ctx.view.exists(keylet::hookDefinition(hash)))
     return terNO_HOOK;
 }
 ```
+-->
 
 `keylet::hookDefinition` hashes under `LedgerNameSpace::HOOK_DEFINITION =
-'D'` (`src/libxrpl/protocol/Indexes.cpp:74,198-202`), matching the `ltHOOK_DEFINITION`
-ledger-entry type code `'D'` (`ledger_entries.macro:94`).
+'D'`, matching the `ltHOOK_DEFINITION` ledger-entry type code `'D'`.
+<!-- src/libxrpl/protocol/Indexes.cpp:74,198-202; ledger_entries.macro:94 -->
 
-**Install validation (`hsoINSTALL`, `SetHook.cpp:339-367`):** Parameters and
-Grants are optionally validated; `sfHookApiVersion` is forbidden
-(`API_ILLEGAL`, `SetHook.cpp:352-360` — see
+**Install validation (`hsoINSTALL`):** Parameters and Grants are optionally
+validated; `sfHookApiVersion` is forbidden (`API_ILLEGAL` — see
 [HookApiVersion](hookapiversion.md)); Namespace/HookOn/Flags are explicitly
 allowed ("may be present if the user so chooses").
+<!-- SetHook.cpp:339-367; API_ILLEGAL check at SetHook.cpp:352-360 -->
 
-**Apply-time semantics (`hsoINSTALL`, `SetHook.cpp:1913-2045`):**
-- Overriding an existing hook at that chain position requires `hsfOVERRIDE`,
-  otherwise `tecREQUIRES_FLAG` (`SetHook.cpp:1914-1923`, tested at
-  `SetHook_test.cpp:658-681`, "can't/can set extant hook hash over other hook
-  without/with override flag").
+**Apply-time semantics (`hsoINSTALL`):**
+<!-- SetHook.cpp:1913-2045 -->
+- Overriding an existing hook at that chain position requires
+  `hsfOVERRIDE`, otherwise `tecREQUIRES_FLAG` ("can't/can set extant hook
+  hash over other hook without/with override flag").
+  <!-- SetHook.cpp:1914-1923, tested at SetHook_test.cpp:658-681 -->
 - The target `ltHOOK_DEFINITION` must exist at apply time too, otherwise
-  `tecNO_ENTRY` (`SetHook.cpp:1926-1934`, tested at
-  `SetHook_test.cpp:632-644`, install with a nonexistent
+  `tecNO_ENTRY` (tested with an install against a nonexistent
   `DEADBEEF...` hash).
-- On success the definition's reference count is incremented
-  (`incrementReferenceCount(newDefSLE)`, `SetHook.cpp:1954`), and if an old
-  hook occupied that chain slot, its old definition's reference count is
-  decremented (`SetHook.cpp:1938-1944`, calling `reduceReferenceCount` —
-  see below).
+  <!-- SetHook.cpp:1926-1934, tested at SetHook_test.cpp:632-644 -->
+- On success the definition's reference count is incremented, and if an
+  old hook occupied that chain slot, its old definition's reference count
+  is decremented (calling `reduceReferenceCount` — see below).
+  <!-- incrementReferenceCount(newDefSLE), SetHook.cpp:1954;
+  decrement at SetHook.cpp:1938-1944 -->
 - `sfHookNamespace`, `sfHookOn`/`sfHookOnIncoming`/`sfHookOnOutgoing`,
   `sfHookCanEmit`, and `sfHookName` are all accepted on install and are
   stored on the per-account `sfHook` entry **only when they differ from the
-  target definition's own value** (`SetHook.cpp:1962-2016`) — the same
-  storage-optimization pattern documented in [HookOn](hookon.md). Grants are
-  stored verbatim if the array is non-empty (`SetHook.cpp:2030-2036`).
+  target definition's own value** — the same storage-optimization pattern
+  documented in [HookOn](hookon.md). Grants are stored verbatim if the
+  array is non-empty.
+  <!-- SetHook.cpp:1962-2016; grants stored verbatim at SetHook.cpp:2030-2036 -->
 
 **Reference counting.** `ltHOOK_DEFINITION` carries `sfReferenceCount`
-(`UINT64`, `ledger_entries.macro:105`, `soeREQUIRED`). Two free functions in
-`SetHook.cpp:1064-1099` maintain it:
+(`UINT64`, `soeREQUIRED`). A pair of internal helper functions maintain it:
+one decrements the count and reports whether it has reached zero (in which
+case the definition should be erased), the other increments it.
+<!-- ledger_entries.macro:105; two free functions in SetHook.cpp:1064-1099:
 
 ```cpp
 // returns true if the reference counted ledger entry should be marked for
@@ -103,29 +114,33 @@ reduceReferenceCount(std::shared_ptr<STLedgerEntry>& sle)
     return false;
 }
 ```
+-->
 
-Every operation that removes a hash from a chain slot — `hsoDELETE`
-(`SetHook.cpp:1575-1581`), `hsoUPDATE`'s implicit replace-in-place path is
-not applicable (an update never changes `sfHookHash`), `hsoCREATE` when it
-overrides an existing installed hash (`SetHook.cpp:1834-1840`), and
-`hsoINSTALL` overriding an existing hash (`SetHook.cpp:1938-1944`) — calls
+Every operation that removes a hash from a chain slot — `hsoDELETE`,
+`hsoUPDATE`'s implicit replace-in-place path is not applicable (an update
+never changes `sfHookHash`), `hsoCREATE` when it overrides an existing
+installed hash, and `hsoINSTALL` overriding an existing hash — calls
 `reduceReferenceCount` on the *old* definition and, if it reaches zero,
 queues that keylet in `keyletsToDestroy` for erasure at the end of
-`setHook()` (`SetHook.cpp:2126-2140`). A fresh `hsoCREATE` sets the new
-definition's count to exactly `1` (`SetHook.cpp:1872`); a fresh `hsoINSTALL`
-of a hash that isn't otherwise referenced would raise it from whatever it
-already was.
+`setHook()`. A fresh `hsoCREATE` sets the new definition's count to exactly
+`1`; a fresh `hsoINSTALL` of a hash that isn't otherwise referenced would
+raise it from whatever it already was.
+<!-- hsoDELETE: SetHook.cpp:1575-1581; hsoCREATE override: SetHook.cpp:1834-1840;
+hsoINSTALL override: SetHook.cpp:1938-1944; erasure queue: SetHook.cpp:2126-2140;
+fresh CREATE count=1: SetHook.cpp:1872 -->
 
 **`hsoCREATE` deduplicates by falling through to `hsoINSTALL`.** If the
 uploaded WASM's SHA-512Half hash already matches an existing
 `ltHOOK_DEFINITION` — either already on the ledger or inserted earlier in
 the same transaction's `sfHooks` loop — `hsoCREATE` does **not** create a
 second definition. It reuses the existing one and `[[fallthrough]]`s
-directly into the `hsoINSTALL` case (`SetHook.cpp:1768-1788,1907`), so
-install's flag/reference-count/field rules above apply verbatim to a
-"CREATE" that turns out to be identical code someone else already uploaded.
+directly into the `hsoINSTALL` case, so install's flag/reference-count/field
+rules above apply verbatim to a "CREATE" that turns out to be identical
+code someone else already uploaded.
+<!-- SetHook.cpp:1768-1788,1907 -->
 
-**Verified example — reference count lifecycle (`SetHook_test.cpp:2270-2350`):**
+**Verified example — reference count lifecycle:**
+<!-- SetHook_test.cpp:2270-2350 -->
 
 | Step | Action | `accept` definition refcount | `rollback` definition refcount |
 |---|---|---|---|
@@ -133,13 +148,14 @@ install's flag/reference-count/field rules above apply verbatim to a
 | 2 | `alice` creates `accept` again at position 1 (second install target via the same hash) | 3 *(2 from alice + 1 from an earlier `bob` create in the same test)* | — |
 | 3 | `alice` overrides position 0 with `rollback` (`hsfOVERRIDE`) | 2 (decremented) | 1 (new) |
 
-**Verified example — deletion drops a definition at zero (`SetHook_test.cpp:799-891`):**
-after creating four hooks (`accept`, `makestate`, `rollback`, `accept2`) and
-deleting only the third (`rollback`), `env.le(rollback_keylet)` becomes
-`nullptr` because its reference count hit zero, while the other three
-definitions remain (`SetHook_test.cpp:826-836`). Deleting the remaining
-three then removes all their definitions and the account's `ltHOOK` object
-itself (`SetHook_test.cpp:858-891`).
+**Verified example — deletion drops a definition at zero:** after creating
+four hooks (`accept`, `makestate`, `rollback`, `accept2`) and deleting only
+the third (`rollback`), the `rollback` definition's ledger entry is removed
+entirely because its reference count hit zero, while the other three
+definitions remain. Deleting the remaining three then removes all their
+definitions and the account's `ltHOOK` object itself.
+<!-- SetHook_test.cpp:799-891; refcount-hits-zero check at SetHook_test.cpp:826-836;
+remaining deletions at SetHook_test.cpp:858-891 -->
 
 **Common mistakes:**
 - Supplying both `sfHookHash` and `sfCreateCode` in one `sfHook` entry —

@@ -39,7 +39,7 @@ if the result overflows.
 int64_t fee = float_mulratio(amount, 0, 25, 1000);
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test float_mulratio").**
+**Practical example.** <!-- Adapted from `SetHook_test.cpp`, "Test float_mulratio". -->
 
 ```c
 // multiplying by 0/1 gives zero; by 1/1 is the identity

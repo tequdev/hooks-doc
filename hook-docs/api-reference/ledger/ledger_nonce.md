@@ -25,8 +25,9 @@ per-execution nonce counter exceeds `max_nonce` (**255**).
 
 **Caveats / notes.**
 - Each call increments an internal counter and hashes ledger sequence, parent close time,
-  parent hash, the transaction id, the counter, and the hook account (`HookAPI.cpp`), so
-  successive nonces differ and are deterministic across validators.
+  parent hash, the transaction id, the counter, and the hook account, so successive nonces
+  differ and are deterministic across validators.
+<!-- hashing implemented in `HookAPI.cpp` -->
 - This is the general-purpose nonce; for emitting transactions use
   [`etxn_nonce`](../emit/etxn_nonce.md), which serves the emission machinery.
 

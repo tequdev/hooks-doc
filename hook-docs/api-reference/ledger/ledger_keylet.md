@@ -48,7 +48,8 @@ uint8_t lo[34], hi[34], out[34];
 int64_t n = ledger_keylet((uint32_t)out, 34, (uint32_t)lo, 34, (uint32_t)hi, 34);
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test ledger_keylet").**
+**Practical example.**
+<!-- adapted from `SetHook_test.cpp`, "Test ledger_keylet" -->
 
 ```c
 // Walk forward from `lo` to `hi`, slotting each object found.

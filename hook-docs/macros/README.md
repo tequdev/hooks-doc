@@ -9,10 +9,10 @@ directly: *"all of them are optional as is including macro.h at all."* Every mac
 here expands to plain calls against the API documented in
 [api-reference/](../api-reference/control/README.md) — nothing in this file is a distinct runtime
 capability. You can use the macros, ignore them, or copy the ones you like into your
-own project. In fact many of the hooks embedded in `src/test/app/SetHook_test.cpp`
-re-`#define` a handful of these locally (their own `SBUF`, `GUARD`, `BUFFER_EQUAL_32`)
-rather than including the whole header, which is a perfectly good pattern when you want
-a self-contained single-file hook.
+own project. In fact many hooks in the xahaud test suite re-`#define` a handful of
+these locally (their own `SBUF`, `GUARD`, `BUFFER_EQUAL_32`) rather than including the
+whole header, which is a perfectly good pattern when you want a self-contained
+single-file hook. <!-- src/test/app/SetHook_test.cpp -->
 
 Including the header pulls in `hookapi.h` and `sfcodes.h` as well, so the `sf*` field
 codes and `KEYLET_*` constants become available alongside the macros.

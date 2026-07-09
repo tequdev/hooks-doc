@@ -3,7 +3,7 @@
 **Summary.** Load the inner transaction and metadata of an XPOP (cross-chain proof) into two
 slots. Only valid while processing an `Import` (`ttIMPORT`) transaction.
 
-Requires the **`featureHooksUpdate1`** amendment (`hook_api.macro`).
+Requires the **`featureHooksUpdate1`** amendment<!-- (hook_api.macro) -->.
 
 **Signature.**
 

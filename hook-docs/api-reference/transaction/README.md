@@ -10,9 +10,12 @@ lineage (burden and generation) and its carried parameters.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
 error table in [../../glossary.md](../../glossary.md); the values quoted below come from
-`include/xrpl/hook/Enum.h` and `hook/error.h`. The implementations are in
-`src/xrpld/app/hook/detail/HookAPI.cpp` (the `HookAPI::otxn_*` methods) and their WASM
-wrappers in `src/xrpld/app/hook/detail/applyHook.cpp`.
+<!-- include/xrpl/hook/Enum.h and --> `hook/error.h`.
+
+<!--
+Implementations: src/xrpld/app/hook/detail/HookAPI.cpp (the HookAPI::otxn_* methods) and
+their WASM wrappers in src/xrpld/app/hook/detail/applyHook.cpp.
+-->
 
 ---
 
@@ -35,8 +38,10 @@ transaction and that emitted transaction later *fails*, the hook's `cbak` entry 
 invoked with the low bit of its `reserved` argument set. In that case the server populates an
 internal `emitFailure` object with the *emitted* transaction (read back from the emitted-txn
 ledger directory), and the `otxn_*` functions read from **that** transaction instead of the
-incoming one (verified in `applyHook.cpp`, where `emitFailure` is set to the emitted
-`STObject` when `isCallback && (wasmParam & 1)`). Concretely:
+incoming one. Concretely:
+
+<!-- verified in applyHook.cpp: emitFailure is set to the emitted STObject when
+isCallback && (wasmParam & 1). -->
 
 - `otxn_type` returns the *emitted* transaction's `sfTransactionType`.
 - `otxn_field` reads fields from the *emitted* transaction.

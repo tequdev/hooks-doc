@@ -11,9 +11,10 @@ enumeration). The slot family is documented here; the ledger-info family has its
 [Ledger APIs](../ledger/README.md).
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary.md](../../glossary.md); values come from `include/xrpl/hook/Enum.h`
-and `hook/error.h`. Implementations live in `src/xrpld/app/hook/detail/HookAPI.cpp` (core
-logic) and `src/xrpld/app/hook/detail/applyHook.cpp` (WASM-facing wrappers).
+error table in [../../glossary.md](../../glossary.md); values come from <!-- include/xrpl/hook/Enum.h and -->
+`hook/error.h`. The implementation is split between core lookup/read logic and the
+WASM-facing wrappers that marshal arguments across the guest boundary.
+<!-- core logic: `src/xrpld/app/hook/detail/HookAPI.cpp`; WASM-facing wrappers: `src/xrpld/app/hook/detail/applyHook.cpp` -->
 
 ---
 
@@ -24,7 +25,7 @@ WASM memory to read one field, a hook loads the object into a **slot** — a num
 server-side handle — and then drills into it.
 
 - A slot holds a parsed serialized object (an `STObject`, `STArray`, or a leaf field). There
-  are at most `max_slots` = **255** slots per hook execution (`Enum.h`). Requesting a slot
+  are at most `max_slots` = **255** slots per hook execution<!-- (Enum.h) -->. Requesting a slot
   when none are free returns `NO_FREE_SLOTS` (-6).
 - Slot **0 is special as an argument**: passing `0` for a destination slot means "allocate any
   free slot for me", and the chosen slot number is returned. Passing a specific number targets

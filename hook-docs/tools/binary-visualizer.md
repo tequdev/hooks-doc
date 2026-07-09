@@ -58,7 +58,7 @@ or `ltHOOK_STATE` object looks like on the wire.
 Pasting the 49-byte serialized `sfAmount` field for an IOU amount of
 `1234567.0 USD` — the same XFL value used in
 [`float_sto`'s worked example](../api-reference/float/float_sto.md)
-(`6198187654261802496`, adapted from `SetHook_test.cpp`, "Test float_sto")
+(`6198187654261802496`) <!-- adapted from SetHook_test.cpp, "Test float_sto" -->
 serialized with a placeholder issuer:
 
 ```

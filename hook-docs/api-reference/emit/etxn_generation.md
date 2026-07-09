@@ -27,7 +27,8 @@ int64_t etxn_generation();
 int64_t gen = etxn_generation();   // e.g. 1 for a top-level hook's emission
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test emit").**
+**Practical example.**
+<!-- adapted from `SetHook_test.cpp`, "Test emit" -->
 
 ```c
 // The generation an emission will carry is always one more than the

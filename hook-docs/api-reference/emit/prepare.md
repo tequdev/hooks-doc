@@ -12,7 +12,7 @@ int64_t prepare(uint32_t write_ptr, uint32_t write_len,
                 uint32_t read_ptr, uint32_t read_len);
 ```
 
-**Amendment gate.** Registered in `hook_api.macro` with `featureHooksUpdate2`; on a network
+**Amendment gate.** Registered with `featureHooksUpdate2`<!-- in hook_api.macro -->; on a network
 where that amendment is not enabled, the import is unavailable.
 
 **Parameters.**
@@ -61,7 +61,8 @@ if (n < 0)
     rollback(SBUF("prepare failed"), n);
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test prepare").**
+**Practical example.**
+<!-- adapted from `SetHook_test.cpp`, "Test prepare" -->
 
 ```c
 int64_t hook(uint32_t r)

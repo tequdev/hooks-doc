@@ -36,7 +36,9 @@ uint8_t acc[20];
 hook_account((uint32_t)acc, 20);
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test hook_account").**
+**Practical example.**
+
+<!-- adapted from SetHook_test.cpp, "Test hook_account" -->
 
 ```c
 int64_t hook(uint32_t reserved)

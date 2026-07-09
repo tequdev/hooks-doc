@@ -52,7 +52,8 @@ uint8_t details[138];
 int64_t n = etxn_details((uint32_t)details, sizeof(details));  // 138 or 116
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test etxn_details").**
+**Practical example.**
+<!-- adapted from `SetHook_test.cpp`, "Test etxn_details" -->
 
 ```c
 // Splice sfEmitDetails into a transaction being assembled at `buf_out`,

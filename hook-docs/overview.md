@@ -18,15 +18,15 @@ the transaction. During its run a Hook can:
 - and finally **`accept`** the transaction (allowing it to apply) or **`rollback`** it (rejecting it).
 
 The Hook API is the set of host functions the WASM module imports from the
-`env` module to do all of the above. There are **75** such functions declared in
-`hook/extern.h`; the same 75 are registered with the WasmEdge runtime in
-`include/xrpl/hook/hook_api.macro`.
+`env` module to do all of the above. There are **75** such functions available
+to a hook, registered with the WasmEdge runtime.
+<!-- declared in hook/extern.h; registered with the WasmEdge runtime in include/xrpl/hook/hook_api.macro -->
 
 ## Entry points
 
 A Hook WASM module exports at most two functions, both verified in the execution
-engine (`src/xrpld/app/hook/applyHook.h`, where the runtime looks up the exports
-named `"hook"` and `"cbak"`):
+engine, which looks up the exports named `"hook"` and `"cbak"`:
+<!-- src/xrpld/app/hook/applyHook.h -->
 
 ```c
 // Main entry point. Called when a transaction touches the hook account.
@@ -40,53 +40,74 @@ int64_t cbak(uint32_t reserved);
 
 Both must return `int64_t`. A Hook must export `memory` and the `hook` function;
 `cbak` is only required if the hook uses callbacks. (The HookSet validator emits
-diagnostic log codes such as `EXPORT_HOOK_FUNC` and `EXPORT_CBAK_FUNC` in
-`include/xrpl/hook/Enum.h` when the exported signatures are wrong.)
+diagnostic log codes such as `EXPORT_HOOK_FUNC` and `EXPORT_CBAK_FUNC` when the
+exported signatures are wrong.)
+<!-- include/xrpl/hook/Enum.h -->
 
 Neither `hook` nor `cbak` "returns" a result to the ledger in the usual sense —
 a Hook terminates by calling `accept()` or `rollback()`, which never return.
 
 ## Execution modes
 
-The execution engine distinguishes three modes. The relevant fields live on the
-`HookContext`/`HookResult` types in `src/xrpld/app/hook/applyHook.h`:
+The execution engine distinguishes three modes:
+<!-- relevant fields live on the HookContext/HookResult types in src/xrpld/app/hook/applyHook.h -->
 
 - **Strong** — the hook runs **before** the originating transaction is applied.
-  A strong hook can `rollback()` to reject the transaction. (`isStrong` in
-  `applyHook.h`; the emission flag `hefSTRONG = 0x1` in `Enum.h`.)
+  A strong hook can `rollback()` to reject the transaction. (Internally
+  tracked via `isStrong`; the emission flag is `hefSTRONG = 0x1`.)
+  <!-- isStrong in applyHook.h; hefSTRONG = 0x1 in Enum.h -->
 - **Weak** — a strong pre-apply hook may call **`hook_again()`** to request an
-  additional **post-apply** re-execution. The header comment on
-  `executeAgainAsWeak` in `applyHook.h` states this directly: "`hook_again`
-  allows strong pre-apply to nominate additional weak post-apply execution." A
-  weak execution observes the already-applied result and cannot roll it back.
+  additional **post-apply** re-execution: a strong pre-apply hook can
+  nominate additional weak post-apply execution. A weak execution observes
+  the already-applied result and cannot roll it back.
+  <!-- header comment on executeAgainAsWeak in applyHook.h: "hook_again allows strong pre-apply to nominate additional weak post-apply execution." -->
 - **Callback** — when a transaction the hook emitted resolves, the engine calls
-  `cbak` (the `isCallback` flag in `applyHook.h`; emission flag
-  `hefCALLBACK = 0x2`). If the emitted transaction failed, the callback is told
-  so (`emitFailure` in `applyHook.h`).
+  `cbak` (emission flag `hefCALLBACK = 0x2`). If the emitted transaction
+  failed, the callback is told so.
+  <!-- isCallback flag in applyHook.h; hefCALLBACK = 0x2; emitFailure in applyHook.h -->
 
 Which accounts a hook fires for is governed by the **TSH** (Transactional Stake
-Holder) mechanism and its flags (`tshROLLBACK`, `tshCOLLECT`, `tshMIXED` in
-`Enum.h`). See [glossary.md](glossary.md) for TSH.
+Holder) mechanism and its flags (`tshROLLBACK`, `tshCOLLECT`, `tshMIXED`). See
+[glossary.md](glossary.md) for TSH.
+<!-- tshROLLBACK, tshCOLLECT, tshMIXED in Enum.h -->
 
 ## Execution environment constraints
 
-These limits are taken from `include/xrpl/hook/Enum.h`:
+These are the enforced execution environment limits:
+<!-- taken from include/xrpl/hook/Enum.h -->
 
-| Constraint | Value | Source (`Enum.h`) |
-|---|---|---|
-| Max WASM size | 65,535 bytes (`0xFFFF`) | `maxHookWasmSize()` |
-| Max hooks per account (chain length) | 10 | `maxHookChainLength()` |
-| Max namespaces per account | 256 | `maxNamespaces()` |
-| Max entries removed per namespace-delete | 256 | `maxNamespaceDelete()` |
-| Max parameter key size | 32 bytes | `maxHookParameterKeySize()` |
-| Max parameter value size | 256 bytes | `maxHookParameterValueSize()` |
-| Max hook state scale | 16 | `maxHookStateScale()` |
-| Max hook state value size | `256 × scale` (256 min, up to 4096) | `maxHookStateDataSize()` |
-| Max slots | 255 | `max_slots` |
-| Max nonces | 255 | `max_nonce` |
-| Max emitted transactions | 255 | `max_emit` |
-| Max hook parameters | 16 | `max_params` |
-| Max state modifications (per hook) | 256 | `max_state_modifications` |
+| Constraint | Value |
+|---|---|
+| Max WASM size | 65,535 bytes (`0xFFFF`) |
+| Max hooks per account (chain length) | 10 |
+| Max namespaces per account | 256 |
+| Max entries removed per namespace-delete | 256 |
+| Max parameter key size | 32 bytes |
+| Max parameter value size | 256 bytes |
+| Max hook state scale | 16 |
+| Max hook state value size | `256 × scale` (256 min, up to 4096) |
+| Max slots | 255 |
+| Max nonces | 255 |
+| Max emitted transactions | 255 |
+| Max hook parameters | 16 |
+| Max state modifications (per hook) | 256 |
+
+<!--
+Source (Enum.h), by constraint:
+- Max WASM size: maxHookWasmSize()
+- Max hooks per account (chain length): maxHookChainLength()
+- Max namespaces per account: maxNamespaces()
+- Max entries removed per namespace-delete: maxNamespaceDelete()
+- Max parameter key size: maxHookParameterKeySize()
+- Max parameter value size: maxHookParameterValueSize()
+- Max hook state scale: maxHookStateScale()
+- Max hook state value size: maxHookStateDataSize()
+- Max slots: max_slots
+- Max nonces: max_nonce
+- Max emitted transactions: max_emit
+- Max hook parameters: max_params
+- Max state modifications (per hook): max_state_modifications
+-->
 
 Two related-but-distinct "state modification" limits exist and are easy to
 confuse: `max_state_modifications = 256` is the per-hook count, while the error
@@ -94,12 +115,13 @@ confuse: `max_state_modifications = 256` is the per-hook count, while the error
 state entries in the combined hook chains."
 
 **Loops must be guarded.** Every loop in a hook must call `_g(guard_id, maxiter)`
-at its top. The HookSet validator (`include/xrpl/hook/Guard.h`, with log codes
-`GUARD_IMPORT`, `GUARD_MISSING`, `GUARD_PARAMETERS` in `Enum.h`) rejects hooks
-whose loops are not properly guarded. At runtime, exceeding a guard's iteration
-count returns `GUARD_VIOLATION` (`-16`). The guard rules are versioned by
-amendments: `GuardRuleFix20250131` and `GuardRuleDepth32` (`getGuardRulesVersion`
-in `Enum.h`, gated by `fix20250131` and `fixGuardDepth32`).
+at its top. The HookSet validator, with log codes `GUARD_IMPORT`,
+`GUARD_MISSING`, `GUARD_PARAMETERS`, rejects hooks whose loops are not properly
+guarded. At runtime, exceeding a guard's iteration count returns
+`GUARD_VIOLATION` (`-16`). The guard rules are versioned by amendments:
+`GuardRuleFix20250131` and `GuardRuleDepth32`, gated by `fix20250131` and
+`fixGuardDepth32`.
+<!-- include/xrpl/hook/Guard.h; GUARD_IMPORT, GUARD_MISSING, GUARD_PARAMETERS in Enum.h; getGuardRulesVersion in Enum.h -->
 
 ## Data available inside a hook
 
@@ -161,8 +183,9 @@ int64_t hook(uint32_t reserved)
 - **`accept()` vs `rollback()`** — both terminate the hook immediately and do not
   return. `accept()` lets the originating transaction proceed; `rollback()`
   rejects it and reverts any state changes the hook made. Internally these map to
-  the `ExitType::ACCEPT` and `ExitType::ROLLBACK` values (`Enum.h`), and to the
-  return sentinels `RC_ACCEPT` (`-20`) / `RC_ROLLBACK` (`-19`).
+  the `ExitType::ACCEPT` and `ExitType::ROLLBACK` values, and to the return
+  sentinels `RC_ACCEPT` (`-20`) / `RC_ROLLBACK` (`-19`).
+  <!-- Enum.h -->
 - **`_g` guard** — the required loop guard; see the environment constraints above
   and [api-reference/control.md](api-reference/control/README.md).
 - **`trace*` debugging** — `trace`, `trace_num`, and `trace_float` write to the
@@ -175,8 +198,9 @@ int64_t hook(uint32_t reserved)
 
 ## Error codes
 
-The authoritative enum is `hook_api::hook_return_code` in
-`include/xrpl/hook/Enum.h`; `hook/error.h` mirrors the same names as `#define`s.
+The error codes a Hook API function can return are the following named values
+(`hook_api::hook_return_code`), also available as `#define`s for use in C hooks.
+<!-- authoritative enum is hook_api::hook_return_code in include/xrpl/hook/Enum.h; hook/error.h mirrors the same names as #define's -->
 
 | Name | Value | Meaning |
 |---|---|---|
@@ -233,9 +257,9 @@ then `-25`; the value `-24` is unused.
 ## Execution results in transaction metadata
 
 Each hook execution is recorded in the transaction's metadata. The engine builds
-an `sfHookExecution` object (`src/xrpld/app/hook/detail/applyHook.cpp`, around
-line 1566) and collects them into an `sfHookExecutions` array. The fields set on
-each `sfHookExecution` object are:
+an `sfHookExecution` object and collects them into an `sfHookExecutions` array.
+The fields set on each `sfHookExecution` object are:
+<!-- src/xrpld/app/hook/detail/applyHook.cpp, around line 1566 -->
 
 - `sfHookResult` — the exit type (`ExitType`: `ACCEPT`, `ROLLBACK`, `WASM_ERROR`).
 - `sfHookReturnCode` — the exit/return code the hook passed to `accept`/`rollback`.
@@ -244,13 +268,13 @@ each `sfHookExecution` object are:
 - `sfHookEmitCount` — number of transactions emitted.
 - `sfHookExecutionIndex` — the execution's index in the chain.
 
-(Field names verified in `include/xrpl/protocol/detail/sfields.macro` and their
-population in `applyHook.cpp`.)
+<!-- Field names verified in include/xrpl/protocol/detail/sfields.macro and their population in applyHook.cpp. -->
 
 ## SetHook lifecycle summary
 
 Hooks are installed, updated, and removed with the `SetHook` transaction. The
-per-hook operation is one of the `HookSetOperation` values (`Enum.h`):
+per-hook operation is one of the `HookSetOperation` values:
+<!-- Enum.h -->
 
 | Operation | Value | Meaning |
 |---|---|---|
@@ -266,7 +290,8 @@ For the fields that control *when* an installed hook fires and what it may
 `emit()` — `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, and the
 hook-targeting `HookName` field — see [sethook-fields.md](sethook-fields/README.md).
 
-The associated `HookSetFlags` (`Enum.h`):
+The associated `HookSetFlags`:
+<!-- Enum.h -->
 
 | Flag | Value | Meaning |
 |---|---|---|
@@ -276,12 +301,10 @@ The associated `HookSetFlags` (`Enum.h`):
 
 ## Compilation pipeline
 
-Test hooks in this repo are compiled by `src/test/app/build_test_hooks.sh`. It
-extracts the C source embedded between the `R"[test.hook](` and `)[test.hook]"`
-markers in `SetHook_test.cpp`, compiles each with **wasmcc**, post-processes with
-**hook-cleaner**, and (for WAT-text hooks) uses **wat2wasm**, producing
-`SetHook_wasm.h`. The prerequisite tools are documented in the script's header
-(`wasmcc` from wasienv, `hook-cleaner` from hook-cleaner-c, `wat2wasm` from wabt).
+Hooks are compiled with **wasmcc**, post-processed with **hook-cleaner**, and
+(for WAT-text hooks) with **wat2wasm** — sourced from wasienv, hook-cleaner-c,
+and wabt respectively.
+<!-- Test hooks in this repo are compiled by src/test/app/build_test_hooks.sh, which extracts the C source embedded between the R"[test.hook]( and )[test.hook]" markers in SetHook_test.cpp and produces SetHook_wasm.h. -->
 
 ## Related documents
 

@@ -30,9 +30,8 @@ instead of a serialized byte buffer.
 
 ## The encoding
 
-An XFL's 64 bits are laid out as follows (from `src/xrpld/app/hook/HookAPI.h`,
-functions `get_exponent`, `get_mantissa`, `is_negative`, `invert_sign`,
-`set_sign`, `set_mantissa`, `set_exponent`, lines 39–118):
+An XFL's 64 bits are laid out as follows:
+<!-- from src/xrpld/app/hook/HookAPI.h, functions get_exponent, get_mantissa, is_negative, invert_sign, set_sign, set_mantissa, set_exponent, lines 39-118 -->
 
 | Bits | Meaning |
 |---|---|
@@ -42,25 +41,30 @@ functions `get_exponent`, `get_mantissa`, `is_negative`, `invert_sign`,
 | 53–0 (54 bits) | Mantissa: the value's significant digits, normalized to exactly 16 digits. |
 
 - **Mantissa** — normalized to exactly 16 significant digits: `1000000000000000`
-  (`minMantissa`) to `9999999999999999` (`maxMantissa`), defined in
-  `src/xrpld/app/hook/HookAPI.h:39-40`. `float_set` and the arithmetic functions
-  normalize any input mantissa/exponent pair to this width before encoding it
-  (see `normalize_xfl` in the same file); you never need to pre-normalize a
+  (`minMantissa`) to `9999999999999999` (`maxMantissa`).
+  <!-- defined in src/xrpld/app/hook/HookAPI.h:39-40 -->
+  `float_set` and the arithmetic functions
+  normalize any input mantissa/exponent pair to this width before encoding it;
+  you never need to pre-normalize a
   value yourself.
-- **Exponent** — ranges from `-96` (`minExponent`) to `80` (`maxExponent`),
-  `src/xrpld/app/hook/HookAPI.h:41-42`. `set_exponent` rejects anything outside
+  <!-- see normalize_xfl in the same file -->
+- **Exponent** — ranges from `-96` (`minExponent`) to `80` (`maxExponent`).
+  <!-- src/xrpld/app/hook/HookAPI.h:41-42 -->
+  `set_exponent` rejects anything outside
   that range with `EXPONENT_OVERSIZED` (-28) or `EXPONENT_UNDERSIZED` (-29)
   before it ever reaches the caller as `INVALID_FLOAT`.
 - **Zero** — the one XFL with no mantissa. It is represented by the literal
   `int64_t` value `0`, not by a zero mantissa inside the sign/exponent/mantissa
-  layout above (`get_exponent`/`get_mantissa` special-case `float1 == 0` and
-  return `0` directly; `make_float` returns `0ULL` whenever the mantissa is
-  zero).
+  layout above.
+  <!-- get_exponent/get_mantissa special-case float1 == 0 and
+  return 0 directly; make_float returns 0ULL whenever the mantissa is
+  zero -->
 
 ### Worked decode
 
-`float_sto.md`'s practical example (adapted from `SetHook_test.cpp`, "Test
-float_sto") serializes the XFL value `6198187654261802496` as `1234567.0`.
+`float_sto.md`'s practical example serializes the XFL value
+`6198187654261802496` as `1234567.0`.
+<!-- adapted from SetHook_test.cpp, "Test float_sto" -->
 Decoding that value by hand shows the layout above in practice:
 
 ```
@@ -77,18 +81,20 @@ value = 1234567000000000 * 10^-9 = 1234567.0
 
 Bit 63 is never set on a valid XFL — the sign of the represented number lives
 in bit 62, not in the sign bit of the surrounding `int64_t`. That means every
-valid XFL is, numerically, a non-negative `int64_t`. `get_exponent` and
-`get_mantissa` both check `if (float1 < 0) return Unexpected(INVALID_FLOAT);`
-as their very first step (`src/xrpld/app/hook/HookAPI.h:48-49,62-63`) — so
-passing a negative `int64_t` (for example plain `-1`, or an error code
-mistakenly forwarded as an amount) is rejected outright, before any bit
-decoding happens.
+valid XFL is, numerically, a non-negative `int64_t`. Passing a negative
+`int64_t` (for example plain `-1`, or an error code mistakenly forwarded as an
+amount) is rejected outright as `INVALID_FLOAT`, before any bit decoding
+happens.
+<!-- get_exponent and get_mantissa both check `if (float1 < 0) return
+Unexpected(INVALID_FLOAT);` as their very first step
+(src/xrpld/app/hook/HookAPI.h:48-49,62-63) -->
 
 This is also why the "invalid float" sentinel is defined as the unusual value
 **`INVALID_FLOAT = -10024`** rather than something in the small negative range
-most other Hook error codes use (`hook/error.h:28`, next to the ordinary
-sequential codes like `DIVISION_BY_ZERO = -25` and `XFL_OVERFLOW = -30` at
-lines 29 and 34). Choosing a value far outside the ordinary error range makes
+most other Hook error codes use, next to the ordinary
+sequential codes like `DIVISION_BY_ZERO = -25` and `XFL_OVERFLOW = -30`.
+<!-- hook/error.h:28, next to codes at lines 29 and 34 -->
+Choosing a value far outside the ordinary error range makes
 `INVALID_FLOAT` unmistakable — it can never collide with a legitimate small
 negative error code, a valid exponent, or any other value a `float_*` function
 might otherwise plausibly return.
@@ -107,18 +113,20 @@ Related normalization error codes, all from `hook/error.h`:
 ## Relationship to the ledger's IOU Amount format
 
 XFL is not a Hook-only invention layered on top of the ledger's amount type —
-it mirrors it directly. The serialization comment in
-`src/libxrpl/protocol/STAmount.cpp:665-680` describes the wire format for a
-non-native (IOU) `Amount`:
+it mirrors it directly. The wire format for a
+non-native (IOU) `Amount` is:
+<!-- serialization comment in src/libxrpl/protocol/STAmount.cpp:665-680 -->
 
 - high bit (63): `0` for XAH, `1` for issued currency,
 - next bit (62): `1` for positive, `0` for negative,
 - next 8 bits (61-54): `mOffset + 97`,
 - remaining 54 bits (53-0): the mantissa.
 
-and `STAmount.h:65-70` defines the exact same bounds Hooks use:
+The ledger defines the exact same bounds Hooks use:
 `cMinOffset = -96`, `cMaxOffset = 80`, `cMinValue = 1000000000000000ull`,
-`cMaxValue = 9999999999999999ull`. An XFL is that same sign/exponent/mantissa
+`cMaxValue = 9999999999999999ull`.
+<!-- STAmount.h:65-70 -->
+An XFL is that same sign/exponent/mantissa
 triple with the "is this an issued currency" flag bit (63) simply left unset —
 which is exactly what guarantees a valid XFL fits in a non-negative `int64_t`.
 This is why `float_sto`/`float_sto_set` (see below) can convert between the two
@@ -145,7 +153,8 @@ without special-casing.
 - **`trace_float(read_ptr, read_len, float1)`** — logs an XFL as
   `mantissa*10^(exponent)`, or `<ZERO>`/`<INVALID>` for those special cases.
   See [api-reference/trace/trace_float.md](api-reference/trace/trace_float.md)
-  and the `TRACEXFL(v)` macro in `hook/macro.h:40`.
+  and the `TRACEXFL(v)` macro in `hook/macro.h`.
+  <!-- hook/macro.h:40 -->
 - **`float_sto`/`float_sto_set`** — convert an XFL to and from the ledger's
   serialized `Amount` wire bytes (the format described above), so a hook can
   read an amount out of a transaction/ledger object, or build one to `emit`.

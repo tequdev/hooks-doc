@@ -66,7 +66,9 @@ uint8_t acc[20];
 otxn_field((uint32_t)acc, 20, sfAccount);   // sender AccountID
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test otxn_field").**
+**Practical example.**
+
+<!-- adapted from SetHook_test.cpp, "Test otxn_field" -->
 
 ```c
 #define sfAccount ((8U << 16U) + 1U)
