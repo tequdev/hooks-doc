@@ -2,6 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import { type DefaultTheme, defineConfig } from "vitepress";
+import llmstxt from "vitepress-plugin-llms";
 import { rawMarkdownPlugin } from "./plugins/rawMarkdown";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -328,7 +329,7 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [rawMarkdownPlugin(docsRoot)],
+    plugins: [rawMarkdownPlugin(docsRoot), llmstxt()],
   },
 
   themeConfig: {
