@@ -217,6 +217,14 @@ an amendment, as noted.
 | `ttREMARKS_SET` | none | — | |
 | `ttAMENDMENT`, `ttFEE`, `ttUNL_MODIFY`, `ttEMIT_FAILURE`, `ttUNL_REPORT` | none | — | Pseudo-transactions; no originating account to compare against in the usual sense. |
 
+This page's scope currently stops short of every transaction type: NFT, AMM,
+cross-chain bridge, DID, MPToken, credential, and permissioned-domain
+operations, among others, are not yet broken out in the table above. Some of
+these carry real TSH rules and some currently nominate no TSH at all — the
+TSH nomination logic in the Xahau source is authoritative for a transaction
+type not listed here.
+<!-- src/xrpld/app/hook/detail/applyHook.cpp:27-595 — getTransactionalStakeHolders(STTx const& tx, ReadView const& rv), the same function already cited above at this page's top -->
+
 <!-- | `ttNFTOKEN_MINT`, `ttCLAIM_REWARD` | `sfIssuer` | Strong | Only if `sfIssuer` present on the tx. |
 | `ttNFTOKEN_BURN`, `ttNFTOKEN_CREATE_OFFER` | NFT issuer | Strong if the `NFTokenID` encodes `tfStrongTSH`, else Weak | Requires the referenced NFT to be found via `sfNFTokenID`/`sfOwner`\|`sfAccount`. |
 | | `sfOwner` | Weak | Only if `sfOwner` is present (i.e. distinct from `sfAccount`). |
@@ -270,6 +278,8 @@ for the bit-selection rules themselves.
 - [README.md](README.md)
 - [glossary.md](glossary.md)
 - [overview.md](overview.md)
+- [execution-order.md](execution-order.md) — how strong, weak, and again-as-weak passes are ordered within and across a transaction's TSHs.
+- [fees.md](fees.md) — who pays for a TSH's hook chain, strong vs. weak.
 - [sethook-fields/flags.md](sethook-fields/flags.md)
 - [sethook-fields/hookon.md](sethook-fields/hookon.md)
 - [sethook-fields/hookon-incoming-outgoing.md](sethook-fields/hookon-incoming-outgoing.md)

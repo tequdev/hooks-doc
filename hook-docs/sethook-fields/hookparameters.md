@@ -164,6 +164,8 @@ just the ones named.
 
 ## Related documents
 
+- [fees.md](../fees.md) — where the flat 1-drop/byte parameter fee fits
+  into the full hook fee model.
 - [HookGrants](hookgrants.md) — the sibling array field with matching
   8-vs-16 count limits and per-entry owner reserve, but no definition-level
   defaults or three-way merge.

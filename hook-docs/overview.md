@@ -30,13 +30,16 @@ engine, which looks up the exports named `"hook"` and `"cbak"`:
 
 ```c
 // Main entry point. Called when a transaction touches the hook account.
-// The reserved parameter is currently unused; return an int64_t.
+// reserved: 0 = strong execution, 1 = weak (collect-call/TSH) execution,
+// 2 = again-as-weak (post-apply re-run requested via hook_again()).
 int64_t hook(uint32_t reserved);
 
 // Callback entry point. Called to report the result of a transaction this
 // hook previously emitted. Optional — only needed if the hook emits.
+// reserved: 0 = the emitted transaction was accepted, 1 = emit failure.
 int64_t cbak(uint32_t reserved);
 ```
+<!-- src/xrpld/app/tx/detail/Transactor.cpp:1426 (`(strong ? 0 : 1UL), // 0 = strong, 1 = weak`), :1891 (`2UL, // param 2 = aaw`), :1584 (`ctx_.tx.getTxnType() == ttEMIT_FAILURE ? 1UL : 0UL`); the value is passed as the WASM call argument at src/xrpld/app/hook/applyHook.h:439 (`WasmEdge_Value params[1] = {WasmEdge_ValueGenI32((int64_t)wasmParam)}`). See [tsh.md](tsh.md) for the full strong/weak/AAW model. -->
 
 Both must return `int64_t`. A Hook must export `memory` and the `hook` function;
 `cbak` is only required if the hook uses callbacks. (The HookSet validator emits
@@ -109,19 +112,21 @@ Source (Enum.h), by constraint:
 - Max state modifications (per hook): max_state_modifications
 -->
 
-Two related-but-distinct "state modification" limits exist and are easy to
-confuse: `max_state_modifications = 256` is the per-hook count, while the error
-`TOO_MANY_STATE_MODIFICATIONS` (`-44`) is defined for "more than 5000 modified
-state entries in the combined hook chains."
+There is a single 256-entry limit, enforced at two points: the state-write
+API returns `TOO_MANY_STATE_MODIFICATIONS` (`-44`) once a hook execution's
+own modified-entry count reaches 256, and the finalize step returns
+`tecHOOK_REJECTED` if the accumulated changes across the combined hook
+chains exceed the same 256.
+<!-- include/xrpl/hook/Enum.h:397 (max_state_modifications = 256); enforced at src/xrpld/app/hook/detail/HookAPI.cpp:2743-2744 and src/xrpld/app/hook/detail/applyHook.cpp:1392-1398. Editor note: the `-44` error's source comment at Enum.h:385 says "more than 5000 modified state entries" — that figure is a stale comment on the enum value and does not correspond to any enforced constant; do not "correct" the 256 figure above back to 5000 based on that comment. -->
 
 **Loops must be guarded.** Every loop in a hook must call `_g(guard_id, maxiter)`
-at its top. The HookSet validator, with log codes `GUARD_IMPORT`,
-`GUARD_MISSING`, `GUARD_PARAMETERS`, rejects hooks whose loops are not properly
-guarded. At runtime, exceeding a guard's iteration count returns
-`GUARD_VIOLATION` (`-16`). The guard rules are versioned by amendments:
-`GuardRuleFix20250131` and `GuardRuleDepth32`, gated by `fix20250131` and
-`fixGuardDepth32`.
-<!-- include/xrpl/hook/Guard.h; GUARD_IMPORT, GUARD_MISSING, GUARD_PARAMETERS in Enum.h; getGuardRulesVersion in Enum.h -->
+at its top. The HookSet validator, with log codes `GUARD_IMPORT` and
+`GUARD_MISSING`, rejects hooks whose loops are not properly guarded. At
+runtime, exceeding a guard's iteration count returns `GUARD_VIOLATION`
+(`-16`). The guard rules are versioned by amendments: `GuardRuleFix20250131`
+and `GuardRuleDepth32`, gated by `fix20250131` and `fixGuardDepth32`. See
+[compiling.md](compiling.md) for the full validator behavior.
+<!-- include/xrpl/hook/Guard.h; GUARD_IMPORT, GUARD_MISSING in Enum.h; getGuardRulesVersion in Enum.h. GUARD_PARAMETERS (Enum.h:181) is defined but not raised by any code path in this checkout — grep of src/ and include/ finds only its own definition. -->
 
 ## Data available inside a hook
 
@@ -156,7 +161,7 @@ This is the smallest meaningful hook: it inspects nothing and simply accepts.
 ```c
 #include "hookapi.h"
 
-// Main entry point. `reserved` is unused in the current API.
+// Main entry point. `reserved` is 0 here because this hook only runs strong.
 int64_t hook(uint32_t reserved)
 {
     // Read the account this hook is installed on into a 20-byte buffer.
@@ -248,7 +253,7 @@ The error codes a Hook API function can return are the following named values
 | `INVALID_KEY` | -41 | User-supplied key was not valid. |
 | `NOT_A_STRING` | -42 | Missing NUL terminator on a string argument. |
 | `MEM_OVERLAP` | -43 | Two specified buffers overlap in memory. |
-| `TOO_MANY_STATE_MODIFICATIONS` | -44 | >5000 modified state entries across the combined hook chains. |
+| `TOO_MANY_STATE_MODIFICATIONS` | -44 | Exceeded the 256-entry state-modification limit (see [Execution environment constraints](#execution-environment-constraints) above). |
 | `TOO_MANY_NAMESPACES` | -45 | Exceeded the namespace limit. |
 
 Note the deliberate gap: the sequence goes `-23`, then `INVALID_FLOAT = -10024`,
@@ -262,13 +267,16 @@ The fields set on each `sfHookExecution` object are:
 <!-- src/xrpld/app/hook/detail/applyHook.cpp, around line 1566 -->
 
 - `sfHookResult` — the exit type (`ExitType`: `ACCEPT`, `ROLLBACK`, `WASM_ERROR`).
+- `sfHookAccount` — the account the hook that produced this entry is installed on.
 - `sfHookReturnCode` — the exit/return code the hook passed to `accept`/`rollback`.
 - `sfHookReturnString` — the message buffer passed to `accept`/`rollback`.
 - `sfHookInstructionCount` — instructions executed.
-- `sfHookEmitCount` — number of transactions emitted.
+- `sfHookEmitCount` — number of transactions this execution emitted.
 - `sfHookExecutionIndex` — the execution's index in the chain.
+- `sfHookStateChangeCount` — number of state entries this execution changed.
+- `sfHookHash` — the hash of the `HookDefinition` (bytecode) that ran.
 
-<!-- Field names verified in include/xrpl/protocol/detail/sfields.macro and their population in applyHook.cpp. -->
+<!-- Field names verified in include/xrpl/protocol/detail/sfields.macro and their population in src/xrpld/app/hook/detail/applyHook.cpp:1566-1590. -->
 
 ## SetHook lifecycle summary
 
@@ -303,12 +311,16 @@ The associated `HookSetFlags`:
 
 Hooks are compiled with **wasmcc**, post-processed with **hook-cleaner**, and
 (for WAT-text hooks) with **wat2wasm** — sourced from wasienv, hook-cleaner-c,
-and wabt respectively.
+and wabt respectively. See [compiling.md](compiling.md) for a full walkthrough
+of the toolchain and why a stock build needs cleaning before it validates.
 <!-- Test hooks in this repo are compiled by src/test/app/build_test_hooks.sh, which extracts the C source embedded between the R"[test.hook]( and )[test.hook]" markers in SetHook_test.cpp and produces SetHook_wasm.h. -->
 
 ## Related documents
 
 - [README.md](README.md)
+- [compiling.md](compiling.md) — the wasmcc/hook-cleaner/wat2wasm toolchain in depth.
+- [execution-order.md](execution-order.md) — strong/weak/AAW ordering across a transaction's TSHs.
+- [fees.md](fees.md) — the full creation/execution/collect-call/emission fee model in one place.
 - [sethook-fields.md](sethook-fields/README.md)
 - [glossary.md](glossary.md)
 - [macros.md](macros/README.md)

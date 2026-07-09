@@ -129,6 +129,7 @@ reservation.
 - [../../tools/tx-builder.md](../../tools/tx-builder.md) — generate emitted-transaction templates
   and the `PREPARE_TXN()` macro.
 - [../../best-practices.md](../../best-practices.md) — structuring emissions and callbacks.
+- [../../fees.md](../../fees.md) — how `etxn_fee_base` fits into the full hook fee model.
 - [../../examples/emitted-transaction.md](../../examples/emitted-transaction.md) — a full
   emit-a-payment example.
 - [control.md](../control/README.md) — `accept`/`rollback` and how they keep or discard emissions.

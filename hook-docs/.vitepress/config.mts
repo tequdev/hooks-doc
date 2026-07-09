@@ -20,8 +20,12 @@ const SIDEBAR_ORDER = [
   // Guides: concepts first, then implementation, deployment, and lookup material.
   "overview",
   "xfl",
+  "tsh",
+  "execution-order",
   "best-practices",
+  "compiling",
   "sethook-fields",
+  "fees",
   "macros",
   "tools",
   "glossary",

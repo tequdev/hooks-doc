@@ -89,13 +89,9 @@ they are enforced at different points:
    modified entries are counted across the combined hook chains, and the transaction returns
    `tecHOOK_REJECTED` if the count exceeds the 256-entry limit.
    <!-- This is enforced by `finalizeHookState` (`applyHook.cpp`) against `max_state_modifications`. -->
-   The error-code documentation describes this as ">5000 modified state entries in the
-   combined hook chains"; the enforced constant in this branch is 256.
-   <!-- The wording comes from the `error.h` comment on `TOO_MANY_STATE_MODIFICATIONS`; the constant is `max_state_modifications`. -->
-   Treat 256 as the operative per-hook figure and be aware
-   the two mechanisms exist. **The documented ">5000" wording does not match the enforced
-   constant in this branch — Unverified — needs confirmation.**
-   <!-- The wording is in `error.h`. -->
+   The `TOO_MANY_STATE_MODIFICATIONS` (`-44`) error is raised by this same 256-entry limit.
+   Treat 256 as the operative figure for both mechanisms above.
+   <!-- include/xrpl/hook/Enum.h:397 (`const uint16_t max_state_modifications = 256;`, the constant actually read at both enforcement sites). Editor note: Enum.h:385-386 carries a stale source comment on the -44 enum value reading "more than 5000 modified state entries in the combined hook chains" — that figure does not correspond to any enforced constant; do not "correct" the 256 figure above back to 5000 based on that comment. -->
 
 ---
 

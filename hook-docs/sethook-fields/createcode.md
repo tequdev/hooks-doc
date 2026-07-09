@@ -211,6 +211,8 @@ upgrades.
 
 ## Related documents
 
+- [fees.md](../fees.md) — the full creation/execution/collect-call/emission
+  fee model this creation-fee figure fits into.
 - [HookHash](hookhash.md) — install semantics and the full
   `ltHOOK_DEFINITION` reference-counting lifecycle that `hsoCREATE` falls
   into on a hash collision.
