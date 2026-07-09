@@ -203,8 +203,13 @@ function slugOf(relPath: string): string {
   return parts.join("/");
 }
 
-function titleOf(filePath: string): string {
+function sidebarTitleOf(filePath: string): string {
   const text = fs.readFileSync(filePath, "utf8");
+  const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)?.[1];
+  const sidebarTitle = frontmatter?.match(/^sidebarTitle:\s*(.+?)\s*$/m)?.[1];
+  if (sidebarTitle) {
+    return sidebarTitle.replace(/^(['"])(.*)\1$/, "$2").trim();
+  }
   const match = text.match(/^#\s+(.+)$/m);
   if (match?.[1]) {
     return match[1].replace(/`/g, "").trim();
@@ -216,7 +221,7 @@ function loadDocs(): DocMeta[] {
   return collectMarkdownFiles(docsRoot)
     .map((filePath) => {
       const relPath = path.relative(docsRoot, filePath);
-      return { slug: slugOf(relPath), title: titleOf(filePath) };
+      return { slug: slugOf(relPath), title: sidebarTitleOf(filePath) };
     })
     .sort((a, b) => {
       const aOrder = sidebarOrderBySlug.get(a.slug);

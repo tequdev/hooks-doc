@@ -1,6 +1,10 @@
-# Ledger and Slot APIs
+---
+sidebarTitle: "Slot APIs"
+---
 
-This page documents the seventeen **ledger-and-slot** Hook APIs: the *slot* family (an
+# Slot APIs
+
+This page documents the seventeen **slot** Hook APIs: the *slot* family (an
 efficient handle system for transaction and ledger-object data), the metadata/XPOP slot
 loaders, and the *ledger info* family (sequence, times, hashes, nonces, and keylet
 enumeration). The slot family is documented here; the ledger-info family has its own page,

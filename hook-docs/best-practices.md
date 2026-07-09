@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Best Practices"
+---
+
 # Hook Best Practices
 
 Practical guidance for writing correct, installable, and maintainable Hook smart

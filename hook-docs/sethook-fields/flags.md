@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Flags"
+---
+
 # Flags (on the `sfHook` object)
 
 **Purpose:** a 32-bit bitfield inside each `sfHook` entry carrying

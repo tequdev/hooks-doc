@@ -1,3 +1,7 @@
+---
+sidebarTitle: "STO APIs"
+---
+
 # STO APIs
 
 APIs for parsing and manipulating serialized transaction objects (STOs) — locating a

@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Emit APIs"
+---
+
 # Emit and Emitted-Transaction APIs
 
 This page documents the eight **emit-and-etxn** Hook APIs: the functions a hook uses to

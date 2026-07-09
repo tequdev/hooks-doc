@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Control Flow"
+---
+
 # Control flow: accept / rollback / assert
 
 These wrap [`accept`](../api-reference/control/accept.md) and

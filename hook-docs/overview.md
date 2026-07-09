@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Overview"
+---
+
 # Overview: The Xahau Hook Model
 
 ## What Hooks are

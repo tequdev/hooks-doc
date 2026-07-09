@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Report Buffers"
+---
+
 # Report-buffer builders
 
 These construct a human-readable C-string containing a label and a base-10 integer —

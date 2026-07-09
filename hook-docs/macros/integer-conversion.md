@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Integer Conversion"
+---
+
 # Integer ↔ buffer (big-endian)
 
 XRPL serializes integers big-endian (network byte order). These macros write and read

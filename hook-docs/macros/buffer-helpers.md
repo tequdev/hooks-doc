@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Buffer Pairs"
+---
+
 # Buffer pair helpers
 
 The API takes buffers as `(ptr, len)` pairs. These macros produce both halves from a

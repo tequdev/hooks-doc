@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Control APIs"
+---
+
 # Control APIs
 
 This page documents the ten **control** Hook APIs: the functions that terminate hook

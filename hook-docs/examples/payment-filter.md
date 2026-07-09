@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Payment Filter"
+---
+
 # Example: Payment Filter
 
 A payment filter is the canonical Hook: it inspects the transaction that touched

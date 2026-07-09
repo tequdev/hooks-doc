@@ -1,3 +1,7 @@
+---
+sidebarTitle: "State APIs"
+---
+
 # State APIs
 
 This page documents the four **state** Hook APIs: the functions that read and write a

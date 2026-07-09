@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Emitted Transaction"
+---
+
 # Example: Emitting a Transaction
 
 A hook can originate new transactions ("emitted" transactions) that the ledger

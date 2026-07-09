@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Ledger APIs"
+---
+
 # Ledger APIs
 
 These six APIs read ledger-level data — the current ledger's sequence and base fee, the

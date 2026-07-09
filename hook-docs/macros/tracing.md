@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Tracing"
+---
+
 # Tracing helpers
 
 Debug-only wrappers over [`trace`](../api-reference/trace/trace.md),

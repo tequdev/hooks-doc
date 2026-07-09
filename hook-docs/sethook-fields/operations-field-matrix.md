@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Operation Matrix"
+---
+
 # SetHook Operations: Field Matrix
 
 Every element of a `SetHook` transaction's `sfHooks` array is one `sfHook`

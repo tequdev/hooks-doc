@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Transaction APIs"
+---
+
 # Transaction APIs
 
 This page documents the seven **transaction** Hook APIs: the `otxn_*` family, which reads

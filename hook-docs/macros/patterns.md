@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Recommended patterns"
+---
+
 # Recommended patterns
 
 The macros above are building blocks; these are the idioms that combine them safely.

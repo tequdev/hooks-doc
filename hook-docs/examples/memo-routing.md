@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Memo Routing"
+---
+
 # Example: Memo Routing
 
 Transactions can carry a `Memos` array, and hooks can carry `HookParameters`.

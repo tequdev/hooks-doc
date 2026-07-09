@@ -1,3 +1,7 @@
+---
+sidebarTitle: "State Counter"
+---
+
 # Example: State Counter
 
 Hook state is a persistent key/value store scoped to the hook account and its

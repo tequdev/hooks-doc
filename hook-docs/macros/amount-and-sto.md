@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Amount & STO"
+---
+
 # Amount and STO helpers
 
 ## AMOUNT_TO_DROPS

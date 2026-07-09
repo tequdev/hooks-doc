@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Float & Amount APIs"
+---
+
 # Float and Amount APIs
 
 This page documents the sixteen **float-and-amount** Hook APIs: the `float_*` family that

@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Foreign State"
+---
+
 # Example: Foreign State
 
 A hook can read another account's hook state, and — with a matching grant — write

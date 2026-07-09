@@ -30,7 +30,7 @@ pnpm format        # biome format --write .
 
 - `hook-docs/.vitepress/config.mts` is the only code in this project. `srcDir` is `.`, so
   every `.md` file under `hook-docs/` becomes a page, exactly mirroring the file tree — no
-  markdown file is renamed, moved, or edited to support the site.
+  markdown file is renamed or moved to support the site.
 - Each directory's `README.md` acts as that directory's index page. Since VitePress only
   treats `index.md` as a directory index by default, a `rewrites()` function remaps every
   `.../README.md` to `.../index.md` at the routing layer, without touching the source files.
@@ -39,7 +39,9 @@ pnpm format        # biome format --write .
   becomes the parent entry for `api-reference/control/accept.md`, `.../rollback.md`, etc.).
   Top-level pages fall under "Guides" unless they're under `api-reference/` or `examples/`.
   Edit `SIDEBAR_ORDER` in `hook-docs/.vitepress/config.mts` to order items within each
-  sidebar level. Items omitted from the array are appended alphabetically.
+  sidebar level. Items omitted from the array are appended alphabetically. By default, an
+  item's label comes from its first H1; add `sidebarTitle` to the page's frontmatter when
+  the sidebar needs a shorter label.
 - Theming is the VitePress default theme, unmodified — no custom CSS or theme overrides.
   Local full-text search (`themeConfig.search.provider: "local"`) and Shiki C/TypeScript
   syntax highlighting come from VitePress out of the box.
@@ -52,4 +54,11 @@ pnpm format        # biome format --write .
 
 Drop a new `.md` file anywhere under `hook-docs/`; it's picked up automatically the next time
 the dev server or build runs. Add a `README.md` to a new directory to give it an index page
-and have its siblings grouped under it in the sidebar automatically.
+and have its siblings grouped under it in the sidebar automatically. A page can keep a
+descriptive H1 while using a concise sidebar label:
+
+```yaml
+---
+sidebarTitle: "Concise label"
+---
+```

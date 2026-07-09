@@ -1,4 +1,4 @@
-# HookApiVersion
+# HookAPIVersion
 
 **Purpose:** declares which Hook API ABI a newly created hook's WASM was
 written against. On this branch (`dev`) the only accepted value is `0`

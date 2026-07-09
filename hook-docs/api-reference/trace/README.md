@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Trace APIs"
+---
+
 # Trace APIs
 
 Debug tracing functions that write a label and a value (a buffer, a signed integer,

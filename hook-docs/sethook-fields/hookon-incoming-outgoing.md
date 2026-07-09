@@ -1,3 +1,7 @@
+---
+sidebarTitle: "HookOnIncoming/Outgoing"
+---
+
 # HookOnIncoming / HookOnOutgoing
 
 **Purpose:** split `HookOn` into two independent bit fields so a hook can react

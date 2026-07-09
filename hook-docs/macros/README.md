@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Helper Macros"
+---
+
 # Helper Macros (`hook/macro.h`)
 
 `hook/macro.h` is an **optional** convenience header. Its first comment says so
