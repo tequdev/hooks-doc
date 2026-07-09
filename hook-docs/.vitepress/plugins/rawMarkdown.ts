@@ -40,6 +40,16 @@ function stripMarkdownComments(text: string): string {
   return text.replace(/<!--[\s\S]*?-->/g, "");
 }
 
+function stripMarkdownFrontmatter(text: string): string {
+  return text.replace(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/g, "");
+}
+
+function stripMarkdown(text: string): string {
+  let stripped = stripMarkdownComments(text);
+  stripped = stripMarkdownFrontmatter(stripped);
+  return stripped;
+}
+
 function toPosixPath(filePath: string): string {
   return filePath.split(path.sep).join("/");
 }
@@ -86,7 +96,7 @@ function handleRawMarkdownRequest(
 
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/plain; charset=utf-8");
-  res.end(stripMarkdownComments(fs.readFileSync(filePath, "utf8")));
+  res.end(stripMarkdown(fs.readFileSync(filePath, "utf8")));
 }
 
 export function rawMarkdownPlugin(docsRoot: string): Plugin {
