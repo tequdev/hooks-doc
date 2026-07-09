@@ -7,9 +7,7 @@ sidebarTitle: "Transaction Builder"
 A code generator that turns a transaction JSON into ready-to-paste C for
 building and emitting that transaction from a Hook.
 
-- **Tool:** <https://tx-builder.xahau.tools/>
-- **Source:** [tequdev/xrpl-tt-visualizer](https://github.com/tequdev/xrpl-tt-visualizer),
-  file `src/HexConversion.tsx`, branch `tequ`.
+- **Tool:** [Xahau Hook Tx Builder](https://tx-builder.xahau.tools/)
 
 ## Why use it
 

@@ -76,7 +76,7 @@ in [overview.md](overview.md) and is repeated per function where relevant.
 ## Source of truth
 
 These documents were derived from the following repository sources (repo root
-`/Users/tequ/projects/xahaud`):
+`https://github.com/Xahau/xahaud`):
 
 - `hook/extern.h` — canonical developer-facing declarations of all 75 API functions.
 - `hook/error.h` — developer-facing error `#define`s.
