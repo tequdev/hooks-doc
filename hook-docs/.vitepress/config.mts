@@ -28,6 +28,7 @@ const SIDEBAR_ORDER = [
   "fees",
   "macros",
   "tools",
+  "other-languages",
   "glossary",
 
   // Macros: fundamental calling conventions before specialized and proposed helpers.
