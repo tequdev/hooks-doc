@@ -21,18 +21,18 @@ native XAH and issued (IOU) amounts.
 
 | API | Purpose | Reference |
 |---|---|---|
-| `otxn_type` | Read the originating transaction's type. | [transaction.md](../api-reference/transaction/otxn_type.md) |
-| `otxn_field` | Read `sfAccount` / `sfDestination` / `sfAmount` off the transaction. | [transaction.md](../api-reference/transaction/otxn_field.md) |
-| `otxn_slot` | Load the whole originating transaction into a slot. | [transaction.md](../api-reference/transaction/otxn_slot.md) |
-| `slot_subfield` | Narrow a slot to a subfield (`sfAmount`). | [ledger-and-slot.md](../api-reference/slot/slot_subfield.md) |
-| `slot_float` | Read a slotted amount as an XFL value. | [ledger-and-slot.md](../api-reference/slot/slot_float.md) |
-| `float_compare` | Compare two XFL values. | [float-and-amount.md](../api-reference/float/float_compare.md) |
-| `float_set` | Build an XFL threshold from exponent + mantissa. | [float-and-amount.md](../api-reference/float/float_set.md) |
-| `hook_account` | Read the account the hook is installed on. | [control.md](../api-reference/control/hook_account.md) |
-| `accept` / `rollback` | Terminate and apply / reject the transaction. | [control.md](../api-reference/control/README.md) |
+| `otxn_type` | Read the originating transaction's type. | [transaction](../api-reference/transaction/otxn_type.md) |
+| `otxn_field` | Read `sfAccount` / `sfDestination` / `sfAmount` off the transaction. | [transaction](../api-reference/transaction/otxn_field.md) |
+| `otxn_slot` | Load the whole originating transaction into a slot. | [transaction](../api-reference/transaction/otxn_slot.md) |
+| `slot_subfield` | Narrow a slot to a subfield (`sfAmount`). | [ledger-and-slot](../api-reference/slot/slot_subfield.md) |
+| `slot_float` | Read a slotted amount as an XFL value. | [ledger-and-slot](../api-reference/slot/slot_float.md) |
+| `float_compare` | Compare two XFL values. | [float-and-amount](../api-reference/float/float_compare.md) |
+| `float_set` | Build an XFL threshold from exponent + mantissa. | [float-and-amount](../api-reference/float/float_set.md) |
+| `hook_account` | Read the account the hook is installed on. | [control](../api-reference/control/hook_account.md) |
+| `accept` / `rollback` | Terminate and apply / reject the transaction. | [control](../api-reference/control/README.md) |
 
 Helper macros used: `SBUF`, `GUARD`, `AMOUNT_TO_DROPS`, `BUFFER_EQUAL_20`,
-`ACCOUNT_COMPARE` — see [macros.md](../macros/README.md).
+`ACCOUNT_COMPARE` — see [macros](../macros/README.md).
 
 ## Processing flow
 
@@ -182,13 +182,13 @@ or a range, `ACCOUNT_COMPARE(result, a, b)` sets `result` to `-1`, `0`, or `1`.
 
 ## Related documents
 
-- [overview.md](../overview.md)
-- [glossary.md](../glossary.md)
-- [macros.md](../macros/README.md)
-- [best-practices.md](../best-practices.md)
-- [api-reference/transaction.md](../api-reference/transaction/README.md)
-- [api-reference/control.md](../api-reference/control/README.md)
-- [api-reference/ledger-and-slot.md](../api-reference/slot/README.md)
-- [api-reference/float-and-amount.md](../api-reference/float/README.md)
-- [examples/state-counter.md](state-counter.md)
-- [examples/memo-routing.md](memo-routing.md)
+- [overview](../overview.md)
+- [glossary](../glossary.md)
+- [macros](../macros/README.md)
+- [best-practices](../best-practices.md)
+- [api-reference/transaction](../api-reference/transaction/README.md)
+- [api-reference/control](../api-reference/control/README.md)
+- [api-reference/ledger-and-slot](../api-reference/slot/README.md)
+- [api-reference/float-and-amount](../api-reference/float/README.md)
+- [examples/state-counter](state-counter.md)
+- [examples/memo-routing](memo-routing.md)

@@ -2,7 +2,7 @@
 
 Every loop in a hook must call [`_g`](../api-reference/control/_g.md) at the top of its
 body so the guard-checker can bound total iterations. These macros generate the
-`guard_id` for you from `__LINE__`. See [best-practices.md](../best-practices.md) — for why guarding is
+`guard_id` for you from `__LINE__`. See [best-practices](../best-practices.md) — for why guarding is
 mandatory and how the checker rejects unguarded loops at `SetHook` time.
 
 ## GUARD
@@ -49,4 +49,4 @@ for (int j = 0; GUARDM(10,2), j < 10; ++j) { /* ... */ }
 
 **Caveat:** the guard budget is per source line, and `maxiter` must be a value the
 static checker can verify. A loop whose bound the checker cannot prove will be rejected
-at install time regardless of these macros — see [best-practices.md](../best-practices.md).
+at install time regardless of these macros — see [best-practices](../best-practices.md).

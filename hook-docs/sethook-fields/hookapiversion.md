@@ -86,7 +86,7 @@ same log code.
 
 **Forbidden on `hsoDELETE` and `hsoNSDELETE`** as part of each operation's
 "only these fields may be present" whitelist —
-see [operations-field-matrix.md](operations-field-matrix.md).
+see [operations-field-matrix](operations-field-matrix.md).
 <!-- `SetHook.cpp:304,271`. -->
 
 **Net effect:** `sfHookApiVersion` is legal in exactly one place across the
@@ -112,6 +112,6 @@ readable back from a per-account `sfHook` entry, only from the
   (entry-only, never on the definition).
 - [CreateCode](createcode.md) — the other fields `hsoCREATE` requires
   alongside `sfHookApiVersion`.
-- [operations-field-matrix.md](operations-field-matrix.md) — full
+- [operations-field-matrix](operations-field-matrix.md) — full
   per-operation field matrix, including the amendment gates for the other
   create-time fields.

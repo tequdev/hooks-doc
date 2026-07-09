@@ -202,6 +202,6 @@ a hook writes 256 Hook State entries (`sfOwnerCount` reaches 258). One
   overrides definition default) that `sfHookNamespace` also follows.
 - [HookGrants](hookgrants.md) — grant matching resolves the same
   entry-vs-definition namespace before checking a grant's hash/authorize.
-- [flags.md](flags.md) — `hsfNSDELETE` and the other `sfHook`-level flags.
-- [operations-field-matrix.md](operations-field-matrix.md) — full
+- [flags](flags.md) — `hsfNSDELETE` and the other `sfHook`-level flags.
+- [operations-field-matrix](operations-field-matrix.md) — full
   per-operation legality table.

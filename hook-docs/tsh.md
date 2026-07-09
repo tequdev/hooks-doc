@@ -163,7 +163,7 @@ is a weak TSH on someone else's `Payment`:
 2. Bob installs (or updates) his hook with a `SetHook` `hsoCREATE`/`hsoUPDATE`
    entry whose `sfFlags` includes `hsfCOLLECT` (`0x04`), alongside whatever
    `HookOn`/`HookOnIncoming` bits select the transaction types he cares about
-   — see [sethook-fields/flags.md](sethook-fields/flags.md) for the full
+   — see [sethook-fields/flags](sethook-fields/flags.md) for the full
    `hsfOVERRIDE`/`hsfNSDELETE`/`hsfCOLLECT` flag reference.
 3. Now, whenever a `Payment` (or any other transaction type that nominates Bob
    as a weak TSH — see the table below) is processed, Bob's hook runs after the
@@ -269,17 +269,17 @@ TSH account whose `HookOnIncoming` excludes this transaction type never runs,
 even though its account was nominated as a strong TSH; conversely `hsfCOLLECT`
 (see [Conditions for Weak TSH execution](#conditions-for-weak-tsh-execution))
 only matters once `HookOn`/`HookOnIncoming` has already allowed the hook to
-be considered. See [sethook-fields/hookon.md](sethook-fields/hookon.md) and
-[sethook-fields/hookon-incoming-outgoing.md](sethook-fields/hookon-incoming-outgoing.md)
+be considered. See [sethook-fields/hookon](sethook-fields/hookon.md) and
+[sethook-fields/hookon-incoming-outgoing](sethook-fields/hookon-incoming-outgoing.md)
 for the bit-selection rules themselves.
 
 ## Related documents
 
-- [README.md](README.md)
-- [glossary.md](glossary.md)
-- [overview.md](overview.md)
-- [execution-order.md](execution-order.md) — how strong, weak, and again-as-weak passes are ordered within and across a transaction's TSHs.
-- [fees.md](fees.md) — who pays for a TSH's hook chain, strong vs. weak.
-- [sethook-fields/flags.md](sethook-fields/flags.md)
-- [sethook-fields/hookon.md](sethook-fields/hookon.md)
-- [sethook-fields/hookon-incoming-outgoing.md](sethook-fields/hookon-incoming-outgoing.md)
+- [README](README.md)
+- [glossary](glossary.md)
+- [overview](overview.md)
+- [execution-order](execution-order.md) — how strong, weak, and again-as-weak passes are ordered within and across a transaction's TSHs.
+- [fees](fees.md) — who pays for a TSH's hook chain, strong vs. weak.
+- [sethook-fields/flags](sethook-fields/flags.md)
+- [sethook-fields/hookon](sethook-fields/hookon.md)
+- [sethook-fields/hookon-incoming-outgoing](sethook-fields/hookon-incoming-outgoing.md)

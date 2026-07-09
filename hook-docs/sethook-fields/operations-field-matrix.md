@@ -162,7 +162,7 @@ condition" above) makes the object something other than NOOP.
     `sfHookNamespace` — but that exact combination is *always* classified
     `hsoNSDELETE`, not `hsoUPDATE` (see [^ns-update]), so a validated
     `hsoUPDATE` can never actually carry `hsfNSDELETE`. See
-    [flags.md](flags.md).
+    [flags](flags.md).
 [^flags-delete]: Required; must include `hsfOVERRIDE`; allowed bits are
     limited to `hsfOVERRIDE | hsfNSDELETE | hsfCOLLECT`.
     <!-- SetHook.cpp:316-334 -->
@@ -244,7 +244,7 @@ condition" above) makes the object something other than NOOP.
   <!-- SetHook.cpp:1618-1693; confirmed by SetHook_test.cpp:2459-2594 -->
 - `sfFlags`, if present, is stored verbatim (raw, not the
   `hsfOVERRIDE`/`hsfNSDELETE`-stripped value used by create/install — see
-  [flags.md](flags.md) for why this has no observable effect here).
+  [flags](flags.md) for why this has no observable effect here).
 
 ### `hsoDELETE`
 <!-- SetHook.cpp:297-337, apply SetHook.cpp:1549-1584 -->
@@ -310,7 +310,7 @@ condition" above) makes the object something other than NOOP.
 
 ## Related documents
 
-- [README.md](README.md) — full field-location table and index.
+- [README](README.md) — full field-location table and index.
 - [HookHash](hookhash.md), [CreateCode](createcode.md) — the two fields
   that drive `inferOperation`'s primary branch.
 - [HookGrants](hookgrants.md), [HookParameters](hookparameters.md) — the
@@ -319,7 +319,7 @@ condition" above) makes the object something other than NOOP.
 - [HookNamespace](hooknamespace.md) — the field with opposite
   required/forbidden rules between DELETE and NSDELETE.
 - [HookApiVersion](hookapiversion.md) — legal in exactly one operation.
-- [flags.md](flags.md) — full `hsf*` bit reference.
+- [flags](flags.md) — full `hsf*` bit reference.
 - [HookOn](hookon.md), [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md),
   [HookCanEmit](hookcanemit.md), [HookName](hookname.md) — the four fields
   documented before this page was added.

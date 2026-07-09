@@ -19,13 +19,13 @@ with simple multi-key layouts.
 
 | API | Purpose | Reference |
 |---|---|---|
-| `state` | Read a value from the hook account's current namespace. | [state.md](../api-reference/state/state.md) |
-| `state_set` | Write (or delete) a value under a key. | [state.md](../api-reference/state/state_set.md) |
-| `otxn_field` | Read `sfAccount` (the sender) to key per-account state. | [transaction.md](../api-reference/transaction/otxn_field.md) |
-| `accept` / `rollback` | Terminate the hook. | [control.md](../api-reference/control/README.md) |
+| `state` | Read a value from the hook account's current namespace. | [state](../api-reference/state/state.md) |
+| `state_set` | Write (or delete) a value under a key. | [state](../api-reference/state/state_set.md) |
+| `otxn_field` | Read `sfAccount` (the sender) to key per-account state. | [transaction](../api-reference/transaction/otxn_field.md) |
+| `accept` / `rollback` | Terminate the hook. | [control](../api-reference/control/README.md) |
 
 Helper macros used: `SBUF`, `UINT64_TO_BUF`, `UINT64_FROM_BUF` — see
-[macros.md](../macros/README.md).
+[macros](../macros/README.md).
 
 ## Processing flow
 
@@ -166,12 +166,12 @@ AccountID fits comfortably.
 
 ## Related documents
 
-- [overview.md](../overview.md)
-- [glossary.md](../glossary.md)
-- [macros.md](../macros/README.md)
-- [best-practices.md](../best-practices.md)
-- [api-reference/state.md](../api-reference/state/README.md)
-- [api-reference/transaction.md](../api-reference/transaction/README.md)
-- [api-reference/control.md](../api-reference/control/README.md)
-- [examples/foreign-state.md](foreign-state.md)
-- [examples/payment-filter.md](payment-filter.md)
+- [overview](../overview.md)
+- [glossary](../glossary.md)
+- [macros](../macros/README.md)
+- [best-practices](../best-practices.md)
+- [api-reference/state](../api-reference/state/README.md)
+- [api-reference/transaction](../api-reference/transaction/README.md)
+- [api-reference/control](../api-reference/control/README.md)
+- [examples/foreign-state](foreign-state.md)
+- [examples/payment-filter](payment-filter.md)

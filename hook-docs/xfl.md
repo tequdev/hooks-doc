@@ -15,7 +15,7 @@ This page explains the format itself: its bit layout, its valid range, why the
 encoding guarantees a valid XFL is never a negative `int64_t`, and how it maps
 onto the ledger's own `Amount` wire format. For the function-by-function API
 (signatures, parameters, error codes), see
-[api-reference/float/README.md](api-reference/float/README.md).
+[api-reference/float/README](api-reference/float/README.md).
 
 ## Why XFL exists
 
@@ -145,21 +145,21 @@ without special-casing.
   `float_divide`, `float_compare`, `float_mulratio`, `float_log`, `float_root`,
   `float_invert`, `float_negate`, `float_mantissa`, `float_sign`, `float_int`,
   `float_one`) — the arithmetic and inspection API. Full reference:
-  [api-reference/float/README.md](api-reference/float/README.md).
+  [api-reference/float/README](api-reference/float/README.md).
 - **`slot_float(slot_no)`** — reads a slotted `STI_AMOUNT` (a `sfAmount`-typed
   field already loaded into a slot via `slot_subfield`) directly as an XFL,
   without you having to hand-decode the serialized `Amount` bytes. See
-  [api-reference/slot/slot_float.md](api-reference/slot/slot_float.md).
+  [api-reference/slot/slot_float](api-reference/slot/slot_float.md).
 - **`trace_float(read_ptr, read_len, float1)`** — logs an XFL as
   `mantissa*10^(exponent)`, or `<ZERO>`/`<INVALID>` for those special cases.
-  See [api-reference/trace/trace_float.md](api-reference/trace/trace_float.md)
+  See [api-reference/trace/trace_float](api-reference/trace/trace_float.md)
   and the `TRACEXFL(v)` macro in `hook/macro.h`.
   <!-- hook/macro.h:40 -->
 - **`float_sto`/`float_sto_set`** — convert an XFL to and from the ledger's
   serialized `Amount` wire bytes (the format described above), so a hook can
   read an amount out of a transaction/ledger object, or build one to `emit`.
-  See [api-reference/float/float_sto.md](api-reference/float/float_sto.md) and
-  [api-reference/float/float_sto_set.md](api-reference/float/float_sto_set.md).
+  See [api-reference/float/float_sto](api-reference/float/float_sto.md) and
+  [api-reference/float/float_sto_set](api-reference/float/float_sto_set.md).
 
 ## Worked examples
 
@@ -195,7 +195,7 @@ hook(uint32_t reserved)
 
 `float_compare` returns `1`/`0` for true/false (or a negative error code) —
 never treat it like a C three-way comparator or subtract two XFLs to compare
-them; see [best-practices.md](best-practices.md) for that pitfall.
+them; see [best-practices](best-practices.md) for that pitfall.
 
 A second example, decoding a token amount straight out of a transaction and
 logging it:
@@ -212,16 +212,16 @@ trace_float(SBUF("incoming amount"), value);   // logs: incoming amount: Float <
 
 ## Related documents
 
-- [api-reference/float/README.md](api-reference/float/README.md) — the full
+- [api-reference/float/README](api-reference/float/README.md) — the full
   `float_*` function reference (signatures, parameters, error codes,
   worked examples per function).
-- [glossary.md](glossary.md) — the XFL glossary entry and the shared
+- [glossary](glossary.md) — the XFL glossary entry and the shared
   error-code table.
-- [api-reference/slot/slot_float.md](api-reference/slot/slot_float.md) —
+- [api-reference/slot/slot_float](api-reference/slot/slot_float.md) —
   reading a slotted amount directly as an XFL.
-- [api-reference/trace/trace_float.md](api-reference/trace/trace_float.md) —
+- [api-reference/trace/trace_float](api-reference/trace/trace_float.md) —
   logging XFL values.
-- [best-practices.md](best-practices.md) — validating amounts and avoiding
+- [best-practices](best-practices.md) — validating amounts and avoiding
   precision surprises.
-- [examples/payment-filter.md](examples/payment-filter.md) — a worked
+- [examples/payment-filter](examples/payment-filter.md) — a worked
   threshold-check hook using `float_compare`.

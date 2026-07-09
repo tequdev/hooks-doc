@@ -175,7 +175,7 @@ remaining deletions at SetHook_test.cpp:858-891 -->
 - [HookGrants](hookgrants.md) — `sfHookGrant` also carries a required
   `sfHookHash`, used for a different purpose (authorizing `state_foreign_set`
   access), not chain installation.
-- [operations-field-matrix.md](operations-field-matrix.md) — full
+- [operations-field-matrix](operations-field-matrix.md) — full
   per-operation table including where `sfHookHash` is required/forbidden.
-- [README.md](README.md) — field-location table and `sfHook`/`ltHOOK_DEFINITION`
+- [README](README.md) — field-location table and `sfHook`/`ltHOOK_DEFINITION`
   templates.

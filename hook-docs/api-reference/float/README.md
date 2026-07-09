@@ -9,7 +9,7 @@ lets a hook do arbitrary-precision decimal arithmetic on token amounts and seria
 result into (or read it out of) the ledger's `Amount` format.
 
 All function signatures on this page match the Hook API. Return codes reference the shared
-error table in [../../glossary.md](../../glossary.md), and the descriptions below reflect
+error table in [../../glossary](../../glossary.md), and the descriptions below reflect
 the API's behavior.
 <!-- Signatures are copied verbatim from `hook/extern.h`. -->
 <!-- Return-code values come from `include/xrpl/hook/Enum.h` and `hook/error.h`. -->
@@ -20,7 +20,7 @@ the API's behavior.
 ## What an XFL is
 
 For the full format explainer (bit layout, valid range, relationship to the
-ledger's `Amount` encoding), see [../../xfl.md](../../xfl.md). This section
+ledger's `Amount` encoding), see [../../xfl](../../xfl.md). This section
 covers just enough to read the function reference below.
 
 An **XFL** (the hooks floating-point format) is a single `int64_t` that encodes a decimal
@@ -125,21 +125,21 @@ distinguishes the two cases at runtime: `8` for native XAH, `48` for an IOU (8-b
 
 ## Related documents
 
-- [../../xfl.md](../../xfl.md) — the XFL format explainer: bit encoding, valid
+- [../../xfl](../../xfl.md) — the XFL format explainer: bit encoding, valid
   range, and relationship to the ledger's `Amount` format.
-- [../../README.md](../../README.md) — documentation index.
-- [../../overview.md](../../overview.md) — hook execution model.
-- [../../glossary.md](../../glossary.md) — full error-code and term reference (including the
+- [../../README](../../README.md) — documentation index.
+- [../../overview](../../overview.md) — hook execution model.
+- [../../glossary](../../glossary.md) — full error-code and term reference (including the
   `INVALID_FLOAT = -10024` and `XFL_OVERFLOW` entries).
-- [../../macros.md](../../macros/README.md) — `AMOUNT_TO_DROPS`, `SBUF`, `TRACEXFL`, and the field-code
+- [../../macros](../../macros/README.md) — `AMOUNT_TO_DROPS`, `SBUF`, `TRACEXFL`, and the field-code
   helpers.
-- [../../best-practices.md](../../best-practices.md) — validating amounts and avoiding precision
+- [../../best-practices](../../best-practices.md) — validating amounts and avoiding precision
   surprises.
-- [transaction.md](../transaction/README.md) — `otxn_field` for reading the `sfAmount` field.
-- [ledger-and-slot.md](../slot/README.md) — `slot_float` reads a slotted amount directly as
+- [transaction](../transaction/README.md) — `otxn_field` for reading the `sfAmount` field.
+- [ledger-and-slot](../slot/README.md) — `slot_float` reads a slotted amount directly as
   an XFL.
-- [emit-and-etxn.md](../emit/README.md) — building the amounts you serialize into emitted
+- [emit-and-etxn](../emit/README.md) — building the amounts you serialize into emitted
   transactions.
-- [utility.md](../sto/README.md) — `sto_subfield` and the other STO helpers.
-- [../../examples/payment-filter.md](../../examples/payment-filter.md) — a threshold-check hook end
+- [utility](../sto/README.md) — `sto_subfield` and the other STO helpers.
+- [../../examples/payment-filter](../../examples/payment-filter.md) — a threshold-check hook end
   to end.

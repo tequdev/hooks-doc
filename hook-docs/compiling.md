@@ -14,7 +14,7 @@ doesn't.
 The compiler output is a single WASM module. `xahaud` never executes anything
 else: no interpreted source, no bytecode format of its own, just the standard
 WASM binary format loaded into a WasmEdge VM instance per execution.
-[overview.md](overview.md)'s "Compilation pipeline" section covers the
+[overview](overview.md)'s "Compilation pipeline" section covers the
 toolchain names in brief; this page covers what the validator actually
 enforces on the resulting binary.
 
@@ -65,7 +65,7 @@ result of type `i64`** (`RETURN_HOOK_CBAK` otherwise). If both `hook` and
 There is no separate "does `hook` return the right thing" check beyond the
 type signature — a hook never actually returns a value to the ledger in the
 normal sense, since it's expected to terminate via `accept()`/`rollback()`.
-See [overview.md](overview.md#entry-points) for that convention.
+See [overview](overview.md#entry-points) for that convention.
 
 ### Extra exports vs. custom sections
 
@@ -125,7 +125,7 @@ it, so it can never execute. In practice, always compile with helpers marked
 `inline __attribute__((always_inline))` (or written as macros) so the
 compiler eliminates the call entirely, rather than relying on the validator
 to reject a stray real call after the fact. See
-[best-practices.md](best-practices.md#no-user-defined-functions-—-inline-everything).
+[best-practices](best-practices.md#no-user-defined-functions-—-inline-everything).
 
 `memory.grow` is rejected unconditionally (`MEMORY_GROW`); the bulk-memory
 `memory.copy` and `memory.fill` instructions are additionally rejected once
@@ -187,7 +187,7 @@ here is logged as `WASM_TEST_FAILURE` and also produces `temMALFORMED`.
 Guard validation is also re-run (with ledger access this time, though the
 routine itself stays context-free) at apply time for a genuinely new hash,
 and its failure there maps to `tecINTERNAL` rather than `temMALFORMED` — see
-[sethook-fields/createcode.md](sethook-fields/createcode.md) for that
+[sethook-fields/createcode](sethook-fields/createcode.md) for that
 apply-time detail.
 <!-- src/xrpld/app/tx/detail/SetHook.cpp:869 (SetHook::doApply), re-run of validateHookSetEntry at ~1798-1799 within doApply, tecINTERNAL on failure at ~1811 -->
 
@@ -195,8 +195,8 @@ apply-time detail.
 
 The repo's own pages name a specific toolchain for producing a conforming
 binary from C source:
-[overview.md](overview.md#compilation-pipeline) and
-[best-practices.md](best-practices.md#no-user-defined-functions-—-inline-everything)
+[overview](overview.md#compilation-pipeline) and
+[best-practices](best-practices.md#no-user-defined-functions-—-inline-everything)
 reference:
 
 1. **`wasmcc`** (from `wasienv`) — a clang-based compiler that targets
@@ -224,8 +224,8 @@ hook.c  →  wasmcc  →  hook.wasm (raw)  →  hook-cleaner  →  hook.wasm (cl
 ```
 
 The final step — hex-encoding the cleaned WASM bytes into `sfCreateCode` — is
-mechanical; see [sethook-fields/createcode.md](sethook-fields/createcode.md)
-for the field itself and [sethook-fields/README.md](sethook-fields/README.md)
+mechanical; see [sethook-fields/createcode](sethook-fields/createcode.md)
+for the field itself and [sethook-fields/README](sethook-fields/README.md)
 for the rest of a `SetHook` entry's required fields (`HookNamespace`,
 `HookApiVersion`, `HookOn`).
 
@@ -234,17 +234,17 @@ for the rest of a `SetHook` entry's required fields (`HookNamespace`,
 A practical development cycle:
 
 1. **Edit** the C source, following the mandatory rules in
-   [best-practices.md](best-practices.md#mandatory-rules) — guard discipline,
+   [best-practices](best-practices.md#mandatory-rules) — guard discipline,
    inlined helpers only, size/instruction budgets.
 2. **Compile and clean** with `wasmcc` then `hook-cleaner`.
 3. **Install** with a `SetHook` transaction — `hsoCREATE` for new code, or
    `hsoUPDATE`/`hsoINSTALL` for an existing hash. See
-   [sethook-fields/README.md](sethook-fields/README.md) for the full
+   [sethook-fields/README](sethook-fields/README.md) for the full
    operation-inference rules.
 4. **Test** by sending transactions that should trigger the hook and
    inspecting `sfHookExecutions` metadata, or by tracing with
    `trace`/`trace_num`/`trace_float` (see the debugging guidance in
-   [best-practices.md](best-practices.md#dont-ship-heavy-trace-calls-in-production)).
+   [best-practices](best-practices.md#dont-ship-heavy-trace-calls-in-production)).
 5. On a rejection, read the `SetHook` transaction's log code (see the table
    below) and go back to step 1 — nothing about steps 2-4 tells you *why* a
    binary was rejected beyond the log code the validator emitted.
@@ -281,9 +281,9 @@ src/xrpld/app/hook/applyHook.h, src/xrpld/app/tx/detail/SetHook.cpp. -->
 
 ## Related documents
 
-- [overview.md](overview.md)
-- [best-practices.md](best-practices.md)
-- [macros/guards.md](macros/guards.md)
-- [api-reference/control/_g.md](api-reference/control/_g.md)
-- [sethook-fields/createcode.md](sethook-fields/createcode.md)
-- [sethook-fields/hookapiversion.md](sethook-fields/hookapiversion.md)
+- [overview](overview.md)
+- [best-practices](best-practices.md)
+- [macros/guards](macros/guards.md)
+- [api-reference/control/_g](api-reference/control/_g.md)
+- [sethook-fields/createcode](sethook-fields/createcode.md)
+- [sethook-fields/hookapiversion](sethook-fields/hookapiversion.md)

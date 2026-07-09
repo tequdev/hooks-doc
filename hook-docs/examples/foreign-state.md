@@ -19,14 +19,14 @@ configuration value, then covers foreign writes and the grant they require.
 
 | API | Purpose | Reference |
 |---|---|---|
-| `state_foreign` | Read state from a specified account + namespace. | [state.md](../api-reference/state/state_foreign.md) |
-| `state_foreign_set` | Write state to another account's namespace (needs a grant). | [state.md](../api-reference/state/state_foreign_set.md) |
-| `state` / `state_set` | Read/write the hook's own state. | [state.md](../api-reference/state/README.md) |
-| `hook_account` | The account the hook is installed on. | [control.md](../api-reference/control/hook_account.md) |
-| `util_accid` | Convert an r-address to a 20-byte AccountID (if configuring by address). | [utility.md](../api-reference/utility/util_accid.md) |
-| `accept` / `rollback` | Terminate the hook. | [control.md](../api-reference/control/README.md) |
+| `state_foreign` | Read state from a specified account + namespace. | [state](../api-reference/state/state_foreign.md) |
+| `state_foreign_set` | Write state to another account's namespace (needs a grant). | [state](../api-reference/state/state_foreign_set.md) |
+| `state` / `state_set` | Read/write the hook's own state. | [state](../api-reference/state/README.md) |
+| `hook_account` | The account the hook is installed on. | [control](../api-reference/control/hook_account.md) |
+| `util_accid` | Convert an r-address to a 20-byte AccountID (if configuring by address). | [utility](../api-reference/utility/util_accid.md) |
+| `accept` / `rollback` | Terminate the hook. | [control](../api-reference/control/README.md) |
 
-Helper macros used: `SBUF` — see [macros.md](../macros/buffer-helpers.md).
+Helper macros used: `SBUF` — see [macros](../macros/buffer-helpers.md).
 
 ## Processing flow (read)
 
@@ -168,12 +168,12 @@ calling `state_foreign` once per key; the account and namespace stay constant.
 
 ## Related documents
 
-- [overview.md](../overview.md)
-- [glossary.md](../glossary.md)
-- [macros.md](../macros/README.md)
-- [best-practices.md](../best-practices.md)
-- [api-reference/state.md](../api-reference/state/README.md)
-- [api-reference/control.md](../api-reference/control/README.md)
-- [api-reference/utility.md](../api-reference/utility/README.md)
-- [examples/state-counter.md](state-counter.md)
-- [examples/payment-filter.md](payment-filter.md)
+- [overview](../overview.md)
+- [glossary](../glossary.md)
+- [macros](../macros/README.md)
+- [best-practices](../best-practices.md)
+- [api-reference/state](../api-reference/state/README.md)
+- [api-reference/control](../api-reference/control/README.md)
+- [api-reference/utility](../api-reference/utility/README.md)
+- [examples/state-counter](state-counter.md)
+- [examples/payment-filter](payment-filter.md)

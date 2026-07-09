@@ -54,10 +54,10 @@ Evidence:
   `sfSequence` (`(2U<<16)+4`), `sfTransactionType` (`(1U<<16)+2`), `sfMemos` (`(15U<<16)+9`).
 - For an `STI_AMOUNT` field like `sfAmount` the serialized form is 8 bytes for native XAH
   (drops with the high bits set) or 48 bytes for an IOU/issued amount; size your buffer for
-  the worse case (see [../macros.md](../../macros/amount-and-sto.md) `AMOUNT_TO_DROPS`).
+  the worse case (see [../macros](../../macros/amount-and-sto.md) `AMOUNT_TO_DROPS`).
 - To parse a returned amount as a floating value, prefer loading the transaction into a slot
   and using [`slot_float`](../slot/slot_float.md), or the STO helpers in
-  [utility.md](../sto/README.md).
+  [utility](../sto/README.md).
 
 **Minimal example.**
 

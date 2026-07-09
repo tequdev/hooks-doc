@@ -11,7 +11,7 @@ grant — on other accounts.
 All function signatures on this page match the Hook API.
 <!-- Signatures are copied verbatim from `hook/extern.h`. -->
 Return codes reference the shared error table in
-[../../glossary.md](../../glossary.md), and the values quoted below match the Hook API's
+[../../glossary](../../glossary.md), and the values quoted below match the Hook API's
 error definitions.
 <!-- The values come from `include/xrpl/hook/Enum.h` and `hook/error.h`. -->
 The implementation uses WASM-facing wrappers and a state cache.
@@ -106,14 +106,14 @@ they are enforced at different points:
 
 ## Related documents
 
-- [../../README.md](../../README.md) — documentation index.
-- [../../overview.md](../../overview.md) — hook execution model and lifecycle.
-- [../../glossary.md](../../glossary.md) — full error-code and term reference.
-- [../../macros.md](../../macros/README.md) — `SBUF`, `SVAR`, `UINT64_TO_BUF`, and other helpers.
-- [../../best-practices.md](../../best-practices.md) — structuring state access and reserve budgets.
-- [control.md](../control/README.md) — `hook_account`, `accept`/`rollback`, and namespaces context.
-- [transaction.md](../transaction/README.md) — reading fields off the originating transaction.
-- [ledger-and-slot.md](../slot/README.md) — slots and ledger info.
-- [utility.md](../utility/README.md) — `util_keylet`, `util_accid`, STO helpers.
-- [../../examples/state-counter.md](../../examples/state-counter.md) — a persistent counter hook.
-- [../../examples/foreign-state.md](../../examples/foreign-state.md) — cross-account state with grants.
+- [../../README](../../README.md) — documentation index.
+- [../../overview](../../overview.md) — hook execution model and lifecycle.
+- [../../glossary](../../glossary.md) — full error-code and term reference.
+- [../../macros](../../macros/README.md) — `SBUF`, `SVAR`, `UINT64_TO_BUF`, and other helpers.
+- [../../best-practices](../../best-practices.md) — structuring state access and reserve budgets.
+- [control](../control/README.md) — `hook_account`, `accept`/`rollback`, and namespaces context.
+- [transaction](../transaction/README.md) — reading fields off the originating transaction.
+- [ledger-and-slot](../slot/README.md) — slots and ledger info.
+- [utility](../utility/README.md) — `util_keylet`, `util_accid`, STO helpers.
+- [../../examples/state-counter](../../examples/state-counter.md) — a persistent counter hook.
+- [../../examples/foreign-state](../../examples/foreign-state.md) — cross-account state with grants.

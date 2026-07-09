@@ -20,17 +20,17 @@ content. It closes with a section on debugging via `trace`.
 
 | API | Purpose | Reference |
 |---|---|---|
-| `otxn_slot` | Load the whole originating transaction into a slot. | [transaction.md](../api-reference/transaction/otxn_slot.md) |
-| `slot_subfield` | Narrow a slot to a subfield (`sfMemos`, `sfMemoData`). | [ledger-and-slot.md](../api-reference/slot/slot_subfield.md) |
-| `slot_count` | Number of elements in a slotted array. | [ledger-and-slot.md](../api-reference/slot/slot_count.md) |
-| `slot_subarray` | Expand one array element into its own slot. | [ledger-and-slot.md](../api-reference/slot/slot_subarray.md) |
-| `slot` | Copy a slot's bytes into memory. | [ledger-and-slot.md](../api-reference/slot/slot.md) |
-| `otxn_param` | Read a HookParameter by key (the simpler alternative). | [transaction.md](../api-reference/transaction/otxn_param.md) |
-| `trace` / `trace_num` / `trace_float` | Emit debug output. | [utility.md](../api-reference/trace/README.md) |
-| `accept` / `rollback` | Terminate the hook. | [control.md](../api-reference/control/README.md) |
+| `otxn_slot` | Load the whole originating transaction into a slot. | [transaction](../api-reference/transaction/otxn_slot.md) |
+| `slot_subfield` | Narrow a slot to a subfield (`sfMemos`, `sfMemoData`). | [ledger-and-slot](../api-reference/slot/slot_subfield.md) |
+| `slot_count` | Number of elements in a slotted array. | [ledger-and-slot](../api-reference/slot/slot_count.md) |
+| `slot_subarray` | Expand one array element into its own slot. | [ledger-and-slot](../api-reference/slot/slot_subarray.md) |
+| `slot` | Copy a slot's bytes into memory. | [ledger-and-slot](../api-reference/slot/slot.md) |
+| `otxn_param` | Read a HookParameter by key (the simpler alternative). | [transaction](../api-reference/transaction/otxn_param.md) |
+| `trace` / `trace_num` / `trace_float` | Emit debug output. | [utility](../api-reference/trace/README.md) |
+| `accept` / `rollback` | Terminate the hook. | [control](../api-reference/control/README.md) |
 
 Helper macros used: `SBUF`, `GUARD`, `BUFFER_EQUAL_STR_GUARD`, `TRACEHEX`,
-`TRACEVAR` — see [macros.md](../macros/tracing.md).
+`TRACEVAR` — see [macros](../macros/tracing.md).
 
 ## Processing flow
 
@@ -201,13 +201,13 @@ output — it is purely a server-side diagnostic.
 
 ## Related documents
 
-- [overview.md](../overview.md)
-- [glossary.md](../glossary.md)
-- [macros.md](../macros/README.md)
-- [best-practices.md](../best-practices.md)
-- [api-reference/transaction.md](../api-reference/transaction/README.md)
-- [api-reference/ledger-and-slot.md](../api-reference/slot/README.md)
-- [api-reference/utility.md](../api-reference/trace/README.md)
-- [api-reference/control.md](../api-reference/control/README.md)
-- [examples/payment-filter.md](payment-filter.md)
-- [examples/emitted-transaction.md](emitted-transaction.md)
+- [overview](../overview.md)
+- [glossary](../glossary.md)
+- [macros](../macros/README.md)
+- [best-practices](../best-practices.md)
+- [api-reference/transaction](../api-reference/transaction/README.md)
+- [api-reference/ledger-and-slot](../api-reference/slot/README.md)
+- [api-reference/utility](../api-reference/trace/README.md)
+- [api-reference/control](../api-reference/control/README.md)
+- [examples/payment-filter](payment-filter.md)
+- [examples/emitted-transaction](emitted-transaction.md)

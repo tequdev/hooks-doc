@@ -9,7 +9,7 @@ construct, price, and emit a new transaction of its own, plus the counters that 
 transactions deterministic and loop-safe.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary.md](../../glossary.md).
+error table in [../../glossary](../../glossary.md).
 <!-- the values quoted below come from `include/xrpl/hook/Enum.h` and `hook/error.h`, and
 every behaviour is taken from the implementations in
 `src/xrpld/app/hook/detail/applyHook.cpp` and `src/xrpld/app/hook/detail/HookAPI.cpp` -->
@@ -121,19 +121,19 @@ reservation.
 
 ## Related documents
 
-- [../../README.md](../../README.md) — documentation index.
-- [../../overview.md](../../overview.md) — hook execution model, strong/weak/callback executions.
-- [../../glossary.md](../../glossary.md) — full error-code and term reference.
-- [../../macros.md](../../macros/README.md) — the `ENCODE_*`, `SBUF`, and `ASSERT` helpers used to
+- [../../README](../../README.md) — documentation index.
+- [../../overview](../../overview.md) — hook execution model, strong/weak/callback executions.
+- [../../glossary](../../glossary.md) — full error-code and term reference.
+- [../../macros](../../macros/README.md) — the `ENCODE_*`, `SBUF`, and `ASSERT` helpers used to
   build emitted transactions.
-- [../../tools/tx-builder.md](../../tools/tx-builder.md) — generate emitted-transaction templates
+- [../../tools/tx-builder](../../tools/tx-builder.md) — generate emitted-transaction templates
   and the `PREPARE_TXN()` macro.
-- [../../best-practices.md](../../best-practices.md) — structuring emissions and callbacks.
-- [../../fees.md](../../fees.md) — how `etxn_fee_base` fits into the full hook fee model.
-- [../../examples/emitted-transaction.md](../../examples/emitted-transaction.md) — a full
+- [../../best-practices](../../best-practices.md) — structuring emissions and callbacks.
+- [../../fees](../../fees.md) — how `etxn_fee_base` fits into the full hook fee model.
+- [../../examples/emitted-transaction](../../examples/emitted-transaction.md) — a full
   emit-a-payment example.
-- [control.md](../control/README.md) — `accept`/`rollback` and how they keep or discard emissions.
-- [transaction.md](../transaction/README.md) — `otxn_generation`, `otxn_burden`, and the other
+- [control](../control/README.md) — `accept`/`rollback` and how they keep or discard emissions.
+- [transaction](../transaction/README.md) — `otxn_generation`, `otxn_burden`, and the other
   originating-transaction accessors.
-- [ledger-and-slot.md](../ledger/README.md) — `fee_base`, `ledger_seq`, `ledger_nonce`.
-- [float-and-amount.md](../float/README.md) — building the `sfAmount` values you emit.
+- [ledger-and-slot](../ledger/README.md) — `fee_base`, `ledger_seq`, `ledger_nonce`.
+- [float-and-amount](../float/README.md) — building the `sfAmount` values you emit.

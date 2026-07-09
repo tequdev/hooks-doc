@@ -17,14 +17,14 @@ Payment when a condition is met, and handles the result in the callback `cbak`.
 
 | API | Purpose | Reference |
 |---|---|---|
-| `etxn_reserve` | Declare, up front, how many transactions the hook will emit. | [emit-and-etxn.md](../api-reference/emit/etxn_reserve.md) |
-| `etxn_details` | Write the `EmitDetails` object into the transaction template. | [emit-and-etxn.md](../api-reference/emit/etxn_details.md) |
-| `etxn_fee_base` | Compute the required fee for the prepared transaction. | [emit-and-etxn.md](../api-reference/emit/etxn_fee_base.md) |
-| `emit` | Submit the built transaction; writes its 32-byte hash. | [emit-and-etxn.md](../api-reference/emit/emit.md) |
-| `etxn_generation` / `etxn_burden` | Emit-chain generation / burden bookkeeping. | [emit-and-etxn.md](../api-reference/emit/README.md) |
-| `hook_account` | Source account for the emitted Payment. | [control.md](../api-reference/control/hook_account.md) |
-| `otxn_field` / `otxn_param` | Read the trigger (e.g. destination) from the incoming txn. | [transaction.md](../api-reference/transaction/README.md) |
-| `accept` / `rollback` | Terminate the hook. | [control.md](../api-reference/control/README.md) |
+| `etxn_reserve` | Declare, up front, how many transactions the hook will emit. | [emit-and-etxn](../api-reference/emit/etxn_reserve.md) |
+| `etxn_details` | Write the `EmitDetails` object into the transaction template. | [emit-and-etxn](../api-reference/emit/etxn_details.md) |
+| `etxn_fee_base` | Compute the required fee for the prepared transaction. | [emit-and-etxn](../api-reference/emit/etxn_fee_base.md) |
+| `emit` | Submit the built transaction; writes its 32-byte hash. | [emit-and-etxn](../api-reference/emit/emit.md) |
+| `etxn_generation` / `etxn_burden` | Emit-chain generation / burden bookkeeping. | [emit-and-etxn](../api-reference/emit/README.md) |
+| `hook_account` | Source account for the emitted Payment. | [control](../api-reference/control/hook_account.md) |
+| `otxn_field` / `otxn_param` | Read the trigger (e.g. destination) from the incoming txn. | [transaction](../api-reference/transaction/README.md) |
+| `accept` / `rollback` | Terminate the hook. | [control](../api-reference/control/README.md) |
 
 The recommended way to build the Payment template is to generate it with the
 [Transaction Builder](/tools/tx-builder): paste a Payment transaction JSON in,
@@ -349,7 +349,7 @@ deserializer treat the field as 8 bytes long instead of 48. Every byte after
 it is then misread as the start of the next field, desyncing the rest of
 the transaction. For an IOU field, either keep the value baked from the
 JSON, or build a full 48-byte serialized amount (e.g. with `float_sto`, see
-[float-and-amount.md](../api-reference/float/README.md)) and copy it in —
+[float-and-amount](../api-reference/float/README.md)) and copy it in —
 do NOT use `SET_NATIVE_AMOUNT` on it. If `float_sto`'s output includes its
 own field header, copy only the trailing 48 bytes past that header into
 `AMOUNTS_1_AMOUNTENTRY_AMOUNT_OUT`, not the header byte itself. Treat the
@@ -436,7 +436,7 @@ fields into a buffer, call `etxn_details(details_ptr, len)` to write the
 `EmitDetails` block, call `etxn_fee_base(SBUF(tx))` to get the fee, patch the
 fee field, then `emit`. The `prepare` API (requires `featureHooksUpdate2`) can
 fill the common emit fields on a template for you — see
-[emit-and-etxn.md](../api-reference/emit/README.md).
+[emit-and-etxn](../api-reference/emit/README.md).
 
 **Chained emissions in `cbak`.** A callback can itself reserve and emit further
 transactions. Each hop increases the emit generation and burden; check
@@ -474,13 +474,13 @@ transactions. Each hop increases the emit generation and burden; check
 
 ## Related documents
 
-- [overview.md](../overview.md)
-- [glossary.md](../glossary.md)
-- [macros.md](../macros/README.md)
-- [tools/tx-builder.md](../tools/tx-builder.md)
-- [best-practices.md](../best-practices.md)
-- [api-reference/emit-and-etxn.md](../api-reference/emit/README.md)
-- [api-reference/transaction.md](../api-reference/transaction/README.md)
-- [api-reference/control.md](../api-reference/control/README.md)
-- [examples/payment-filter.md](payment-filter.md)
-- [examples/memo-routing.md](memo-routing.md)
+- [overview](../overview.md)
+- [glossary](../glossary.md)
+- [macros](../macros/README.md)
+- [tools/tx-builder](../tools/tx-builder.md)
+- [best-practices](../best-practices.md)
+- [api-reference/emit-and-etxn](../api-reference/emit/README.md)
+- [api-reference/transaction](../api-reference/transaction/README.md)
+- [api-reference/control](../api-reference/control/README.md)
+- [examples/payment-filter](payment-filter.md)
+- [examples/memo-routing](memo-routing.md)

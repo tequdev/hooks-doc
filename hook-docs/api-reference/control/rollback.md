@@ -30,7 +30,7 @@ Can return `OUT_OF_BOUNDS` (-1) if a supplied reason string is out of bounds.
   termination model above), but you should call `rollback` explicitly with a meaningful
   reason string and code so the failure is diagnosable in metadata.
 - The common `ASSERT(x)` / `NOPE(x)` macros are thin wrappers around `rollback` (see
-  [../macros.md](../../macros/control-flow.md)).
+  [../macros](../../macros/control-flow.md)).
 
 **Minimal example.**
 

@@ -41,7 +41,7 @@ or `ltHOOK_STATE` object looks like on the wire.
    an IOU it splits out the not-XAH bit, sign bit, 8-bit exponent (both the raw
    stored value and the adjusted exponent), the mantissa, the 3-letter currency
    code, and the 20-byte issuer — the same sign/exponent/mantissa layout
-   documented in [../xfl.md](../xfl.md).
+   documented in [../xfl](../xfl.md).
 4. Any value inside a decoded JSON blob that looks like hex or base64 becomes
    clickable — clicking it re-decodes just that inner value, and a "Go up"
    link returns to the outer blob. This is convenient for drilling from a

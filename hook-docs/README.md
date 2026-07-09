@@ -20,14 +20,14 @@ codes, and the execution model.
 
 | Document | Description |
 |---|---|
-| [overview.md](overview.md) | Conceptual foundation: what Hooks are, entry points, execution modes, environment limits, and the typical processing flow. |
+| [overview](overview.md) | Conceptual foundation: what Hooks are, entry points, execution modes, environment limits, and the typical processing flow. |
 | [sethook-fields/](sethook-fields/README.md) | `SetHook` fields that control hook triggering and permissions: `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, `HookName`. |
-| [tsh.md](tsh.md) | Transactional Stake Holders: strong vs. weak TSH, the two-condition gate for weak-TSH ("collect call") execution, and a per-transaction-type TSH table. |
-| [glossary.md](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
-| [xfl.md](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
+| [tsh](tsh.md) | Transactional Stake Holders: strong vs. weak TSH, the two-condition gate for weak-TSH ("collect call") execution, and a per-transaction-type TSH table. |
+| [glossary](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
+| [xfl](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
 | [macros/](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
 | [tools/](tools/README.md) | Community tooling for building Hooks, including the Transaction Builder code generator and the Binary Visualizer. |
-| [best-practices.md](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
+| [best-practices](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
 
 ### API reference, by group
 
@@ -48,23 +48,23 @@ codes, and the execution model.
 
 | Document | Description |
 |---|---|
-| [examples/payment-filter.md](examples/payment-filter.md) | Worked example: inspect an incoming Payment and accept or rollback. |
-| [examples/state-counter.md](examples/state-counter.md) | Worked example: read/increment/write a counter in hook state. |
-| [examples/emitted-transaction.md](examples/emitted-transaction.md) | Worked example: reserve, prepare, and emit a transaction. |
-| [examples/foreign-state.md](examples/foreign-state.md) | Worked example: read another account's state via `state_foreign`. |
-| [examples/memo-routing.md](examples/memo-routing.md) | Worked example: route behavior based on transaction memos/parameters. |
+| [examples/payment-filter](examples/payment-filter.md) | Worked example: inspect an incoming Payment and accept or rollback. |
+| [examples/state-counter](examples/state-counter.md) | Worked example: read/increment/write a counter in hook state. |
+| [examples/emitted-transaction](examples/emitted-transaction.md) | Worked example: reserve, prepare, and emit a transaction. |
+| [examples/foreign-state](examples/foreign-state.md) | Worked example: read another account's state via `state_foreign`. |
+| [examples/memo-routing](examples/memo-routing.md) | Worked example: route behavior based on transaction memos/parameters. |
 
 ## Suggested reading order
 
 For newcomers, read in this order:
 
-1. [overview.md](overview.md) — the model and vocabulary.
+1. [overview](overview.md) — the model and vocabulary.
 2. [api-reference/control/](api-reference/control/README.md) — how a hook starts, guards loops, and terminates.
 3. [api-reference/transaction/](api-reference/transaction/README.md) — how to read the transaction that triggered the hook.
 4. [api-reference/state/](api-reference/state/README.md) — how to persist data.
 5. The [examples/](examples/) — end-to-end hooks that tie it together.
 
-Keep [glossary.md](glossary.md) and [macros/](macros/README.md) open alongside the
+Keep [glossary](glossary.md) and [macros/](macros/README.md) open alongside the
 above; both are lookup references rather than linear reading.
 
 ## Reference use
@@ -72,7 +72,7 @@ above; both are lookup references rather than linear reading.
 Experienced developers can jump straight to the relevant `api-reference/*` page.
 Each function is documented with its exact C signature from `hook/extern.h`, its
 parameters, return convention, and error codes. The full error-code table lives
-in [overview.md](overview.md) and is repeated per function where relevant.
+in [overview](overview.md) and is repeated per function where relevant.
 
 ## Source of truth
 
@@ -104,14 +104,14 @@ The consolidated, cross-checked inventory these docs build on is
 
 ## Related documents
 
-- [overview.md](overview.md)
+- [overview](overview.md)
 - [sethook-fields/](sethook-fields/README.md)
-- [tsh.md](tsh.md)
-- [glossary.md](glossary.md)
-- [xfl.md](xfl.md)
+- [tsh](tsh.md)
+- [glossary](glossary.md)
+- [xfl](xfl.md)
 - [macros/](macros/README.md)
 - [tools/](tools/README.md)
-- [best-practices.md](best-practices.md)
+- [best-practices](best-practices.md)
 - [api-reference/control/](api-reference/control/README.md)
 - [api-reference/transaction/](api-reference/transaction/README.md)
 - [api-reference/state/](api-reference/state/README.md)
@@ -122,8 +122,8 @@ The consolidated, cross-checked inventory these docs build on is
 - [api-reference/utility/](api-reference/utility/README.md)
 - [api-reference/sto/](api-reference/sto/README.md)
 - [api-reference/trace/](api-reference/trace/README.md)
-- [examples/payment-filter.md](examples/payment-filter.md)
-- [examples/state-counter.md](examples/state-counter.md)
-- [examples/emitted-transaction.md](examples/emitted-transaction.md)
-- [examples/foreign-state.md](examples/foreign-state.md)
-- [examples/memo-routing.md](examples/memo-routing.md)
+- [examples/payment-filter](examples/payment-filter.md)
+- [examples/state-counter](examples/state-counter.md)
+- [examples/emitted-transaction](examples/emitted-transaction.md)
+- [examples/foreign-state](examples/foreign-state.md)
+- [examples/memo-routing](examples/memo-routing.md)

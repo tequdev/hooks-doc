@@ -9,8 +9,8 @@ export/import/code sections of whatever binary you submit and never asks what
 compiler produced it. Any toolchain that emits a conforming `wasm32` module —
 Rust, Zig, AssemblyScript, hand-written WebAssembly Text, or anything else —
 can install and run as a hook. This page assumes you already know the hook
-model ([overview.md](overview.md)) and the validator's exact contract
-([compiling.md](compiling.md)); it doesn't restate either. What it covers is
+model ([overview](overview.md)) and the validator's exact contract
+([compiling](compiling.md)); it doesn't restate either. What it covers is
 what that contract implies once you step outside a toolchain designed for it,
 and how to satisfy each requirement from a non-C compiler.
 
@@ -26,19 +26,19 @@ language's syntax you're using to get there.
 
 | Constraint | What it means for a non-C toolchain | Documented at |
 |---|---|---|
-| Exports `hook` (and `cbak` if the hook emits) with the exact type `int64_t f(uint32_t)`, identical types for both | Your toolchain must emit exactly these two export names, with this exact WASM signature — no wrapper shims, no differing calling convention between the two | [compiling.md](compiling.md#entry-points-hook-and-cbak) |
-| Imports restricted to module `env` and the Hook API whitelist, plus `_g` — no WASI, no other host imports | Anything your standard library pulls in from `wasi_snapshot_preview1` or any module other than `env` fails validation outright | [compiling.md](compiling.md#imports-only-the-hook-api-nothing-else) |
-| `_g` must be imported even with no loops | Your module must call `_g` at least once (conventionally as the first statement of `hook`) or the compiler never emits the import, and the whole binary is rejected | [compiling.md](compiling.md#imports-only-the-hook-api-nothing-else) |
-| Every loop opens with the literal `i32.const <guard_id>`, `i32.const <maxiter>`, `call $_g` sequence, `maxiter` a non-zero constant | Loop guarding is a byte-pattern check, not a semantic one — your compiler's optimizer must not reorder, hoist, or constant-fold this sequence away from the top of the loop body | [compiling.md](compiling.md#guard-validation-at-install-time) |
-| No `call` to any function index beyond the imports | All logic must end up inlined into `hook`/`cbak` at the WASM level — no helper functions, no runtime-support calls left in the code section | [compiling.md](compiling.md#no-user-defined-function-calls), [best-practices.md](best-practices.md#no-user-defined-functions-—-inline-everything) |
-| `call_indirect` unconditionally rejected | No function pointers, vtables, trait objects, interfaces, or closures that lower to indirect calls | [compiling.md](compiling.md#no-user-defined-function-calls) |
-| `memory.grow` rejected | Linear memory is fixed at compile time — no toolchain-managed heap that grows on demand, which rules out most garbage collectors and general-purpose allocators | [compiling.md](compiling.md#no-user-defined-function-calls), [best-practices.md](best-practices.md#no-memory-grow-memory-copy-memory-fill) |
-| `memory.copy`/`memory.fill` rejected (`fix20250131`) | Bulk-memory instructions can't appear in the binary; large or non-constant-size copies must be avoided since the compiler may lower them to these opcodes instead of a load/store loop | [compiling.md](compiling.md#no-user-defined-function-calls), [best-practices.md](best-practices.md#no-memory-grow-memory-copy-memory-fill) |
-| Block/loop/if nesting depth ≤ 16 (32 under `fixGuardDepth32`) | Generated control flow that nests deeply — pattern-match desugaring, iterator chains, derived trait impls — can exceed the cap even when the source looks flat | [compiling.md](compiling.md#guard-validation-at-install-time), [best-practices.md](best-practices.md#bound-nesting-depth) |
-| Guard-derived worst-case instruction count < 65,535 | Every loop's declared `maxiter`, multiplied through nested loops, feeds one global bound — verbose codegen from a non-C toolchain reaches this ceiling faster than hand-written C at equivalent logical complexity | [compiling.md](compiling.md#guard-validation-at-install-time), [best-practices.md](best-practices.md#keep-hooks-small-and-under-the-instruction-cap) |
-| Compiled WASM ≤ 65,535 bytes | Runtime support code (panic formatting, GC, standard-library routines) is exactly what blows this budget in a stock non-C build | [compiling.md](compiling.md#structural-limits-size-and-the-smoke-test), [best-practices.md](best-practices.md#keep-hooks-small-and-under-the-instruction-cap) |
-| No custom sections | Debug info and name-mapping data — which most non-C toolchains emit by default — must be stripped by a cleaning step before install | [compiling.md](compiling.md#extra-exports-vs-custom-sections) |
-| Hooks terminate via `accept()`/`rollback()` | `hook`/`cbak` never meaningfully "return" a value; your language's normal function-return path is not how a hook ends | [overview.md](overview.md#entry-points) |
+| Exports `hook` (and `cbak` if the hook emits) with the exact type `int64_t f(uint32_t)`, identical types for both | Your toolchain must emit exactly these two export names, with this exact WASM signature — no wrapper shims, no differing calling convention between the two | [compiling](compiling.md#entry-points-hook-and-cbak) |
+| Imports restricted to module `env` and the Hook API whitelist, plus `_g` — no WASI, no other host imports | Anything your standard library pulls in from `wasi_snapshot_preview1` or any module other than `env` fails validation outright | [compiling](compiling.md#imports-only-the-hook-api-nothing-else) |
+| `_g` must be imported even with no loops | Your module must call `_g` at least once (conventionally as the first statement of `hook`) or the compiler never emits the import, and the whole binary is rejected | [compiling](compiling.md#imports-only-the-hook-api-nothing-else) |
+| Every loop opens with the literal `i32.const <guard_id>`, `i32.const <maxiter>`, `call $_g` sequence, `maxiter` a non-zero constant | Loop guarding is a byte-pattern check, not a semantic one — your compiler's optimizer must not reorder, hoist, or constant-fold this sequence away from the top of the loop body | [compiling](compiling.md#guard-validation-at-install-time) |
+| No `call` to any function index beyond the imports | All logic must end up inlined into `hook`/`cbak` at the WASM level — no helper functions, no runtime-support calls left in the code section | [compiling](compiling.md#no-user-defined-function-calls), [best-practices](best-practices.md#no-user-defined-functions-—-inline-everything) |
+| `call_indirect` unconditionally rejected | No function pointers, vtables, trait objects, interfaces, or closures that lower to indirect calls | [compiling](compiling.md#no-user-defined-function-calls) |
+| `memory.grow` rejected | Linear memory is fixed at compile time — no toolchain-managed heap that grows on demand, which rules out most garbage collectors and general-purpose allocators | [compiling](compiling.md#no-user-defined-function-calls), [best-practices](best-practices.md#no-memory-grow-memory-copy-memory-fill) |
+| `memory.copy`/`memory.fill` rejected (`fix20250131`) | Bulk-memory instructions can't appear in the binary; large or non-constant-size copies must be avoided since the compiler may lower them to these opcodes instead of a load/store loop | [compiling](compiling.md#no-user-defined-function-calls), [best-practices](best-practices.md#no-memory-grow-memory-copy-memory-fill) |
+| Block/loop/if nesting depth ≤ 16 (32 under `fixGuardDepth32`) | Generated control flow that nests deeply — pattern-match desugaring, iterator chains, derived trait impls — can exceed the cap even when the source looks flat | [compiling](compiling.md#guard-validation-at-install-time), [best-practices](best-practices.md#bound-nesting-depth) |
+| Guard-derived worst-case instruction count < 65,535 | Every loop's declared `maxiter`, multiplied through nested loops, feeds one global bound — verbose codegen from a non-C toolchain reaches this ceiling faster than hand-written C at equivalent logical complexity | [compiling](compiling.md#guard-validation-at-install-time), [best-practices](best-practices.md#keep-hooks-small-and-under-the-instruction-cap) |
+| Compiled WASM ≤ 65,535 bytes | Runtime support code (panic formatting, GC, standard-library routines) is exactly what blows this budget in a stock non-C build | [compiling](compiling.md#structural-limits-size-and-the-smoke-test), [best-practices](best-practices.md#keep-hooks-small-and-under-the-instruction-cap) |
+| No custom sections | Debug info and name-mapping data — which most non-C toolchains emit by default — must be stripped by a cleaning step before install | [compiling](compiling.md#extra-exports-vs-custom-sections) |
+| Hooks terminate via `accept()`/`rollback()` | `hook`/`cbak` never meaningfully "return" a value; your language's normal function-return path is not how a hook ends | [overview](overview.md#entry-points) |
 
 ## Why stock toolchains fail out of the box
 
@@ -83,7 +83,7 @@ contract's whole purpose is deterministic, boundable execution, and IEEE-754
 float semantics vary subtly across implementations in ways that undermine
 determinism guarantees the same way an unbounded loop would. The documented
 answer is to do arithmetic in the fixed-precision **XFL** format instead; see
-[xfl.md](xfl.md) for the format and [api-reference/float/README.md](api-reference/float/README.md)
+[xfl](xfl.md) for the format and [api-reference/float/README](api-reference/float/README.md)
 for the API. If your language's compiler happens to emit float opcodes for
 XFL-adjacent bit manipulation, that's incidental — the guidance is about
 which arithmetic *format* your hook logic uses, not which WASM opcodes are
@@ -111,17 +111,17 @@ same sequence:
    next section, and verify the compiler emitted the required byte pattern.
 6. **Strip custom sections.** `hook-cleaner` (from `hook-cleaner-c`) operates
    on the WASM binary itself, not on C-specific structure, so it works on
-   output from any toolchain. See [compiling.md](compiling.md#toolchain-pipeline).
+   output from any toolchain. See [compiling](compiling.md#toolchain-pipeline).
 7. **Inspect the result with `wasm2wat`** (from `wabt`) before ever
    submitting a `SetHook` transaction — see
    [Inspecting your module before install](#inspecting-your-module-before-install)
    below.
 8. **Check size and worst-case instruction count** against the same 65,535
-   ceilings [compiling.md](compiling.md#structural-limits-size-and-the-smoke-test)
+   ceilings [compiling](compiling.md#structural-limits-size-and-the-smoke-test)
    documents — non-C output tends to run closer to both limits than C.
 9. **Estimate fees** before deploying, since both ceilings just checked feed
    directly into cost — see [Fee implications of your toolchain](#fee-implications-of-your-toolchain)
-   and [fees.md](fees.md).
+   and [fees](fees.md).
 10. **Test before mainnet.** Install on a test network, exercise the hook
     with real transactions, and confirm `sfHookExecutions` metadata looks as
     expected — the validator only proves your binary is *installable*, not
@@ -129,8 +129,8 @@ same sequence:
 
 ## Satisfying the guard contract without the C macros
 
-[compiling.md](compiling.md#guard-validation-at-install-time) and
-[api-reference/control/_g.md](api-reference/control/_g.md) describe the raw
+[compiling](compiling.md#guard-validation-at-install-time) and
+[api-reference/control/_g](api-reference/control/_g.md) describe the raw
 contract `_g(guard_id, maxiter)` must satisfy; the [`GUARD`/`GUARDM`
 macros](macros/guards.md) are a C-preprocessor convenience for generating
 conforming calls, not something the validator knows about — a non-C
@@ -154,7 +154,7 @@ The semantics to reproduce, restated for a toolchain with no macros:
   worst-case bound for the loop it guards.
 - **There is a hard cap of 1024 total `_g` calls per hook** (loop-guard calls
   and any other call to `_g` combined) — see
-  [compiling.md](compiling.md#guard-validation-at-install-time).
+  [compiling](compiling.md#guard-validation-at-install-time).
 
 Two practical strategies for getting the compiler to actually emit this,
 in order of preference:
@@ -328,7 +328,7 @@ wasm2wat hook.wasm -o hook.wat
 
 If a `SetHook` transaction is rejected despite this checklist, the
 transaction's log code identifies exactly which check failed — see the
-[common install-rejection causes table in compiling.md](compiling.md#common-install-rejection-causes)
+[common install-rejection causes table in compiling](compiling.md#common-install-rejection-causes)
 to decode it.
 
 ## Fee implications of your toolchain
@@ -338,7 +338,7 @@ Creating a hook charges 500 drops per byte of `sfCreateCode` — and non-C
 toolchains are usually the worse offender here, since standard-library and
 runtime-support code inflates binary size well beyond what equivalent C
 produces. A hook that's twice as large to deploy costs twice as much, before
-its logic runs even once. See [fees.md](fees.md#deployment-costs-sethook)
+its logic runs even once. See [fees](fees.md#deployment-costs-sethook)
 for the full creation-cost model.
 
 Execution fees come from the guard-derived worst-case instruction count,
@@ -347,15 +347,15 @@ Verbose codegen — more instructions per logical loop body — and generous
 `maxiter` declarations both push this count up directly; a hook that declares
 `maxiter` far above what it actually needs pays for the declared worst case
 on every execution, not the typical case. See
-[fees.md](fees.md#runtime-execution-costs) for how the stored `sfFee` is
+[fees](fees.md#runtime-execution-costs) for how the stored `sfFee` is
 derived and charged.
 
 ## Related documents
 
-- [overview.md](overview.md)
-- [compiling.md](compiling.md)
-- [best-practices.md](best-practices.md)
-- [fees.md](fees.md)
-- [xfl.md](xfl.md)
-- [api-reference/control/_g.md](api-reference/control/_g.md)
-- [macros/guards.md](macros/guards.md)
+- [overview](overview.md)
+- [compiling](compiling.md)
+- [best-practices](best-practices.md)
+- [fees](fees.md)
+- [xfl](xfl.md)
+- [api-reference/control/_g](api-reference/control/_g.md)
+- [macros/guards](macros/guards.md)

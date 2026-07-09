@@ -147,5 +147,5 @@ grants" / "use an empty grants array to reset the grants". -->
   default set) on `ltHOOK_DEFINITION` as well, unlike grants.
 - [HookNamespace](hooknamespace.md) — namespace resolution used to match a
   grant to the state key being written.
-- [operations-field-matrix.md](operations-field-matrix.md) — per-operation
+- [operations-field-matrix](operations-field-matrix.md) — per-operation
   legality of `sfHookGrants`.

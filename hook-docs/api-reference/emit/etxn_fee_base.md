@@ -50,7 +50,7 @@ SET_NATIVE_AMOUNT(FEE_OUT, fee);
 ```
 
 This is exactly what the generated `PREPARE_TXN()` macro does for you — see
-[emitted-transaction.md](../../examples/emitted-transaction.md).
+[emitted-transaction](../../examples/emitted-transaction.md).
 
 **Related APIs.** [`emit`](emit.md), [`fee_base`](../ledger/fee_base.md),
 [`prepare`](prepare.md).

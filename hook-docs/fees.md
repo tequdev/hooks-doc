@@ -16,7 +16,7 @@ charged `byteCount * 500` drops as a surcharge on top of the transaction's
 ordinary base fee, capped rather than wrapped on overflow.
 <!-- src/xrpld/app/hook/detail/applyHook.cpp:705-713 — hook::computeCreationFee(byteCount) returns byteCount*500ULL, verified directly -->
 This is a **transaction fee**, not an owner reserve — it is burned, not
-refundable. See [sethook-fields/createcode.md](sethook-fields/createcode.md)
+refundable. See [sethook-fields/createcode](sethook-fields/createcode.md)
 for the full field reference, including a stale in-source code comment that
 (incorrectly) claims 5000 drops/byte — the executed arithmetic is 500.
 
@@ -26,7 +26,7 @@ surcharge.
 <!-- hook::computeCreationFee(0) returns 0 — same function cited above, src/xrpld/app/hook/detail/applyHook.cpp:705-713 -->
 `hsoINSTALL` (install-by-hash) and `hsoUPDATE` never carry `sfCreateCode` at
 all — the byte-priced fee applies to `hsoCREATE` only. See
-[sethook-fields/operations-field-matrix.md](sethook-fields/operations-field-matrix.md)
+[sethook-fields/operations-field-matrix](sethook-fields/operations-field-matrix.md)
 for which of the six operations a `SetHook` entry can infer to.
 
 **The `sfHookParameters` array nested inside a `SetHook` entry costs 1 drop
@@ -38,7 +38,7 @@ discards some entries as matching an existing default.
 This fee is unconditional (no amendment gate), unlike a separate,
 transaction-level `sfHookParameters` fee described under
 [Runtime execution costs](#runtime-execution-costs) below. See
-[sethook-fields/hookparameters.md](sethook-fields/hookparameters.md) for the
+[sethook-fields/hookparameters](sethook-fields/hookparameters.md) for the
 field's merge semantics and the owner-reserve cost of parameters that end up
 stored on the account's entry.
 
@@ -81,7 +81,7 @@ when a `SetHook` transaction commits.
 **Hook State entries and namespaces carry their own, separate owner reserve**
 with a `256 * sfHookStateScale` byte-size ceiling per entry (default scale
 1, max scale 16) and a 256-namespace-per-account cap — see
-[api-reference/state/README.md](api-reference/state/README.md) for the exact
+[api-reference/state/README](api-reference/state/README.md) for the exact
 reserve-affordability formula and namespace accounting; this page does not
 duplicate it.
 
@@ -120,7 +120,7 @@ happens if the account has opted in with `lsfTshCollect` and can afford the
 fee plus its current owner reserve out of its own balance; otherwise the
 chain is silently skipped, with no fee charged and no hooks run.
 <!-- src/xrpld/app/tx/detail/Transactor.cpp:1751-1763 (lsfTshCollect gate), 1765-1776 (reserve-affordability check), 1778-1793 (balance deduction via ctx_.destroyXRP(tshFeeDrops)) -->
-See [tsh.md](tsh.md#conditions-for-weak-tsh-execution) for the full
+See [tsh](tsh.md#conditions-for-weak-tsh-execution) for the full
 `asfTshCollect`/`hsfCOLLECT` opt-in mechanics this gates on.
 
 **A separate, transaction-level `sfHookParameters` field — distinct from
@@ -167,8 +167,8 @@ pricing deep or fanned-out emission chains.**
 reserved emission count set by `etxn_reserve()` — with an overflow check
 that fails as `FEE_TOO_LARGE` rather than wrapping.
 <!-- src/xrpld/app/hook/detail/HookAPI.cpp:811-822 — HookAPI::etxn_burden: last_burden * expected_etxn_count, overflow -> FEE_TOO_LARGE -->
-See [api-reference/emit/etxn_fee_base.md](api-reference/emit/etxn_fee_base.md)
-and [api-reference/emit/README.md](api-reference/emit/README.md) for the
+See [api-reference/emit/etxn_fee_base](api-reference/emit/etxn_fee_base.md)
+and [api-reference/emit/README](api-reference/emit/README.md) for the
 full emission lifecycle (`etxn_reserve` → `etxn_details` →
 `etxn_fee_base` → `emit`) and the generation counter (capped at 10) that
 caps emission depth independently of burden.
@@ -178,15 +178,15 @@ caps emission depth independently of burden.
 
 | Cost | Trigger | Payer | Documented at |
 |---|---|---|---|
-| Creation surcharge, 500 drops/byte | `SetHook` entry infers `hsoCREATE` (non-empty `sfCreateCode`) | `SetHook` sender | [sethook-fields/createcode.md](sethook-fields/createcode.md) |
-| `SetHook`-nested `HookParameters`, 1 drop/byte | `sfHooks[].sfHookParameters` present on create/install/update | `SetHook` sender | [sethook-fields/hookparameters.md](sethook-fields/hookparameters.md) |
+| Creation surcharge, 500 drops/byte | `SetHook` entry infers `hsoCREATE` (non-empty `sfCreateCode`) | `SetHook` sender | [sethook-fields/createcode](sethook-fields/createcode.md) |
+| `SetHook`-nested `HookParameters`, 1 drop/byte | `sfHooks[].sfHookParameters` present on create/install/update | `SetHook` sender | [sethook-fields/hookparameters](sethook-fields/hookparameters.md) |
 | Hook-slot/grant/parameter owner reserve | Occupied chain slot, stored grant, or stored parameter | The hook's own account (refundable) | This page, [Ledger reserves vs fees](#ledger-reserves-vs-fees) |
-| Hook State/namespace owner reserve | Stored state entry / new namespace | The state-owning account (refundable) | [api-reference/state/README.md](api-reference/state/README.md) |
-| Own-chain execution fee (`sfFee`, precomputed) | Originator's hooks fire | Originating account | [tsh.md](tsh.md) |
-| Strong-TSH execution fee | A strong TSH's hooks fire | Originating account (folded into base fee) | [tsh.md](tsh.md) |
-| Weak/collect-call execution fee | A weak TSH's hooks fire (opted in) | The TSH account itself | [tsh.md](tsh.md) |
+| Hook State/namespace owner reserve | Stored state entry / new namespace | The state-owning account (refundable) | [api-reference/state/README](api-reference/state/README.md) |
+| Own-chain execution fee (`sfFee`, precomputed) | Originator's hooks fire | Originating account | [tsh](tsh.md) |
+| Strong-TSH execution fee | A strong TSH's hooks fire | Originating account (folded into base fee) | [tsh](tsh.md) |
+| Weak/collect-call execution fee | A weak TSH's hooks fire (opted in) | The TSH account itself | [tsh](tsh.md) |
 | Transaction-level `HookParameters`, 1 drop/byte | Any tx carries top-level `sfHookParameters` (`fixXahauV1`) | Transaction sender | This page, [Runtime execution costs](#runtime-execution-costs) |
-| Emitted-transaction fee, burden-multiplied | `emit()` queues a transaction | The emitting hook's own account | [api-reference/emit/etxn_fee_base.md](api-reference/emit/etxn_fee_base.md) |
+| Emitted-transaction fee, burden-multiplied | `emit()` queues a transaction | The emitting hook's own account | [api-reference/emit/etxn_fee_base](api-reference/emit/etxn_fee_base.md) |
 
 ## Common surprises
 
@@ -212,10 +212,10 @@ caps emission depth independently of burden.
 
 ## Related documents
 
-- [sethook-fields/createcode.md](sethook-fields/createcode.md)
-- [sethook-fields/hookparameters.md](sethook-fields/hookparameters.md)
-- [tsh.md](tsh.md)
-- [api-reference/emit/etxn_fee_base.md](api-reference/emit/etxn_fee_base.md)
-- [api-reference/emit/README.md](api-reference/emit/README.md)
-- [api-reference/state/README.md](api-reference/state/README.md)
-- [api-reference/ledger/fee_base.md](api-reference/ledger/fee_base.md)
+- [sethook-fields/createcode](sethook-fields/createcode.md)
+- [sethook-fields/hookparameters](sethook-fields/hookparameters.md)
+- [tsh](tsh.md)
+- [api-reference/emit/etxn_fee_base](api-reference/emit/etxn_fee_base.md)
+- [api-reference/emit/README](api-reference/emit/README.md)
+- [api-reference/state/README](api-reference/state/README.md)
+- [api-reference/ledger/fee_base](api-reference/ledger/fee_base.md)

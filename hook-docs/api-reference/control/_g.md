@@ -57,5 +57,5 @@ for (int i = 0; GUARD(20), i < 20; ++i)
         rollback(SBUF("mismatch"), __LINE__);
 ```
 
-**Related APIs.** `GUARD`, `GUARDM` macros ([../macros.md](../../macros/guards.md)); [best
+**Related APIs.** `GUARD`, `GUARDM` macros ([../macros](../../macros/guards.md)); [best
 practices on guards](../../best-practices.md).
