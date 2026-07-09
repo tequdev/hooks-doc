@@ -38,6 +38,8 @@ pnpm format        # biome format --write .
   `README.md` with the sibling pages in its directory (e.g. `api-reference/control/README.md`
   becomes the parent entry for `api-reference/control/accept.md`, `.../rollback.md`, etc.).
   Top-level pages fall under "Guides" unless they're under `api-reference/` or `examples/`.
+  Edit `SIDEBAR_ORDER` in `hook-docs/.vitepress/config.mts` to order items within each
+  sidebar level. Items omitted from the array are appended alphabetically.
 - Theming is the VitePress default theme, unmodified — no custom CSS or theme overrides.
   Local full-text search (`themeConfig.search.provider: "local"`) and Shiki C/TypeScript
   syntax highlighting come from VitePress out of the box.
