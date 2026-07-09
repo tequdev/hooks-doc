@@ -32,6 +32,10 @@ entry is corrupt; `NOT_AN_OBJECT` (-23) if the parent is not an object.
   [`otxn_field`](../transaction/otxn_field.md) and defined in `hook/sfcodes.h`.
 - If `new_slot` equals `parent_slot`, the child replaces the parent in place; otherwise the
   parent slot is left intact.
+- When `new_slot == 0`, free-slot allocation is checked before the parent slot or field is
+  validated. If the slot pool is full, `slot_subfield` returns `NO_FREE_SLOTS` even when the
+  parent slot is missing or the field code is invalid.
+<!-- evidence: `HookAPI::slot_subfield` checks `new_slot == 0 && no_free_slots()` before `hookCtx.slot.find(parent_slot)`, `SField::getField(field_id)`, and the parent-entry/null checks (`src/xrpld/app/hook/detail/HookAPI.cpp:2225-2240`). -->
 
 **Minimal example.**
 
