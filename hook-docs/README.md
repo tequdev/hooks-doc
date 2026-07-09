@@ -22,6 +22,7 @@ codes, and the execution model.
 |---|---|
 | [overview.md](overview.md) | Conceptual foundation: what Hooks are, entry points, execution modes, environment limits, and the typical processing flow. |
 | [sethook-fields/](sethook-fields/README.md) | `SetHook` fields that control hook triggering and permissions: `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, `HookName`. |
+| [tsh.md](tsh.md) | Transactional Stake Holders: strong vs. weak TSH, the two-condition gate for weak-TSH ("collect call") execution, and a per-transaction-type TSH table. |
 | [glossary.md](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
 | [xfl.md](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
 | [macros/](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
@@ -105,6 +106,7 @@ The consolidated, cross-checked inventory these docs build on is
 
 - [overview.md](overview.md)
 - [sethook-fields/](sethook-fields/README.md)
+- [tsh.md](tsh.md)
 - [glossary.md](glossary.md)
 - [xfl.md](xfl.md)
 - [macros/](macros/README.md)

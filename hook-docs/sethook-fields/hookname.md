@@ -39,7 +39,7 @@ different accounts, or under different names in the same account's chain.
 2. As the common transaction-level field (any transaction type) —
    `temMALFORMED` if present without `featureHooks` or `featureNamedHooks`
    in shared preflight.
-   <!-- `Transactor.cpp:152-160`:
+<!-- `Transactor.cpp:152-160`:
    ```cpp
    if (ctx.tx.isFieldPresent(sfHookName))
    {
@@ -51,7 +51,7 @@ different accounts, or under different names in the same account's chain.
            return temMALFORMED;
    }
    ```
-   -->
+-->
    The same validation also enforces the length/UTF-8 rule below for
    *every* transaction carrying `sfHookName`, not only `SetHook`.
 
