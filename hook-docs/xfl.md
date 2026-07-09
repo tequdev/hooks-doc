@@ -111,7 +111,7 @@ it mirrors it directly. The serialization comment in
 `src/libxrpl/protocol/STAmount.cpp:665-680` describes the wire format for a
 non-native (IOU) `Amount`:
 
-- high bit (63): `0` for XRP/XAH, `1` for issued currency,
+- high bit (63): `0` for XAH, `1` for issued currency,
 - next bit (62): `1` for positive, `0` for negative,
 - next 8 bits (61-54): `mOffset + 97`,
 - remaining 54 bits (53-0): the mantissa.

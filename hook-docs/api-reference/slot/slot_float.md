@@ -22,7 +22,7 @@ underflowing) amount returns `0`. Errors: `DOESNT_EXIST` (-5) if the slot is emp
 - Calling it on a non-amount slot → `NOT_AN_AMOUNT`.
 
 **Caveats / notes.**
-- Native XRP amounts are normalized to XFL with exponent `-6` (drops); IOU amounts use their
+- Native XAH amounts are normalized to XFL with exponent `-6` (drops); IOU amounts use their
   own mantissa/exponent. Either way you get an XFL you can feed to the
   [`float_*`](../float/README.md) functions.
 - Combine with [`slot_subfield`](slot_subfield.md) to reach the amount field first (e.g.

@@ -197,8 +197,8 @@ examples:
 - **`FLIP_ENDIAN_32(value)`** — byte-swaps a 32-bit value, expression macro.
 - **`SET_UINT32(ptr, value)`** — writes `value` at `ptr` as a big-endian
   `uint32_t`, used for `FLS_OUT` / `LLS_OUT` and similar 32-bit fields.
-- **`SET_NATIVE_AMOUNT(ptr, amount)`** — writes an 8-byte native-XRP/XAH
-  `Amount` (drops) at `ptr`, including the non-XRP-bit-clear high bit
+- **`SET_NATIVE_AMOUNT(ptr, amount)`** — writes an 8-byte native-XAH
+  `Amount` (drops) at `ptr`, including the non-XAH-bit-clear high bit
   convention (`0b01000000 | top6bits`).
 - **`SET_ACCOUNT(ptr_to, ptr_from)`** — generated for 20-byte `AccountID`
   fields such as `Account` and `Destination`; a thin wrapper around

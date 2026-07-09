@@ -4,7 +4,7 @@ sidebarTitle: "Integer Conversion"
 
 # Integer ↔ buffer (big-endian)
 
-XRPL serializes integers big-endian (network byte order). These macros write and read
+Xahau serializes integers big-endian (network byte order). These macros write and read
 integers to/from byte buffers in that order. The `*_TO_BUF` macros are **statements**
 (they write into a buffer); the `*_FROM_BUF` macros are **expressions** (they return the
 value). They cover 8/16/32/64-bit unsigned plus signed 64-bit.

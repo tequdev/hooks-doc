@@ -36,7 +36,7 @@ int64_t float_sto(uint32_t write_ptr, uint32_t write_len,
   so currency and issuer are **required**.
 
 **Return value.** The number of bytes written on success (e.g. `49` for `sfAmount` with a
-common field code, `50` for an uncommon one such as `sfDeliveredAmount`, `8` for the short/XRP
+common field code, `50` for an uncommon one such as `sfDeliveredAmount`, `8` for the short/XAH
 forms). Errors: `OUT_OF_BOUNDS` (-1) for a bad buffer; `INVALID_ARGUMENT` (-7) for
 inconsistent arguments (currency without issuer or vice-versa, a non-`0`/non-`20` issuer
 length, a currency length other than `3`/`20`, issuer supplied with a native/short field code,
@@ -46,7 +46,7 @@ exponent is out of drops range; `INVALID_FLOAT` (-10024) if `float1` is not a va
 
 **Common failure patterns.**
 - Passing an issuer but no currency (or vice-versa) → `INVALID_ARGUMENT`.
-- Using `field_code == 0` (XRP) together with a currency/issuer → `INVALID_ARGUMENT`.
+- Using `field_code == 0` (XAH) together with a currency/issuer → `INVALID_ARGUMENT`.
 - A destination buffer too small for the 49/50-byte IOU form → `TOO_SMALL`.
 
 **Caveats / notes.**

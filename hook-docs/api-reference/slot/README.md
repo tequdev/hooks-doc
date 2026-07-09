@@ -55,7 +55,7 @@ produces the 34-byte serialized keylet these functions expect.
 | [`slot_count`](slot_count.md) | Number of elements in a slotted array. |
 | [`slot_subfield`](slot_subfield.md) | Expand a subfield of a slotted object into a new slot. |
 | [`slot_subarray`](slot_subarray.md) | Expand an array element of a slotted array into a new slot. |
-| [`slot_type`](slot_type.md) | Return the field type of a slot (and whether an amount is XRP). |
+| [`slot_type`](slot_type.md) | Return the field type of a slot (and whether an amount is XAH). |
 | [`slot_float`](slot_float.md) | Interpret a slotted amount as an XFL value. |
 | [`meta_slot`](meta_slot.md) | Load the originating transaction's metadata into a slot. |
 | [`xpop_slot`](xpop_slot.md) | Load an XPOP's inner transaction and metadata into two slots. |

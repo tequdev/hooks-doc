@@ -37,8 +37,8 @@ or `ltHOOK_STATE` object looks like on the wire.
    the type-code, the field-code, and the field's raw payload — indenting
    nested `STObject`/`STArray` fields and marking their end markers.
 3. `Amount` fields get a dedicated breakdown instead of a flat payload: for
-   native XAH it splits out the XRP-bit and sign bit from the drops value; for
-   an IOU it splits out the not-XRP bit, sign bit, 8-bit exponent (both the raw
+   native XAH it splits out the XAH-bit and sign bit from the drops value; for
+   an IOU it splits out the not-XAH bit, sign bit, 8-bit exponent (both the raw
    stored value and the adjusted exponent), the mantissa, the 3-letter currency
    code, and the 20-byte issuer — the same sign/exponent/mantissa layout
    documented in [../xfl.md](../xfl.md).
@@ -69,7 +69,7 @@ produces a breakdown along these lines:
 
 - **Field:** `Amount` (type `6`, field `1` — the single-byte header `0x61`).
 - **Type:** `AMOUNT`.
-- **Flags + Exponent:** not-XRP bit `1`, sign bit `1` (positive), exponent raw
+- **Flags + Exponent:** not-XAH bit `1`, sign bit `1` (positive), exponent raw
   `88` / adjusted `-9`, plus the first two mantissa bits.
 - **Mantissa:** `1234567000000000`.
 - **Currency Code:** `USD`.
