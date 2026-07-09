@@ -55,7 +55,7 @@ object cannot be built.
 **Minimal example.**
 
 ```c
-uint8_t out[PREPARE_PAYMENT_SIMPLE_SIZE];
+uint8_t out[512];
 int64_t n = prepare((uint32_t)out, sizeof(out), (uint32_t)template, template_len);
 if (n < 0)
     rollback(SBUF("prepare failed"), n);
@@ -73,7 +73,7 @@ int64_t hook(uint32_t r)
     ASSERT(prepare(1000000, 32, 0, 32) == OUT_OF_BOUNDS);
 
     // fill fixed fields on the template, then emit the completed transaction
-    uint8_t out[PREPARE_PAYMENT_SIMPLE_SIZE];
+    uint8_t out[512];
     int64_t n = prepare((uint32_t)out, sizeof(out), (uint32_t)tmpl, tmpl_len);
     if (n < 0)
         rollback(SBUF("prepare failed"), n);

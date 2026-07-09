@@ -57,7 +57,7 @@ int64_t n = etxn_details((uint32_t)details, sizeof(details));  // 138 or 116
 ```c
 // Splice sfEmitDetails into a transaction being assembled at `buf_out`,
 // then advance the write cursor by the number of bytes written.
-int64_t edlen = etxn_details((uint32_t)buf_out, PREPARE_PAYMENT_SIMPLE_SIZE);
+int64_t edlen = etxn_details((uint32_t)buf_out, 138);  // 138 is the max sfEmitDetails size (116 without a callback)
 if (edlen < 0)
     rollback(SBUF("etxn_details failed"), edlen);
 buf_out += edlen;

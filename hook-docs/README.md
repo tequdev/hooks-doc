@@ -25,6 +25,7 @@ codes, and the execution model.
 | [sethook-fields/](sethook-fields/README.md) | `SetHook` fields that control hook triggering and permissions: `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, `HookName`. |
 | [glossary.md](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
 | [macros/](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
+| [tools/](tools/README.md) | Community tooling for building Hooks, including the Transaction Builder code generator. |
 | [best-practices.md](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
 
 ### API reference, by group
@@ -98,6 +99,7 @@ The consolidated, cross-checked inventory these docs build on is
 - [sethook-fields/](sethook-fields/README.md)
 - [glossary.md](glossary.md)
 - [macros/](macros/README.md)
+- [tools/](tools/README.md)
 - [best-practices.md](best-practices.md)
 - [api-reference/control/](api-reference/control/README.md)
 - [api-reference/transaction/](api-reference/transaction/README.md)

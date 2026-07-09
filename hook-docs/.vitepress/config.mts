@@ -22,6 +22,7 @@ const SIDEBAR_ORDER = [
   "best-practices",
   "sethook-fields",
   "macros",
+  "tools",
   "glossary",
 
   // Macros: fundamental calling conventions before specialized and proposed helpers.
@@ -36,6 +37,9 @@ const SIDEBAR_ORDER = [
   "macros/constants",
   "macros/patterns",
   "macros/proposed-helpers",
+
+  // Tools: the dedicated Transaction Builder page orders under the tools index.
+  "tools/tx-builder",
 
   // SetHook: operation selection, installation fields, runtime behavior, then permissions.
   "sethook-fields/operations-field-matrix",
@@ -325,6 +329,7 @@ export default defineConfig({
       { text: "Overview", link: "/overview" },
       { text: "API Reference", link: "/api-reference/" },
       { text: "Examples", link: "/examples/" },
+      { text: "Tools", link: "/tools/" },
     ],
     sidebar: buildSidebar(),
     search: { provider: "local" },

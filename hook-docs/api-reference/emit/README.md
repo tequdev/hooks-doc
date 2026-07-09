@@ -33,9 +33,11 @@ that a reservation exists (`hookCtx.expected_etxn_count`, which starts at `-1`),
    on this page returns `PREREQUISITE_NOT_MET` (-9). `n` must be `1..255`.
 
 2. **Build the raw transaction.** Assemble the transaction as a serialized `STObject` in a
-   memory buffer. You can build it byte-by-byte with the `ENCODE_*`/`PREPARE_PAYMENT_*`
-   macro idiom shown in the test hooks, or (under `HooksUpdate2`) hand a partial template to
-   [`prepare`](prepare.md), which fills in the fixed fields for you.
+   memory buffer. The recommended way is to generate the template — and the `PREPARE_TXN()`
+   macro that fills the fixed fields — with the [Transaction Builder](../../tools/tx-builder.md).
+   Alternatively, build it by hand with the `ENCODE_*` macro idiom shown in the test hooks, or
+   (under `HooksUpdate2`) hand a partial template to [`prepare`](prepare.md), which fills in the
+   fixed fields for you.
 
 3. **Insert `sfEmitDetails`.** Call [`etxn_details(buf, len)`](etxn_details.md) to write the
    `sfEmitDetails` object into the transaction. This object is what marks the transaction as
@@ -118,8 +120,10 @@ reservation (see the `cbak` in `SetHook_test.cpp`, "Test emit").
 - [../../README.md](../../README.md) — documentation index.
 - [../../overview.md](../../overview.md) — hook execution model, strong/weak/callback executions.
 - [../../glossary.md](../../glossary.md) — full error-code and term reference.
-- [../../macros.md](../../macros/README.md) — the `ENCODE_*`, `PREPARE_PAYMENT_*`, `SBUF`, and `ASSERT`
-  helpers used to build emitted transactions.
+- [../../macros.md](../../macros/README.md) — the `ENCODE_*`, `SBUF`, and `ASSERT` helpers used to
+  build emitted transactions.
+- [../../tools/tx-builder.md](../../tools/tx-builder.md) — generate emitted-transaction templates
+  and the `PREPARE_TXN()` macro.
 - [../../best-practices.md](../../best-practices.md) — structuring emissions and callbacks.
 - [../../examples/emitted-transaction.md](../../examples/emitted-transaction.md) — a full
   emit-a-payment example.
