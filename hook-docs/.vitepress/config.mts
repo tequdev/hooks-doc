@@ -1,7 +1,8 @@
-import fs from "node:fs";
-import path from "node:path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import { type DefaultTheme, defineConfig } from "vitepress";
+import { rawMarkdownPlugin } from "./plugins/rawMarkdown";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // hook-docs/ (the VitePress project root / srcDir)
@@ -138,6 +139,10 @@ export default defineConfig({
     if (id === "README.md") return "index.md";
     if (id.endsWith("/README.md")) return `${id.slice(0, -"README.md".length)}index.md`;
     return id;
+  },
+
+  vite: {
+    plugins: [rawMarkdownPlugin(docsRoot)],
   },
 
   themeConfig: {
