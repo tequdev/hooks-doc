@@ -1,7 +1,9 @@
 # hook_param_set
 
-**Summary.** Override (or delete) a parameter value seen by a *subsequent* hook in the chain,
-identified by that hook's WASM hash.
+**Summary.** Override (or delete) a parameter value for the hook identified by that hook's
+WASM hash.
+
+<!-- evidence: `HookAPI::hook_param_set` stores overrides under the target hash without a chain-order check, and `HookAPI::hook_param` reads overrides for the currently executing hook hash (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1694, 1732-1739`). -->
 
 **Signature.**
 
@@ -32,8 +34,7 @@ for bad pointers; `TOO_SMALL` (-4) if the key length is 0; `TOO_BIG` (-3) if the
 - Exceeding the 16-override budget → `TOO_MANY_PARAMS`.
 
 **Caveats / notes.**
-- Affects only hooks that execute *after* the current one in the chain, and only the hook
-  whose hash you name — this is how one hook parameterises the next.
+- `hook_param_set` is keyed by the target hook hash, not by chain position.
 - A `read_len` of `0` sets an empty override, which causes the target hook's
   [`hook_param`](hook_param.md) lookup for that key to return `DOESNT_EXIST` (an effective
   "delete").
