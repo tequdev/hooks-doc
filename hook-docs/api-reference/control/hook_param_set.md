@@ -1,7 +1,8 @@
 # hook_param_set
 
-**Summary.** Override (or delete) a parameter value seen by a *subsequent* hook in the chain,
-identified by that hook's WASM hash.
+**Summary.** Override (or delete) a parameter value for a specific hook hash; the override is
+read when that hook later executes.
+<!-- evidence: `HookAPI::hook_param_set` stores overrides under the target hash, and `HookAPI::hook_param` checks the current hook's hash-specific override before falling back to its own parameters (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1741`). -->
 
 **Signature.**
 

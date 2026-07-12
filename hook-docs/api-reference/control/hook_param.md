@@ -34,6 +34,7 @@ key exists (or it was "deleted" via an override with an empty value).
 - Lookups first consult overrides installed by earlier hooks in the chain via
   [`hook_param_set`](hook_param_set.md); an override with an empty value hides the parameter
   and yields `DOESNT_EXIST`.
+<!-- evidence: `HookAPI::hook_param` checks `hookParamOverrides[hookHash]` before `hookParams`, and returns `DOESNT_EXIST` for empty override values (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1704`). -->
 
 **Minimal example.**
 
