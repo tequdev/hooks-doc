@@ -12,20 +12,21 @@ int64_t hook_again();
 **Parameters.** None.
 
 **Return value.** Returns `1` on success (a weak re-execution is now scheduled). Errors:
-`ALREADY_SET` (-8) if a weak re-execution was already requested during this execution;
-`PREREQUISITE_NOT_MET` (-9) if the current execution is not a strong one (you cannot request
-another weak pass from within a weak pass).
+`ALREADY_SET` (-8) if a weak re-execution was already requested for this hook execution;
+`PREREQUISITE_NOT_MET` (-9) if the current execution is not strong and no weak pass has been
+scheduled yet.
+<!-- evidence: `HookAPI::hook_again` checks `executeAgainAsWeak` first, so repeat calls return `ALREADY_SET` even in the weak pass; only a non-strong call with no prior request reaches `PREREQUISITE_NOT_MET` (`src/xrpld/app/hook/detail/HookAPI.cpp:1658-1670`). -->
 
 **Common failure patterns.**
-- Calling `hook_again` twice in the same execution → `ALREADY_SET`.
-- Calling it during the weak re-execution itself → `PREREQUISITE_NOT_MET`.
+- Calling `hook_again` twice after one request has already been scheduled → `ALREADY_SET`.
+- Calling it from a non-strong execution before any weak pass has been requested → `PREREQUISITE_NOT_MET`.
 
 **Caveats / notes.**
 - Strong execution runs *before* the transaction is applied and can `rollback`; the weak
   re-execution runs *after* apply and is observational (its rollback cannot undo the applied
   transaction). Use the `reserved` argument of `hook()` to tell which pass you are in.
-- Only meaningful from a strong execution; hence `PREREQUISITE_NOT_MET` when `isStrong` is
-  false.
+- Only meaningful from a strong execution on the first request; once `executeAgainAsWeak` is
+  already set, repeat calls keep returning `ALREADY_SET`.
 
 **Minimal example.**
 
