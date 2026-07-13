@@ -31,9 +31,10 @@ key exists (or it was "deleted" via an override with an empty value).
 **Caveats / notes.**
 - These are the hook's own configuration parameters, distinct from parameters carried on the
   *transaction* — for those, use [`otxn_param`](../transaction/otxn_param.md).
-- Lookups first consult overrides installed by earlier hooks in the chain via
+- Lookups first consult overrides installed for this hook's hash via
   [`hook_param_set`](hook_param_set.md); an override with an empty value hides the parameter
-  and yields `DOESNT_EXIST`.
+  and yields `DOESNT_EXIST`. This also means a hook can override its own parameters and
+  see the new value on later reads in the same execution when it targets its own hash.
 <!-- evidence: `HookAPI::hook_param` checks `hookParamOverrides[hookHash]` before `hookParams`, and returns `DOESNT_EXIST` for empty override values (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1704`). -->
 
 **Minimal example.**
