@@ -20,6 +20,7 @@ int64_t hook_pos();
 - A single account may install up to 10 hooks (the max hook chain length). They execute in
   order; `hook_pos` tells the running hook where it sits so shared code can branch on
   position.
+<!-- evidence: `hook::maxHookChainLength()` returns 10, and `SetHook` rejects more than that many `sfHooks` entries (`include/xrpl/hook/Enum.h:100-104`, `src/xrpld/app/tx/detail/SetHook.cpp:770-776`). -->
 - This is a proxy-only call: it performs no memory access and no setup/teardown.
 
 **Minimal example.**
