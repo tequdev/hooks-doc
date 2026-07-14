@@ -1,7 +1,7 @@
 # hook_pos
 
 **Summary.** Return the zero-based position of the currently executing hook within its
-account's hook chain.
+account's hook chain. <!-- evidence: `HookAPI::hook_pos()` returns `hookCtx.result.hookChainPosition`, and `applyHook` stores the executed hook's position in that field (`src/xrpld/app/hook/detail/HookAPI.cpp:1794-1797`, `src/xrpld/app/hook/detail/applyHook.cpp:1041-1075`). -->
 
 **Signature.**
 
@@ -17,9 +17,8 @@ int64_t hook_pos();
 **Common failure patterns.** None — it is a pure accessor.
 
 **Caveats / notes.**
-- A single account may install up to 10 hooks (the max hook chain length). They execute in
-  order; `hook_pos` tells the running hook where it sits so shared code can branch on
-  position.
+- A single account may install up to 10 hooks (the max hook chain length). `hook_pos`
+  reports the running hook's zero-based slot so shared code can branch on position.
 <!-- evidence: `hook::maxHookChainLength()` returns 10, and `SetHook` rejects more than that many `sfHooks` entries (`include/xrpl/hook/Enum.h:100-104`, `src/xrpld/app/tx/detail/SetHook.cpp:770-776`). -->
 - This is a proxy-only call: it performs no memory access and no setup/teardown.
 
