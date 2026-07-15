@@ -34,8 +34,9 @@ for bad pointers; `TOO_SMALL` (-4) if the key length is 0; `TOO_BIG` (-3) if the
 - Exceeding the 16-override budget → `TOO_MANY_PARAMS`.
 
 **Caveats / notes.**
-- Affects only hooks that execute *after* the current one in the chain, and only the hook
-  whose hash you name — this is how one hook parameterises the next.
+- Overrides are keyed by the target hook hash. If you target a later hook, that hook sees
+  the value when it runs; if you target this hook's own hash, later [`hook_param`](hook_param.md)
+  calls in the same execution see the override too. <!-- evidence: `HookAPI::hook_param_set` stores overrides under the supplied hash, and `HookAPI::hook_param` checks `hookParamOverrides[hookHash]` before `hookParams` (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1741`). -->
 - A `read_len` of `0` sets an empty override, which causes the target hook's
   [`hook_param`](hook_param.md) lookup for that key to return `DOESNT_EXIST` (an effective
   "delete").
