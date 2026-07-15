@@ -89,7 +89,7 @@ build the `guard_id` from the source line number so each loop gets a distinct id
 | [`hook_param`](hook_param.md) | Read this hook's install-time parameter value by key. |
 | [`hook_param_set`](hook_param_set.md) | Override a parameter for a hook in the chain, identified by hash. <!-- evidence: `HookAPI::hook_param_set` stores overrides under the target hash, and `HookAPI::hook_param` checks the current hook's hash-specific override before falling back to its own parameters (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1741`). --> |
 | [`hook_again`](hook_again.md) | Request a weak (post-apply) re-execution of the hook. |
-| [`hook_skip`](hook_skip.md) | Skip (or un-skip) a named hook in the chain. |
+| [`hook_skip`](hook_skip.md) | Mark a hook hash to be skipped for the rest of the current account's chain run, or clear that mark. <!-- evidence: `HookAPI::hook_skip` stores hashes in `hookCtx.result.hookSkips`, and `Transactor::doHook` checks that set before each hook execution and merges later skip requests into it (`src/xrpld/app/hook/detail/HookAPI.cpp:1744-1791`, `src/xrpld/app/tx/detail/Transactor.cpp:1333-1457`). --> |
 
 ## Related documents
 

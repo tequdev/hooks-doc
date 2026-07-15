@@ -1,7 +1,7 @@
 # hook_skip
 
-**Summary.** Prevent (or restore) execution of another hook in the current account's chain,
-identified by its WASM hash.
+**Summary.** Mark a hook hash to be skipped for the rest of the current account's chain
+run, or clear that mark. <!-- evidence: `HookAPI::hook_skip` stores hashes in `hookCtx.result.hookSkips`, and `Transactor::doHook` checks that set before each hook execution and merges later skip requests into it (`src/xrpld/app/hook/detail/HookAPI.cpp:1744-1791`, `src/xrpld/app/tx/detail/Transactor.cpp:1333-1457`). -->
 
 **Signature.**
 
