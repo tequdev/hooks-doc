@@ -86,9 +86,9 @@ build the `guard_id` from the source line number so each loop gets a distinct id
 | [`hook_account`](hook_account.md) | Write the AccountID the hook is installed on. |
 | [`hook_hash`](hook_hash.md) | Write the WASM hash of a hook in the chain. |
 | [`hook_pos`](hook_pos.md) | Return this hook's position within the hook chain. <!-- evidence: `HookAPI::hook_pos()` returns `hookCtx.result.hookChainPosition` (`src/xrpld/app/hook/detail/HookAPI.cpp:1794-1797`). --> |
-| [`hook_param`](hook_param.md) | Read this hook's install-time parameter value by key. |
+| [`hook_param`](hook_param.md) | Read this hook's install-time parameter value by key. <!-- evidence: `HookAPI::hook_param` checks `hookParamOverrides[hookHash]` before `hookParams`, and returns `DOESNT_EXIST` for empty override values (`src/xrpld/app/hook/detail/HookAPI.cpp:1674-1709`). --> |
 | [`hook_param_set`](hook_param_set.md) | Override a parameter for a hook in the chain, identified by hash. <!-- evidence: `HookAPI::hook_param_set` stores overrides under the target hash, and `HookAPI::hook_param` checks the current hook's hash-specific override before falling back to its own parameters (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1741`). --> |
-| [`hook_again`](hook_again.md) | Request a weak (post-apply) re-execution of the hook. |
+| [`hook_again`](hook_again.md) | Request a weak (post-apply) re-execution of the hook. <!-- evidence: `HookAPI::hook_again` returns `1` for a strong execution, `ALREADY_SET` if a weak re-execution was already scheduled, and `PREREQUISITE_NOT_MET` otherwise (`src/xrpld/app/hook/detail/HookAPI.cpp:1658-1670`). --> |
 | [`hook_skip`](hook_skip.md) | Mark a hook hash to be skipped for the rest of the current account's chain run, or clear that mark. <!-- evidence: `HookAPI::hook_skip` stores hashes in `hookCtx.result.hookSkips`, and `Transactor::doHook` checks that set before each hook execution and merges later skip requests into it (`src/xrpld/app/hook/detail/HookAPI.cpp:1744-1791`, `src/xrpld/app/tx/detail/Transactor.cpp:1333-1457`). --> |
 
 ## Related documents
