@@ -1,7 +1,7 @@
 # hook_pos
 
 **Summary.** Return the zero-based position of the currently executing hook within its
-account's hook chain. <!-- evidence: `HookAPI::hook_pos()` returns `hookCtx.result.hookChainPosition`, and `applyHook` stores the executed hook's position in that field (`src/xrpld/app/hook/detail/HookAPI.cpp:1794-1797`, `src/xrpld/app/hook/detail/applyHook.cpp:1041-1075`). -->
+account's hook chain. <!-- evidence: `Transactor::doHook` passes `hook_no - 1` into `applyHook`, which stores it in `hookCtx.result.hookChainPosition`; `HookAPI::hook_pos()` returns that field (`src/xrpld/app/tx/detail/Transactor.cpp:1412-1428`, `src/xrpld/app/hook/detail/applyHook.cpp:1041-1075`, `src/xrpld/app/hook/detail/HookAPI.cpp:1794-1797`). -->
 
 **Signature.**
 
