@@ -26,7 +26,7 @@ scheduled yet.
   re-execution runs *after* apply and is observational (its rollback cannot undo the applied
   transaction). Use the `reserved` argument of `hook()` to tell which pass you are in.
 - Only meaningful from a strong execution on the first request; once `executeAgainAsWeak` is
-  already set, repeat calls keep returning `ALREADY_SET`.
+  already set, repeat calls keep returning `ALREADY_SET`. <!-- evidence: `HookAPI::hook_again` checks `executeAgainAsWeak` first, so repeat calls return `ALREADY_SET` even in the weak pass; only a non-strong call with no prior request reaches `PREREQUISITE_NOT_MET` (`src/xrpld/app/hook/detail/HookAPI.cpp:1658-1670`). -->
 
 **Minimal example.**
 
