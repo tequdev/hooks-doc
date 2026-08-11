@@ -2,6 +2,7 @@
 
 **Summary.** Request that this (strong) hook be executed a second time as a **weak**
 execution after the transaction is applied, allowing it to observe the applied state.
+<!-- evidence: `HookAPI::hook_again` sets `executeAgainAsWeak` only when `isStrong` is true and otherwise returns `PREREQUISITE_NOT_MET`; if the flag is already set, repeat calls return `ALREADY_SET` (`src/xrpld/app/hook/detail/HookAPI.cpp:1658-1670`). -->
 
 **Signature.**
 
