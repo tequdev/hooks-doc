@@ -1,7 +1,7 @@
 # hook_skip
 
-**Summary.** Mark a hook hash to be skipped for the rest of the current account's chain
-run, or clear that mark. <!-- evidence: `HookAPI::hook_skip` stores hashes in `hookCtx.result.hookSkips`, and `Transactor::doHook` checks that set before each hook execution and merges later skip requests into it (`src/xrpld/app/hook/detail/HookAPI.cpp:1744-1791`, `src/xrpld/app/tx/detail/Transactor.cpp:1333-1457`). -->
+**Summary.** Prevent (or restore) execution of another hook in the current account's chain,
+identified by its WASM hash.
 
 **Signature.**
 
@@ -28,7 +28,7 @@ hash is not part of this chain (add) or was not currently skipped (remove).
 - Un-skipping (flags=1) a hook that was never skipped → `DOESNT_EXIST`.
 
 **Caveats / notes.**
-- Only affects hooks in the *same account's* chain, and only those that have not yet run. <!-- evidence: `HookAPI::hook_skip` validates the target against the current account's hook object via `hookKeylet`, stores the hash in `hookCtx.result.hookSkips`, and `Transactor::doHook` checks that set before each hook execution (`src/xrpld/app/hook/detail/HookAPI.cpp:1765-1791`, `src/xrpld/app/tx/detail/Transactor.cpp:1333-1457`). -->
+- Only affects hooks in the *same account's* chain, and only those that have not yet run.
 - Re-skipping an already-skipped hash simply returns `1` (idempotent).
 - Combine with [`hook_hash`](hook_hash.md) to obtain the target hash and
   [`hook_pos`](hook_pos.md) to reason about ordering.
