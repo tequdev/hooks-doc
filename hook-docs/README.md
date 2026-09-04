@@ -25,6 +25,7 @@ codes, and the execution model.
 | [tsh](tsh.md) | Transactional Stake Holders: strong vs. weak TSH, the two-condition gate for weak-TSH ("collect call") execution, and a per-transaction-type TSH table. |
 | [glossary](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
 | [xfl](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
+| [nop-bytes](nop-bytes.md) | The `0x99` NOP byte Xahau's deserializer skips: its rules and limits, which Hook APIs honor it, and how to use it for optional and variable-length fields in an emitted-transaction template. |
 | [macros/](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
 | [tools/](tools/README.md) | Community tooling for building Hooks, including the Transaction Builder code generator and the Binary Visualizer. |
 | [best-practices](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
@@ -109,6 +110,7 @@ The consolidated, cross-checked inventory these docs build on is
 - [tsh](tsh.md)
 - [glossary](glossary.md)
 - [xfl](xfl.md)
+- [nop-bytes](nop-bytes.md)
 - [macros/](macros/README.md)
 - [tools/](tools/README.md)
 - [best-practices](best-practices.md)

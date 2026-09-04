@@ -9,6 +9,12 @@ field or array element by code, and inserting or removing a field to build a new
 object. These functions used to share the "Utility APIs" page; for the return-value
 and error-code conventions they follow, see [Utility APIs](../utility/README.md).
 
+All five use the hook engine's own lightweight scanner rather than the ledger's
+deserializer, so they do **not** accept the `0x99` NOP byte that `emit`/`prepare` skip:
+`sto_validate` reports a NOP-padded buffer as invalid and the others return `PARSE_ERROR`.
+Run such a template through [`prepare`](../emit/prepare.md) first if you need to inspect or
+edit it. See [nop-bytes](../../nop-bytes.md).
+
 ---
 
 ## Index

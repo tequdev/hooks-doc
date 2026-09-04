@@ -55,6 +55,10 @@ int64_t emit(uint32_t write_ptr, uint32_t write_len,
 - Build the transaction with [`etxn_details`](etxn_details.md) + [`etxn_fee_base`](etxn_fee_base.md)
   (or [`prepare`](prepare.md)) so the rule checks pass; emitting a hand-built blob without these
   almost always fails.
+- The blob is parsed with the ledger's deserializer, so it may contain `0x99` NOP bytes
+  (at most 63 per object or array) to blank out an optional template field or pad a
+  shortened blob; they are dropped from the emitted transaction and its hash. See
+  [nop-bytes](../../nop-bytes.md).
 
 **Minimal example.**
 
