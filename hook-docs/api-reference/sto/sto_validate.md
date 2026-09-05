@@ -26,7 +26,9 @@ int64_t sto_validate(uint32_t tread_ptr, uint32_t tread_len);
 
 **Caveats.** Validation is structural (well-formed field encoding), not semantic — it
 does not check that required fields are present for a given object type, nor that
-values are in range. A maximum of 1024 fields are scanned.
+values are in range. A maximum of 1024 fields are scanned. The scanner does not recognise
+the `0x99` NOP byte the ledger's deserializer skips, so a NOP-padded template that `emit`
+would accept is reported as invalid (`0`) here; see [nop-bytes](../../nop-bytes.md).
 
 **Minimal example.**
 

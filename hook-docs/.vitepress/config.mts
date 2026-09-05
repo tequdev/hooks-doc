@@ -24,6 +24,7 @@ const SIDEBAR_ORDER = [
   "tsh",
   "fees",
   "xfl",
+  "nop-bytes",
   "compiling",
   "best-practices",
 

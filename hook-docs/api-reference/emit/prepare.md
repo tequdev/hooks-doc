@@ -51,6 +51,9 @@ object cannot be built.
 - Fields you *do* provide in the template (for example an explicit `sfLastLedgerSequence`) are
   respected — `prepare` only fills the ledger-sequence and emit-details fields when they are
   absent, but always overrides `sfAccount`, `sfSequence`, `sfSigningPubKey`, and `sfFee`.
+- The template may contain `0x99` NOP bytes (see [nop-bytes](../../nop-bytes.md)); the
+  returned blob is re-serialized from the parsed fields and never contains them, so `prepare`
+  also serves to turn a NOP-padded template into a clean blob the `sto_*` APIs can read.
 
 **Minimal example.**
 
