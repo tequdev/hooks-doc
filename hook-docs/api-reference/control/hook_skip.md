@@ -21,6 +21,7 @@ int64_t hook_skip(uint32_t read_ptr, uint32_t read_len, uint32_t flags);
 `INVALID_ARGUMENT` (-7) if `read_len != 32` or `flags` is neither `0` nor `1`;
 `INTERNAL_ERROR` (-2) if the account's hook object cannot be read; `DOESNT_EXIST` (-5) if the
 hash is not part of this chain (add) or was not currently skipped (remove).
+<!-- evidence: the generated wrapper checks the memory range and requires `read_len == 32`, while `HookAPI::hook_skip` validates `flags`, checks the hook chain, and returns the documented errors (`src/xrpld/app/hook/detail/applyHook.cpp:3872-3893`, `src/xrpld/app/hook/detail/HookAPI.cpp:1745-1791`). -->
 
 **Common failure patterns.**
 - Hash length other than 32, or a `flags` value other than 0/1 → `INVALID_ARGUMENT`.
@@ -28,7 +29,10 @@ hash is not part of this chain (add) or was not currently skipped (remove).
 - Un-skipping (flags=1) a hook that was never skipped → `DOESNT_EXIST`.
 
 **Caveats / notes.**
-- Only affects hooks in the *same account's* chain, and only those that have not yet run.
+- Only affects hooks in the *same account's* chain, and only those that have not yet run. The
+  request is accumulated after the current hook returns; the transactor checks the skip set
+  before each hook, so it cannot retroactively skip the current or an earlier hook.
+  <!-- evidence: `Transactor::executeHookChain` checks `hookSkips` before executing each hook and merges `hookResult.hookSkips` after that hook completes (`src/xrpld/app/tx/detail/Transactor.cpp:1313-1345`, `src/xrpld/app/tx/detail/Transactor.cpp:1454-1457`). -->
 - Re-skipping an already-skipped hash simply returns `1` (idempotent).
 - Combine with [`hook_hash`](hook_hash.md) to obtain the target hash and
   [`hook_pos`](hook_pos.md) to reason about ordering.
