@@ -1,7 +1,8 @@
 # hook_skip
 
 **Summary.** Prevent (or restore) execution of another hook in the current account's chain,
-identified by its WASM hash.
+using its 32-byte WASM hash.
+<!-- evidence: `HookAPI::hook_skip` accepts a 32-byte hash, checks that it exists in the current account's `sfHooks` array, and adds/removes it from `hookSkips` (`src/xrpld/app/hook/detail/HookAPI.cpp:1745-1790`). -->
 
 **Signature.**
 
@@ -28,7 +29,7 @@ hash is not part of this chain (add) or was not currently skipped (remove).
 - Un-skipping (flags=1) a hook that was never skipped → `DOESNT_EXIST`.
 
 **Caveats / notes.**
-- Only affects hooks in the *same account's* chain, and only those that have not yet run.
+- Only affects hooks in the *same account's* chain; the target hash must match an entry in that account's `sfHooks` array. <!-- evidence: `HookAPI::hook_skip` iterates the current account's `sfHooks` array and returns `DOESNT_EXIST` if the hash is absent (`src/xrpld/app/hook/detail/HookAPI.cpp:1765-1790`). -->
 - Re-skipping an already-skipped hash simply returns `1` (idempotent).
 - Combine with [`hook_hash`](hook_hash.md) to obtain the target hash and
   [`hook_pos`](hook_pos.md) to reason about ordering.
