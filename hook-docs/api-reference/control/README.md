@@ -93,6 +93,7 @@ build the `guard_id` from the source line number so each loop gets a distinct id
 | [`rollback`](rollback.md) | Terminate the hook and reject the originating transaction. |
 | [`_g`](_g.md) | Loop/branch guard; required at the top of every loop. |
 | [`hook_account`](hook_account.md) | Write the AccountID the hook is installed on. |
+<!-- evidence: `hook_account` returns the running hook's `hookCtx.result.account`; `src/xrpld/app/hook/detail/HookAPI.cpp:1630-1634` in Xahau/xahaud `release`. -->
 | [`hook_hash`](hook_hash.md) | Write the WASM hash of a hook in the chain. |
 | [`hook_pos`](hook_pos.md) | Return this hook's position within the hook chain. |
 | [`hook_param`](hook_param.md) | Read this hook's install-time parameter value by key. |
