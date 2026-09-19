@@ -2,6 +2,7 @@
 
 **Summary.** Write the 20-byte AccountID of the account the running hook is installed on
 into hook memory.
+<!-- evidence: `hook_account` returns `hookCtx.result.account`, and its generated wrapper writes 20 bytes; `src/xrpld/app/hook/detail/HookAPI.cpp:1630-1634`, `src/xrpld/app/hook/detail/applyHook.cpp:2741-2760` in Xahau/xahaud `release`. -->
 
 **Signature.**
 
@@ -18,6 +19,7 @@ int64_t hook_account(uint32_t write_ptr, uint32_t write_len);
 
 **Return value.** Returns `20` (the number of bytes written) on success. Errors:
 `OUT_OF_BOUNDS` (-1) if the buffer is outside memory; `TOO_SMALL` (-4) if `write_len < 20`.
+<!-- evidence: the wrapper checks `NOT_IN_BOUNDS`, then `ptr_len < 20`, and returns the result of writing 20 bytes; `src/xrpld/app/hook/detail/applyHook.cpp:2751-2760` in Xahau/xahaud `release`. -->
 
 **Common failure patterns.**
 - Passing a buffer smaller than 20 bytes → `TOO_SMALL`.
@@ -28,6 +30,7 @@ int64_t hook_account(uint32_t write_ptr, uint32_t write_len);
   [`util_raddr`](../utility/util_raddr.md) to convert to the human-readable form.
 - The "hook account" is the account whose hook is executing — not necessarily the sender of
   the originating transaction. Compare with [`otxn_field(sfAccount)`](../transaction/otxn_field.md).
+<!-- evidence: the release test installs the hook on `alice`, writes the 20-byte result, and returns it; `src/test/app/SetHook_test.cpp:6802-6814` in Xahau/xahaud `release`. -->
 
 **Minimal example.**
 
