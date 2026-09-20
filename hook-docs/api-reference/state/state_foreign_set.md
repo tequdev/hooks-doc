@@ -23,8 +23,8 @@ int64_t state_foreign_set(uint32_t read_ptr, uint32_t read_len,
 | `kread_len` | `uint32_t` | Key length; 1..32 bytes. |
 | `nread_ptr` | `uint32_t` | Pointer to a 32-byte namespace. |
 | `nread_len` | `uint32_t` | Namespace length. `0` (local only) or exactly 32. |
-| `aread_ptr` | `uint32_t` | Pointer to a 20-byte AccountID. `0` for the hook account. |
-| `aread_len` | `uint32_t` | Account length. `0` for local, or exactly 20 for foreign. |
+| `aread_ptr` | `uint32_t` | Pointer to a 20-byte AccountID when `aread_len` is 20; ignored for a local write. |
+| `aread_len` | `uint32_t` | Account length. `0` selects the hook account; exactly 20 selects the supplied foreign AccountID. |
 
 **Return value.** Returns the value length on success. Errors: `OUT_OF_BOUNDS` (-1);
 `TOO_BIG` (-3) if `kread_len > 32` or `read_len` exceeds the size limit; `TOO_SMALL` (-4) if
@@ -61,9 +61,10 @@ A successful grant is cached per (account, namespace) so later writes skip the e
   against the *target* account).
 
 **Caveats / notes.**
-- Writing to your own account (`aread_ptr == 0` or the account equals
+- Writing to your own account (`aread_len == 0` or the supplied account equals
   [`hook_account`](../control/hook_account.md)) never needs a grant and never touches the grant
   logic.
+  <!-- evidence: the WASM wrapper selects the hook account whenever `aread_len != 20`, while `HookAPI::state_foreign_set` bypasses grants when the selected account equals the current hook account (`src/xrpld/app/hook/detail/applyHook.cpp:1306-1342`, `src/xrpld/app/hook/detail/HookAPI.cpp:1903-1917`). -->
 - Because the grant scan is expensive and single-shot, validate authorization assumptions
   before attempting foreign writes; a single unauthorized attempt blocks the rest.
 - Reserve for new foreign entries is charged to the foreign (target) account, not the hook
