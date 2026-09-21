@@ -13,9 +13,11 @@ int64_t rollback(uint32_t read_ptr, uint32_t read_len, int64_t error_code);
 
 | Name | Type | Description |
 |---|---|---|
-| `read_ptr` | `uint32_t` | Pointer to an optional reason string. May be `0`. |
-| `read_len` | `uint32_t` | Length of the reason string. Capped at 256 bytes. |
+| `read_ptr` | `uint32_t` | Pointer to an optional reason string in WASM memory. If `0`, no reason string is read. |
+| `read_len` | `uint32_t` | Length of the reason string. Capped at 256 bytes (longer input is truncated). |
 | `error_code` | `int64_t` | Application-defined code recorded as `sfHookReturnCode`. |
+
+<!-- evidence: `HOOK_EXIT` in `include/xrpl/hook/Macro.h:235-264` caps `read_len` at 256, skips the memory read when `read_ptr` is zero, and validates a non-zero pointer after truncation. -->
 
 **Return value.** Terminates execution; internally returns `RC_ROLLBACK` (-19) to the VM.
 Can return `OUT_OF_BOUNDS` (-1) if a supplied reason string is out of bounds.
