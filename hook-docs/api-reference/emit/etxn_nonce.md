@@ -21,8 +21,10 @@ bad buffer; `TOO_MANY_NONCES` (-12) once more than `255` (`max_nonce`) nonces ha
 requested this execution; `TOO_SMALL` (-4) if `write_len < 32`.
 
 **Common failure patterns.**
-- Requesting a 256th nonce in one execution → `TOO_MANY_NONCES` (checked *before* the size
-  check for backwards compatibility).
+- Requesting a 257th nonce in one execution → `TOO_MANY_NONCES` (256 nonces are allowed;
+  the limit is checked *before* the size check for backwards compatibility).
+
+<!-- evidence: `HookAPI::etxn_nonce` in `src/xrpld/app/hook/detail/HookAPI.cpp:956-976` allows counters 0 through 255, and `applyHook.cpp:2779-2788` checks the limit before `write_len`. -->
 - A buffer smaller than 32 bytes → `TOO_SMALL`.
 
 **Caveats / notes.**
