@@ -16,12 +16,17 @@ int64_t ledger_nonce(uint32_t write_ptr, uint32_t write_len);
 | `write_len` | `uint32_t` | Must be at least 32. |
 
 **Return value.** Returns `32` (bytes written) on success. Errors: `TOO_SMALL` (-4) if
-`write_len < 32`; `OUT_OF_BOUNDS` (-1) for a bad buffer; `TOO_MANY_NONCES` (-12) once the
-per-execution nonce counter exceeds `max_nonce` (**255**).
+`write_len < 32`; `OUT_OF_BOUNDS` (-1) for a bad buffer; `TOO_MANY_NONCES` (-12) on the
+257th request in one execution.
+<!-- evidence: `max_nonce` is `255`, the counter starts at `0`, and `HookAPI::ledger_nonce` rejects only when the counter is greater than `max_nonce` before incrementing it (`include/xrpl/hook/Enum.h:399`, `src/xrpld/app/hook/detail/HookAPI.cpp:1830-1845`, `src/xrpld/app/hook/detail/applyHook.cpp:2798-2822`). -->
 
 **Common failure patterns.**
-- Requesting more than 255 nonces in one execution → `TOO_MANY_NONCES`.
+- Requesting a 257th nonce in one execution → `TOO_MANY_NONCES` (the first 256 requests
+  succeed).
 - A buffer shorter than 32 bytes → `TOO_SMALL`.
+  <!-- evidence: the release wrapper checks `write_len < 32` before calling `ledger_nonce`; the
+  API applies the nonce-counter limit and increments the counter after generating the nonce
+  (`src/xrpld/app/hook/detail/applyHook.cpp:2807-2816`, `src/xrpld/app/hook/detail/HookAPI.cpp:1833-1843`). -->
 
 **Caveats / notes.**
 - Each call increments an internal counter and hashes ledger sequence, parent close time,
