@@ -17,12 +17,14 @@ int64_t etxn_nonce(uint32_t write_ptr, uint32_t write_len);
 | `write_len` | `uint32_t` | Buffer length; must be at least 32. |
 
 **Return value.** Returns `32` (bytes written) on success. Errors: `OUT_OF_BOUNDS` (-1) for a
-bad buffer; `TOO_MANY_NONCES` (-12) once more than `255` (`max_nonce`) nonces have been
-requested this execution; `TOO_SMALL` (-4) if `write_len < 32`.
+bad buffer; `TOO_MANY_NONCES` (-12) on the 257th request in one execution; `TOO_SMALL` (-4)
+if `write_len < 32`.
+<!-- evidence: `max_nonce` is `255`, the counter starts at `0`, and the implementation rejects only when the counter is greater than `max_nonce`; `HookAPI::etxn_nonce` increments the counter after generating each nonce (`include/xrpl/hook/Enum.h:399`, `src/xrpld/app/hook/detail/HookAPI.cpp:956-978`, `src/xrpld/app/hook/detail/applyHook.cpp:2779-2785`). -->
 
 **Common failure patterns.**
-- Requesting a 256th nonce in one execution → `TOO_MANY_NONCES` (checked *before* the size
-  check for backwards compatibility).
+- Requesting a 257th nonce in one execution → `TOO_MANY_NONCES` (the first 256 requests
+  succeed; the counter check runs *before* the size check for backwards compatibility).
+  <!-- evidence: the release test calls `etxn_nonce` successfully 256 times, then expects `TOO_MANY_NONCES` (`src/test/app/SetHook_test.cpp:4492-4499`). -->
 - A buffer smaller than 32 bytes → `TOO_SMALL`.
 
 **Caveats / notes.**
