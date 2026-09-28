@@ -1,7 +1,9 @@
 # hook_param_set
 
-**Summary.** Override (or delete) a parameter value seen by a *subsequent* hook in the chain,
-identified by that hook's WASM hash.
+**Summary.** Override (or delete) a parameter value for a hook identified by hash; the override
+is read whenever that hook executes, including later lookups in the same execution if you
+address the current hook's own hash.
+<!-- evidence: `HookAPI::hook_param_set` stores overrides under the target hash, and `HookAPI::hook_param` checks `hookParamOverrides[hookHash]` on every lookup before falling back to the hook's own parameters (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1741`). -->
 
 **Signature.**
 
@@ -32,12 +34,13 @@ for bad pointers; `TOO_SMALL` (-4) if the key length is 0; `TOO_BIG` (-3) if the
 - Exceeding the 16-override budget → `TOO_MANY_PARAMS`.
 
 **Caveats / notes.**
-- Affects only hooks that execute *after* the current one in the chain, and only the hook
-  whose hash you name — this is how one hook parameterises the next.
+- Overrides are keyed by the target hook hash. If you target a later hook, that hook sees
+  the value when it runs; if you target this hook's own hash, later [`hook_param`](hook_param.md)
+  calls in the same execution see the override too. <!-- evidence: `HookAPI::hook_param_set` stores overrides under the supplied hash, and `HookAPI::hook_param` checks `hookParamOverrides[hookHash]` before `hookParams` (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1741`). -->
 - A `read_len` of `0` sets an empty override, which causes the target hook's
   [`hook_param`](hook_param.md) lookup for that key to return `DOESNT_EXIST` (an effective
-  "delete").
-- At most 16 overrides may be set across the hook (`max_params`).
+  "delete"). <!-- evidence: `HookAPI::hook_param_set` stores the empty value as-is, and `HookAPI::hook_param` treats a zero-length override as `DOESNT_EXIST` (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1704`, `src/xrpld/app/hook/detail/HookAPI.cpp:1713-1741`). -->
+- At most 16 overrides may be set across the hook (`max_params`). <!-- evidence: `hook_api::max_params` is 16, and `HookAPI::hook_param_set` returns `TOO_MANY_PARAMS` once `overrideCount >= max_params` (`include/xrpl/hook/Enum.h:399-402`, `src/xrpld/app/hook/detail/HookAPI.cpp:1727-1728`). -->
 
 **Minimal example.**
 
