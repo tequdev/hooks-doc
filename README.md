@@ -28,9 +28,10 @@ pnpm format        # biome format --write .
 
 ## How it's wired up
 
-- `hook-docs/.vitepress/config.mts` is the only code in this project. `srcDir` is `.`, so
-  every `.md` file under `hook-docs/` becomes a page, exactly mirroring the file tree — no
-  markdown file is renamed or moved to support the site.
+- `hook-docs/.vitepress/config.mts` configures the site; `hook-docs/.vitepress/plugins/rawMarkdown.ts`
+  (see below) and the repo-root `middleware.ts` are the only other code in this project.
+  `srcDir` is `.`, so every `.md` file under `hook-docs/` becomes a page, exactly mirroring the
+  file tree — no markdown file is renamed or moved to support the site.
 - Each directory's `README.md` acts as that directory's index page. Since VitePress only
   treats `index.md` as a directory index by default, a `rewrites()` function remaps every
   `.../README.md` to `.../index.md` at the routing layer, without touching the source files.
@@ -42,10 +43,14 @@ pnpm format        # biome format --write .
   sidebar level. Items omitted from the array are appended alphabetically. By default, an
   item's label comes from its first H1; add `sidebarTitle` to the page's frontmatter when
   the sidebar needs a shorter label.
-- Every page is also available as Markdown: append `.md` to its URL, or request the clean URL
-  with an `Accept: text/markdown` header. On Vercel, `middleware.ts` rewrites such requests to
-  the `.md` file emitted by the build; `hook-docs/.vitepress/plugins/rawMarkdown.ts` does the
-  same for `pnpm dev` and `pnpm preview`, serving the source file directly.
+- Every page is also available as clean Markdown at its clean URL plus `.md` (e.g.
+  `/api-reference/control.md`, root `/index.md`), or by requesting the clean URL with an
+  `Accept: text/markdown` header. `hook-docs/.vitepress/plugins/rawMarkdown.ts` generates this
+  document by stripping HTML comments and frontmatter, adding a `url:` frontmatter field, and
+  rewriting both relative and root-absolute in-site links to root-absolute clean URLs, while
+  otherwise preserving the source formatting; `pnpm dev` and the build serve the identical
+  document. `llms.txt` comes from `vitepress-plugin-llms`, and `llms-full.txt` is these same
+  per-page documents concatenated in sidebar order.
 - Theming is the VitePress default theme, unmodified — no custom CSS or theme overrides.
   Local full-text search (`themeConfig.search.provider: "local"`) and Shiki C/TypeScript
   syntax highlighting come from VitePress out of the box.

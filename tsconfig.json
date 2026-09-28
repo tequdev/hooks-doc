@@ -14,6 +14,11 @@
     "noUncheckedIndexedAccess": true,
     "types": ["node"]
   },
-  "include": ["hook-docs/.vitepress/config.mts", "middleware.ts", "middleware.test.ts"],
+  "include": [
+    "hook-docs/.vitepress/config.mts",
+    "hook-docs/.vitepress/plugins/rawMarkdown.test.ts",
+    "middleware.ts",
+    "middleware.test.ts"
+  ],
   "exclude": ["node_modules", "hook-docs/.vitepress/cache", "hook-docs/.vitepress/dist"]
 }
