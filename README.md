@@ -42,6 +42,10 @@ pnpm format        # biome format --write .
   sidebar level. Items omitted from the array are appended alphabetically. By default, an
   item's label comes from its first H1; add `sidebarTitle` to the page's frontmatter when
   the sidebar needs a shorter label.
+- Every page is also available as Markdown: append `.md` to its URL, or request the clean URL
+  with an `Accept: text/markdown` header. On Vercel, `middleware.ts` rewrites such requests to
+  the `.md` file emitted by the build; `hook-docs/.vitepress/plugins/rawMarkdown.ts` does the
+  same for `pnpm dev` and `pnpm preview`, serving the source file directly.
 - Theming is the VitePress default theme, unmodified — no custom CSS or theme overrides.
   Local full-text search (`themeConfig.search.provider: "local"`) and Shiki C/TypeScript
   syntax highlighting come from VitePress out of the box.

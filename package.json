@@ -9,7 +9,8 @@
     "preview": "vitepress preview hook-docs",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "test": "node --experimental-strip-types --test middleware.test.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.5.2",
     "@types/node": "^22.10.2",
+    "@vercel/functions": "^3.9.9",
     "typescript": "^5.7.2",
     "vitepress": "^1.6.4",
     "vitepress-plugin-llms": "^1.13.2"
