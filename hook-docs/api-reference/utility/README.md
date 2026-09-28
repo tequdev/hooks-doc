@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Utility APIs"
+---
+
 # Utility APIs
 
 Helper functions for cryptography, address conversion, keylet computation,

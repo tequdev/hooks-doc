@@ -32,7 +32,8 @@ multiplication overflows.
 int64_t burden = etxn_burden();
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test emit" `cbak`).**
+**Practical example.**
+<!-- adapted from `SetHook_test.cpp`, "Test emit" `cbak` -->
 
 ```c
 // Before reserving, burden is unavailable.

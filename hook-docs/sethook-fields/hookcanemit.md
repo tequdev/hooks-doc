@@ -4,26 +4,30 @@
 using the identical bit encoding and evaluation function as `HookOn`.
 
 **Amendment gating:** `featureHookCanEmit`
-(`include/xrpl/protocol/detail/features.macro:78`, `Supported::yes,
-VoteBehavior::DefaultNo`). If the field is present in an `sfHook` object without
-the amendment enabled, the whole `SetHook` operation is rejected:
+is supported with `VoteBehavior::DefaultNo`. If the field is present in an
+`sfHook` object without the amendment enabled, the whole `SetHook` operation is
+rejected with `temDISABLED`.
 
+<!-- `include/xrpl/protocol/detail/features.macro:78`, `Supported::yes`,
+`VoteBehavior::DefaultNo`
 ```cpp
 // SetHook.cpp:811-813
 if (!ctx.rules.enabled(featureHookCanEmit) &&
     hookSetObj.isFieldPresent(sfHookCanEmit))
     return temDISABLED;
 ```
+-->
 
-**Validation:** `SetHook.cpp:510-515` treats absence as a no-op — "HookCanEmit
-field is an optional field for backward compatibility" — there is no length or
-shape validation beyond it being a `UINT256`, and it is subject to the same
-`hsoDELETE`/`hsoNSDELETE` exclusion as `HookOn` (`SetHook.cpp:270,303`).
+**Validation:** Absence is treated as a no-op because `HookCanEmit` is optional
+for backward compatibility. There is no length or shape validation beyond it
+being a `UINT256`, and it is subject to the same `hsoDELETE`/`hsoNSDELETE`
+exclusion as `HookOn`.
+<!-- `SetHook.cpp:510-515`, `SetHook.cpp:270,303` -->
 
-**Runtime semantics.** `hook::canEmit` is literally `hook::canHook` applied to
-the emitted transaction's type and the hook's effective `HookCanEmit` value
-(`applyHook.cpp:827-831`):
+**Runtime semantics.** The emitted transaction's type and the hook's effective
+`HookCanEmit` value are evaluated identically to `HookOn`.
 
+<!-- `hook::canEmit`, `hook::canHook`, `applyHook.cpp:827-831`
 ```cpp
 bool
 hook::canEmit(ripple::TxType txType, ripple::uint256 hookCanEmit)
@@ -31,14 +35,15 @@ hook::canEmit(ripple::TxType txType, ripple::uint256 hookCanEmit)
     return hook::canHook(txType, hookCanEmit);
 }
 ```
+-->
 
-— so the same active-low-except-`ttHOOK_SET` rule from [HookOn](hookon.md)
+The same active-low-except-`ttHOOK_SET` rule from [HookOn](hookon.md) therefore
 applies here too.
 
 **Default value.** Unlike `HookOn` (default all-zero), `HookCanEmit` defaults
-to a value with **only** bit 22 (`ttHOOK_SET`) set
-(`applyHook.cpp:833-848`):
+to a value with **only** bit 22 (`ttHOOK_SET`) set.
 
+<!-- `hook::getHookCanEmit`, `applyHook.cpp:833-848`
 ```cpp
 ripple::uint256
 hook::getHookCanEmit(
@@ -57,16 +62,21 @@ hook::getHookCanEmit(
     return hookCanEmit;
 }
 ```
+-->
 
-Feeding `1<<22` through `canHook` inverts to all-1s, so — per the code's own
-comment — the default **allows every transaction type to be emitted,
-including `ttHOOK_SET`**. There is no `getHookOn`-style directional resolution
-here: it is simply `sfHook` entry → `ltHOOK_DEFINITION` → hardcoded default,
-with no incoming/outgoing split.
+Under the `HookOn` evaluation rule, `1<<22` inverts to all-1s, so the default
+**allows every transaction type to be emitted, including `ttHOOK_SET`**. There
+is no directional resolution: the effective value is selected from the
+`sfHook` entry, then `ltHOOK_DEFINITION`, then the hardcoded default, with no
+incoming/outgoing split.
+<!-- `hook::canHook`, `hook::getHookOn` -->
 
-**Enforcement point.** Checked inside the `emit()` host function
-(`src/xrpld/app/hook/detail/HookAPI.cpp:529-535`):
+**Enforcement point.** The permission is checked inside the `emit()` host
+function. A disallowed emit returns `EMISSION_FAILURE` (`-11`) from `emit()` —
+the same error code documented in `overview.md`'s error table — not a rollback;
+the hook must check the return value itself.
 
+<!-- `src/xrpld/app/hook/detail/HookAPI.cpp:529-535`
 ```cpp
 ripple::uint256 const& hookCanEmit = hookCtx.result.hookCanEmit;
 if (!hook::canEmit(txType, hookCanEmit))
@@ -75,13 +85,10 @@ if (!hook::canEmit(txType, hookCanEmit))
     return Unexpected(EMISSION_FAILURE);
 }
 ```
+-->
 
-A disallowed emit returns `EMISSION_FAILURE` (`-11`) from `emit()` — the same
-error code documented in `overview.md`'s error table — not a rollback; the hook
-must check the return value itself.
-
-**Worked/verified examples (`SetHook_test.cpp:14964-15048`, values confirmed
-against actual `emit()` results in a running hook):**
+**Worked examples** (values reflect actual `emit()` results in a running hook):
+<!-- Verified by `SetHook_test.cpp:14964-15048`. -->
 
 | `HookCanEmit` value | Effect |
 |---|---|

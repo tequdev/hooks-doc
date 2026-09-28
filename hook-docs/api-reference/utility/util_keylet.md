@@ -91,15 +91,18 @@ Notes:
 - `KEYLET_LINE`'s currency argument accepts either the 3-character code or a 20-byte
   currency, as parsed by the server's currency parser.
 
-**Header vs. server gap (important).** The server-side `keylet_code` enum
-(`include/xrpl/hook/Enum.h`) defines additional codes **27–36**:
+**Header vs. server gap (important).** The server-side `keylet_code` enum defines
+additional codes **27–36**:
+<!-- include/xrpl/hook/Enum.h -->
 `AMM=27, BRIDGE=28, XCHAIN_OWNED_CLAIM_ID=29,
 XCHAIN_OWNED_CREATE_ACCOUNT_CLAIM_ID=30, DID=31, ORACLE=32,
 MPTOKEN_ISSUANCE=33, MPTOKEN=34, CREDENTIAL=35, PERMISSIONED_DOMAIN=36`.
 The developer header `hook/hookapi.h` only `#define`s `KEYLET_*` up to 26, so
 **there is no `KEYLET_AMM`/`KEYLET_DID`/`KEYLET_ORACLE`/… constant shipped for hook
-authors.** If you target those types you must define the numeric constant yourself
-(as the test hooks in `SetHook_test.cpp` do). Of codes 27–36, only three are actually
+authors.** If you target those types you must define the numeric constant yourself,
+as test hooks targeting these codes do.
+<!-- SetHook_test.cpp -->
+Of codes 27–36, only three are actually
 implemented by `util_keylet`: `AMM` (27, gated on `featureAMM`), `DID` (31, gated on
 `featureDID`), and `ORACLE` (32, gated on `featurePriceOracle`). The remaining codes
 (`BRIDGE`, both `XCHAIN_*`, `MPTOKEN_ISSUANCE`, `MPTOKEN`, `CREDENTIAL`,

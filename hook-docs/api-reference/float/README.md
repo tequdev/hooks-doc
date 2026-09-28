@@ -1,21 +1,32 @@
+---
+sidebarTitle: "Float & Amount APIs"
+---
+
 # Float and Amount APIs
 
 This page documents the sixteen **float-and-amount** Hook APIs: the `float_*` family that
 lets a hook do arbitrary-precision decimal arithmetic on token amounts and serialize the
 result into (or read it out of) the ledger's `Amount` format.
 
-All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary.md](../../glossary.md); values come from `include/xrpl/hook/Enum.h`
-and `hook/error.h`, and every behaviour below is taken from the implementations in
-`src/xrpld/app/hook/detail/applyHook.cpp` and `src/xrpld/app/hook/detail/HookAPI.cpp`.
+All function signatures on this page match the Hook API. Return codes reference the shared
+error table in [../../glossary](../../glossary.md), and the descriptions below reflect
+the API's behavior.
+<!-- Signatures are copied verbatim from `hook/extern.h`. -->
+<!-- Return-code values come from `include/xrpl/hook/Enum.h` and `hook/error.h`. -->
+<!-- Behaviors are taken from `src/xrpld/app/hook/detail/applyHook.cpp` and `src/xrpld/app/hook/detail/HookAPI.cpp`. -->
 
 ---
 
 ## What an XFL is
 
+For the full format explainer (bit layout, valid range, relationship to the
+ledger's `Amount` encoding), see [../../xfl](../../xfl.md). This section
+covers just enough to read the function reference below.
+
 An **XFL** (the hooks floating-point format) is a single `int64_t` that encodes a decimal
 number the same way the ledger encodes IOU (token) amounts: a sign, a normalized mantissa,
-and a base-10 exponent. Its valid ranges are fixed (`src/xrpld/app/hook/HookAPI.h`):
+and a base-10 exponent. Its valid ranges are fixed:
+<!-- `src/xrpld/app/hook/HookAPI.h` -->
 
 - **Mantissa** — exactly 16 significant digits: `1000000000000000` (`minMantissa`) to
   `9999999999999999` (`maxMantissa`). Non-zero values are always normalized to this width.
@@ -114,19 +125,21 @@ distinguishes the two cases at runtime: `8` for native XAH, `48` for an IOU (8-b
 
 ## Related documents
 
-- [../../README.md](../../README.md) — documentation index.
-- [../../overview.md](../../overview.md) — hook execution model.
-- [../../glossary.md](../../glossary.md) — full error-code and term reference (including the
+- [../../xfl](../../xfl.md) — the XFL format explainer: bit encoding, valid
+  range, and relationship to the ledger's `Amount` format.
+- [../../README](../../README.md) — documentation index.
+- [../../overview](../../overview.md) — hook execution model.
+- [../../glossary](../../glossary.md) — full error-code and term reference (including the
   `INVALID_FLOAT = -10024` and `XFL_OVERFLOW` entries).
-- [../../macros.md](../../macros/README.md) — `AMOUNT_TO_DROPS`, `SBUF`, `TRACEXFL`, and the field-code
+- [../../macros](../../macros/README.md) — `AMOUNT_TO_DROPS`, `SBUF`, `TRACEXFL`, and the field-code
   helpers.
-- [../../best-practices.md](../../best-practices.md) — validating amounts and avoiding precision
+- [../../best-practices](../../best-practices.md) — validating amounts and avoiding precision
   surprises.
-- [transaction.md](../transaction/README.md) — `otxn_field` for reading the `sfAmount` field.
-- [ledger-and-slot.md](../slot/README.md) — `slot_float` reads a slotted amount directly as
+- [transaction](../transaction/README.md) — `otxn_field` for reading the `sfAmount` field.
+- [ledger-and-slot](../slot/README.md) — `slot_float` reads a slotted amount directly as
   an XFL.
-- [emit-and-etxn.md](../emit/README.md) — building the amounts you serialize into emitted
+- [emit-and-etxn](../emit/README.md) — building the amounts you serialize into emitted
   transactions.
-- [utility.md](../sto/README.md) — `sto_subfield` and the other STO helpers.
-- [../../examples/payment-filter.md](../../examples/payment-filter.md) — a threshold-check hook end
+- [utility](../sto/README.md) — `sto_subfield` and the other STO helpers.
+- [../../examples/payment-filter](../../examples/payment-filter.md) — a threshold-check hook end
   to end.

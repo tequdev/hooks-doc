@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Constants"
+---
+
 # Constants defined in `macro.h`
 
 The header also defines a set of plain integer constants used as arguments to the

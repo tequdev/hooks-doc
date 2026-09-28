@@ -16,7 +16,8 @@ int64_t float_compare(int64_t float1, int64_t float2, uint32_t mode);
 | `float2` | `int64_t` | Right-hand XFL. |
 | `mode` | `uint32_t` | A bitmask of the compare-mode flags below. |
 
-**Comparison flags** (`hook/hookapi.h`, mirrored by `hook_api::compare_mode` in `Enum.h`):
+**Comparison flags:**
+<!-- Defined in `hook/hookapi.h` and mirrored by `hook_api::compare_mode` in `Enum.h`. -->
 
 | Constant | Value | Meaning |
 |---|---|---|
@@ -47,7 +48,8 @@ if (float_compare(amount, threshold, COMPARE_LESS) == 1)
     rollback(SBUF("below threshold"), 1);
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test float_compare").**
+**Practical example.**
+<!-- Adapted from `SetHook_test.cpp`, "Test float_compare". -->
 
 ```c
 #define GT   0b100U   // COMPARE_GREATER

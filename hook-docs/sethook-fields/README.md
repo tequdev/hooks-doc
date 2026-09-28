@@ -11,7 +11,7 @@ a `sfHook` object can represent. All fields and rules described here exist
 on this branch (`dev`); this branch has no `HookApiVersion 1` (gas-metered)
 ABI, so `HookApiVersion` accepts only `0`.
 
-Field definitions come from `include/xrpl/protocol/detail/sfields.macro`;
+<!-- Field definitions come from `include/xrpl/protocol/detail/sfields.macro`;
 storage locations from `include/xrpl/protocol/detail/ledger_entries.macro`,
 `src/libxrpl/protocol/TxFormats.cpp`, and
 `src/libxrpl/protocol/InnerObjectFormats.cpp`; validation and
@@ -19,9 +19,9 @@ operation-inference logic from `src/xrpld/app/tx/detail/SetHook.cpp` and
 `src/xrpld/app/tx/detail/Transactor.cpp`; runtime semantics from
 `src/xrpld/app/hook/detail/applyHook.cpp` and
 `src/xrpld/app/hook/detail/HookAPI.cpp`; worked examples verified against
-`src/test/app/SetHook_test.cpp`.
+`src/test/app/SetHook_test.cpp`. -->
 
-**Start with [operations-field-matrix.md](operations-field-matrix.md)** if
+**Start with [operations-field-matrix](operations-field-matrix.md)** if
 you want the per-operation required/optional/forbidden table first — the
 individual field pages below go deeper on the runtime and validation
 semantics of each field but assume familiarity with the six operations.
@@ -31,7 +31,7 @@ semantics of each field but assume familiarity with the six operations.
 A `SetHook` transaction carries `sfHooks` (required), an array of `sfHook`
 objects (`HookSetObject`). Each `sfHook` entry describes one operation
 (`hsoCREATE`/`hsoINSTALL`/`hsoDELETE`/`hsoNSDELETE`/`hsoUPDATE`/`hsoNOOP`,
-inferred by `SetHook::inferOperation`) applied to one position in the account's
+inferred from which fields are present<!-- inferred by `SetHook::inferOperation` -->) applied to one position in the account's
 hook chain. See `../overview.md` for the lifecycle table.
 
 | Field | SField type (code) | Where it can appear | Required/optional |
@@ -52,10 +52,12 @@ hook chain. See `../overview.md` for the lifecycle table.
 `HookOn`, `HookApiVersion`, and `HookGrants` all show a numeric code of
 `20` above — this is not a collision. An SField code is only unique
 *within* its `SerializedTypeID` (`UINT256`, `UINT16`, `ARRAY`
-respectively here), not globally; see
-`include/xrpl/protocol/detail/sfields.macro` for the full type-scoped
-numbering.
+respectively here), not globally.
+<!-- see `include/xrpl/protocol/detail/sfields.macro` for the full type-scoped numbering -->
 
+The exact field declarations (name, storage type, and numeric code) match
+the table above.
+<!--
 Exact declarations
 (`include/xrpl/protocol/detail/sfields.macro:59,65,195,206-207,213-216,273,287-288,296,329,374-375,414-415`):
 
@@ -77,7 +79,14 @@ UNTYPED_SFIELD(sfHookGrant,              OBJECT,    24)
 UNTYPED_SFIELD(sfHookParameters,         ARRAY,     19)
 UNTYPED_SFIELD(sfHookGrants,             ARRAY,     20)
 ```
+-->
 
+`ltHOOK_DEFINITION` carries `sfHookHash`, `sfHookNamespace`,
+`sfHookParameters`, `sfHookApiVersion`, `sfCreateCode`, `sfHookSetTxnID`,
+`sfReferenceCount`, and `sfFee` as required fields, and `sfHookOn`,
+`sfHookOnIncoming`, `sfHookOnOutgoing`, `sfHookCanEmit`, `sfHookCallbackFee`,
+`sfPreviousTxnID`, and `sfPreviousTxnLgrSeq` as optional fields.
+<!--
 `ltHOOK_DEFINITION` (`include/xrpl/protocol/detail/ledger_entries.macro:94-110`) declares:
 
 ```cpp
@@ -99,25 +108,26 @@ LEDGER_ENTRY(ltHOOK_DEFINITION, 'D', HookDefinition, hook_definition, ({
     {sfPreviousTxnLgrSeq,    soeOPTIONAL},
 }))
 ```
+-->
 
-Neither `sfHookGrants` nor `sfHookName` appear here — grants and the
+Neither `sfHookGrants` nor `sfHookName` appear on `ltHOOK_DEFINITION` — grants and the
 display name are per-account (`sfHook`-entry-only) concepts, never part of
 the shared, hash-addressed definition (see [HookGrants](hookgrants.md) and
 [HookName](hookname.md)). `sfFlags` also doesn't appear in this list, but
 is not per-account-only —
 it is one of the fields auto-attached to every `LEDGER_ENTRY` (alongside
 `sfLedgerIndex`, `sfLedgerEntryType`, `sfRemarks`), so `ltHOOK_DEFINITION`
-does carry it in practice (see [flags.md](flags.md)).
+does carry it in practice (see [flags](flags.md)).
 
-`sfHookName` is instead a **common field on every transaction type**
+`sfHookName` is instead a **common field on every transaction type**<!--
 (`src/libxrpl/protocol/TxFormats.cpp:31-52`, the `commonFields` list shared by all
-`TxFormats`), alongside `sfHookParameters`. This lets a caller target one named
+`TxFormats`) -->, alongside `sfHookParameters`. This lets a caller target one named
 hook in a chain when submitting *any* transaction (Payment, Invoke, TrustSet,
 ...) — see the [HookName](hookname.md) section.
 
 ## Index
 
-**Start here:** [operations-field-matrix.md](operations-field-matrix.md) —
+**Start here:** [operations-field-matrix](operations-field-matrix.md) —
 the full per-operation (CREATE/INSTALL/UPDATE/DELETE/NSDELETE/NOOP)
 required/optional/forbidden table for all 12 fields, with `inferOperation`
 explained and every rule cited.
@@ -134,17 +144,17 @@ explained and every rule cited.
 | [HookCanEmit](hookcanemit.md) | Restricts which transaction types a hook is permitted to `emit()`. |
 | [HookApiVersion](hookapiversion.md) | Declares the Hook API ABI version; on this branch, must be `0`, and is stored only on `ltHOOK_DEFINITION` after create. |
 | [HookName](hookname.md) | Names one installed hook so any transaction can target it directly. |
-| [flags.md](flags.md) | The `hsf*` control/persistent bits (`hsfOVERRIDE`, `hsfNSDELETE`, `hsfCOLLECT`) carried in each `sfHook` object's own `Flags`. |
-| [operations-field-matrix.md](operations-field-matrix.md) | Per-operation field legality matrix (see "Start here" above). |
+| [flags](flags.md) | The `hsf*` control/persistent bits (`hsfOVERRIDE`, `hsfNSDELETE`, `hsfCOLLECT`) carried in each `sfHook` object's own `Flags`. |
+| [operations-field-matrix](operations-field-matrix.md) | Per-operation field legality matrix (see "Start here" above). |
 
 ## Related documents
 
-- [../overview.md](../overview.md) — SetHook lifecycle, operations/flags, and the
+- [../overview](../overview.md) — SetHook lifecycle, operations/flags, and the
   general error-code table (`EMISSION_FAILURE` and others).
-- [../api-reference/control/README.md](../api-reference/control/README.md) — `hook_pos`, `hook_skip`,
+- [../api-reference/control/README](../api-reference/control/README.md) — `hook_pos`, `hook_skip`,
   and other chain-position/control functions referenced by the execution model
   here.
-- [../api-reference/emit/README.md](../api-reference/emit/README.md) — `emit`,
+- [../api-reference/emit/README](../api-reference/emit/README.md) — `emit`,
   `etxn_reserve`, and the rest of the emission API that `HookCanEmit` gates.
-- [../glossary.md](../glossary.md) — definitions of `SetHook`, `HookOn`, TSH, and
+- [../glossary](../glossary.md) — definitions of `SetHook`, `HookOn`, TSH, and
   other terms used throughout this page.

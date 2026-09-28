@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Emit APIs"
+---
+
 # Emit and Emitted-Transaction APIs
 
 This page documents the eight **emit-and-etxn** Hook APIs: the functions a hook uses to
@@ -5,10 +9,10 @@ construct, price, and emit a new transaction of its own, plus the counters that 
 transactions deterministic and loop-safe.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary.md](../../glossary.md); the values quoted below come from
-`include/xrpl/hook/Enum.h` and `hook/error.h`, and every behaviour is taken from the
-implementations in `src/xrpld/app/hook/detail/applyHook.cpp` and
-`src/xrpld/app/hook/detail/HookAPI.cpp`.
+error table in [../../glossary](../../glossary.md).
+<!-- the values quoted below come from `include/xrpl/hook/Enum.h` and `hook/error.h`, and
+every behaviour is taken from the implementations in
+`src/xrpld/app/hook/detail/applyHook.cpp` and `src/xrpld/app/hook/detail/HookAPI.cpp` -->
 
 > **There is no `invoke` Hook API.** `ttINVOKE` (`99`, `hook/tts.h`) is a *transaction type*
 > that triggers hooks, not an API function. Do not look for an `invoke()` call — hooks emit
@@ -20,18 +24,27 @@ implementations in `src/xrpld/app/hook/detail/applyHook.cpp` and
 
 A hook does not "send" a transaction directly; it hands the ledger a fully-formed,
 already-serialized transaction blob, and the ledger queues it for application in a later
-ledger. The steps below are enforced in this order — every emit-related call first checks
-that a reservation exists (`hookCtx.expected_etxn_count`, which starts at `-1`), so
-`etxn_reserve` must come first.
+ledger. The steps below are enforced in this order. The APIs that calculate burden/details, price, prepare, or
+submit an emitted transaction check that a reservation exists (`hookCtx.expected_etxn_count`,
+which starts at `-1`), so `etxn_reserve` must come before those APIs. The independent
+`etxn_generation` and `etxn_nonce` helpers do not require a reservation.
+<!-- evidence: `HookAPI::etxn_burden`, `HookAPI::etxn_details`, `HookAPI::etxn_fee_base`, and
+`HookAPI::emit` check `expected_etxn_count` (as does `HookAPI::prepare`, `HookAPI.cpp:387-388`), while `HookAPI::etxn_generation` and
+`HookAPI::etxn_nonce` do not (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:475-476,
+813-816, 827-834, 858-863, 932-979`; wrappers in
+`src/xrpld/app/hook/detail/applyHook.cpp:1834-1839, 2765-2795`). -->
 
 1. **Reserve.** Call [`etxn_reserve(n)`](etxn_reserve.md) once, declaring the number of
-   transactions this hook execution intends to emit. Until this is done, every other function
-   on this page returns `PREREQUISITE_NOT_MET` (-9). `n` must be `1..255`.
+   transactions this hook execution intends to emit. Until this is done, the
+   reservation-dependent APIs on this page return `PREREQUISITE_NOT_MET` (-9). `n` must be
+   `1..255`.
 
 2. **Build the raw transaction.** Assemble the transaction as a serialized `STObject` in a
-   memory buffer. You can build it byte-by-byte with the `ENCODE_*`/`PREPARE_PAYMENT_*`
-   macro idiom shown in the test hooks, or (under `HooksUpdate2`) hand a partial template to
-   [`prepare`](prepare.md), which fills in the fixed fields for you.
+   memory buffer. The recommended way is to generate the template — and the `PREPARE_TXN()`
+   macro that fills the fixed fields — with the [Transaction Builder](../../tools/tx-builder.md).
+   Alternatively, build it by hand with the `ENCODE_*` macro idiom shown in the test hooks, or
+   (under `HooksUpdate2`) hand a partial template to [`prepare`](prepare.md), which fills in the
+   fixed fields for you.
 
 3. **Insert `sfEmitDetails`.** Call [`etxn_details(buf, len)`](etxn_details.md) to write the
    `sfEmitDetails` object into the transaction. This object is what marks the transaction as
@@ -52,7 +65,8 @@ eventual outcome.
 ### Burden, generation, and the anti-emission-loop mechanism
 
 Two counters ride along in `sfEmitDetails` and exist specifically to stop hooks from emitting
-transactions forever (verified in `HookAPI::emit`, `etxn_burden`, `etxn_generation`):
+transactions forever:
+<!-- verified in `HookAPI::emit`, `etxn_burden`, `etxn_generation` -->
 
 - **Generation** — [`etxn_generation()`](etxn_generation.md) returns `otxn_generation() + 1`.
   A user-submitted transaction has generation `0`; a transaction it emits carries generation
@@ -89,10 +103,13 @@ int64_t cbak(uint32_t r)
 }
 ```
 
-The only fact the code guarantees about the argument is bit 0: `emitFailure = isCallback &&
-(wasmParam & 1)` in `applyHook.cpp`. A callback may itself emit further transactions, but it
+The only fact the code guarantees about the argument is bit 0: it is set when the emitted
+transaction failed.
+<!-- emitFailure = isCallback && (wasmParam & 1) in `applyHook.cpp` -->
+A callback may itself emit further transactions, but it
 must call [`etxn_reserve`](etxn_reserve.md) again first — a fresh execution starts with no
-reservation (see the `cbak` in `SetHook_test.cpp`, "Test emit").
+reservation.
+<!-- see the `cbak` in `SetHook_test.cpp`, "Test emit" -->
 
 ---
 
@@ -100,7 +117,7 @@ reservation (see the `cbak` in `SetHook_test.cpp`, "Test emit").
 
 | Function | Purpose |
 |---|---|
-| [`etxn_reserve`](etxn_reserve.md) | Declare how many transactions this hook will emit. Must precede all other emit calls. |
+| [`etxn_reserve`](etxn_reserve.md) | Declare how many transactions this hook will emit. Must precede reservation-dependent emission calls. <!-- evidence: reservation-dependent emission APIs reject an unset `expected_etxn_count`, while `etxn_generation` and `etxn_nonce` do not (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:387-388, 475-476, 813-816, 827-834, 858-863, 932-979`). --> |
 | [`etxn_nonce`](etxn_nonce.md) | Write a unique nonce for an emitted transaction. |
 | [`etxn_details`](etxn_details.md) | Write the `sfEmitDetails` object required in every emitted transaction. |
 | [`etxn_fee_base`](etxn_fee_base.md) | Compute the minimum fee an emitted transaction must pay. |
@@ -111,16 +128,19 @@ reservation (see the `cbak` in `SetHook_test.cpp`, "Test emit").
 
 ## Related documents
 
-- [../../README.md](../../README.md) — documentation index.
-- [../../overview.md](../../overview.md) — hook execution model, strong/weak/callback executions.
-- [../../glossary.md](../../glossary.md) — full error-code and term reference.
-- [../../macros.md](../../macros/README.md) — the `ENCODE_*`, `PREPARE_PAYMENT_*`, `SBUF`, and `ASSERT`
-  helpers used to build emitted transactions.
-- [../../best-practices.md](../../best-practices.md) — structuring emissions and callbacks.
-- [../../examples/emitted-transaction.md](../../examples/emitted-transaction.md) — a full
+- [../../README](../../README.md) — documentation index.
+- [../../overview](../../overview.md) — hook execution model, strong/weak/callback executions.
+- [../../glossary](../../glossary.md) — full error-code and term reference.
+- [../../macros](../../macros/README.md) — the `ENCODE_*`, `SBUF`, and `ASSERT` helpers used to
+  build emitted transactions.
+- [../../tools/tx-builder](../../tools/tx-builder.md) — generate emitted-transaction templates
+  and the `PREPARE_TXN()` macro.
+- [../../best-practices](../../best-practices.md) — structuring emissions and callbacks.
+- [../../fees](../../fees.md) — how `etxn_fee_base` fits into the full hook fee model.
+- [../../examples/emitted-transaction](../../examples/emitted-transaction.md) — a full
   emit-a-payment example.
-- [control.md](../control/README.md) — `accept`/`rollback` and how they keep or discard emissions.
-- [transaction.md](../transaction/README.md) — `otxn_generation`, `otxn_burden`, and the other
+- [control](../control/README.md) — `accept`/`rollback` and how they keep or discard emissions.
+- [transaction](../transaction/README.md) — `otxn_generation`, `otxn_burden`, and the other
   originating-transaction accessors.
-- [ledger-and-slot.md](../ledger/README.md) — `fee_base`, `ledger_seq`, `ledger_nonce`.
-- [float-and-amount.md](../float/README.md) — building the `sfAmount` values you emit.
+- [ledger-and-slot](../ledger/README.md) — `fee_base`, `ledger_seq`, `ledger_nonce`.
+- [float-and-amount](../float/README.md) — building the `sfAmount` values you emit.

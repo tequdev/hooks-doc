@@ -36,7 +36,7 @@ normalizes to a value that cannot be represented; otherwise the specific normali
 int64_t half = float_set(-1, 5);   // 5 * 10^-1 = 0.5
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test float_set").**
+**Practical example.** <!-- Adapted from `SetHook_test.cpp`, "Test float_set". -->
 
 ```c
 // A mantissa of 0 is the canonical zero regardless of exponent.

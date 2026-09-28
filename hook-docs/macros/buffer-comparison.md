@@ -24,9 +24,10 @@ so they are cheap but require that each buffer really holds at least that many b
 uint8_t hash1[32], hash2[32];
 emit(SBUF(hash1), SBUF(tx));
 emit(SBUF(hash2), SBUF(tx2));
-if (!BUFFER_EQUAL_32(hash1, hash2))   // real usage from SetHook_test.cpp
+if (!BUFFER_EQUAL_32(hash1, hash2))   // example usage
     accept(SBUF("distinct emit hashes"), 0);
 ```
+<!-- original inline comment: "real usage from SetHook_test.cpp" -->
 
 Caveat: the word-at-a-time reinterpretation assumes the buffers are large enough;
 passing a buffer shorter than the fixed width reads out of bounds in your own memory.
