@@ -92,8 +92,7 @@ build the `guard_id` from the source line number so each loop gets a distinct id
 | [`accept`](accept.md) | Terminate the hook and let the originating transaction proceed. |
 | [`rollback`](rollback.md) | Terminate the hook and reject the originating transaction. |
 | [`_g`](_g.md) | Loop/branch guard; required at the top of every loop. |
-| [`hook_account`](hook_account.md) | Write the AccountID the hook is installed on. |
-<!-- evidence: `hook_account` returns the running hook's `hookCtx.result.account`; `src/xrpld/app/hook/detail/HookAPI.cpp:1630-1634` in Xahau/xahaud `release`. -->
+| [`hook_account`](hook_account.md) | Write the AccountID the hook is installed on. <!-- evidence: `hook_account` returns the running hook's `hookCtx.result.account` (`src/xrpld/app/hook/detail/HookAPI.cpp:1630-1634`). --> |
 | [`hook_hash`](hook_hash.md) | Write the WASM hash of a hook in the chain. |
 | [`hook_pos`](hook_pos.md) | Return this hook's position within the hook chain. <!-- evidence: `HookAPI::hook_pos()` returns `hookCtx.result.hookChainPosition`, and the generated `hook_pos` wrapper in `applyHook.cpp` returns it directly without `HOOK_SETUP()` or `HOOK_TEARDOWN()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1794-1798`, `src/xrpld/app/hook/detail/applyHook.cpp:3898-3901`). --> |
 | [`hook_param`](hook_param.md) | Read this hook's install-time parameter value by key. <!-- evidence: `HookAPI::hook_param` checks `hookParamOverrides[hookHash]` before `hookParams`, and returns `DOESNT_EXIST` for empty override values (`src/xrpld/app/hook/detail/HookAPI.cpp:1674-1709`). --> |
