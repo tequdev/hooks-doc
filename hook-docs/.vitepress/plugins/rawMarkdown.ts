@@ -83,16 +83,29 @@ function handleRawMarkdownRequest(
     return next();
   }
 
-  if (!pathname.endsWith(".md")) return next();
-
-  const filePath = path.resolve(docsRoot, `.${pathname}`);
-  if (
-    !isWithinDocsRoot(docsRoot, filePath) ||
-    !fs.existsSync(filePath) ||
-    !fs.statSync(filePath).isFile()
-  ) {
+  // A `.md` path names the document itself. A clean page URL is served as
+  // Markdown only when the client asks for it with `Accept: text/markdown`,
+  // mirroring middleware.ts on Vercel; the page may be a file or a directory
+  // index (index.md or README.md).
+  let candidates: string[];
+  if (pathname.endsWith(".md")) {
+    candidates = [pathname];
+  } else if (String(req.headers?.accept ?? "").includes("text/markdown")) {
+    const page = pathname.replace(/\/$/, "");
+    candidates = [`${page}.md`, `${page}/index.md`, `${page}/README.md`];
+  } else {
     return next();
   }
+
+  const filePath = candidates
+    .map((candidate) => path.resolve(docsRoot, `.${candidate}`))
+    .find(
+      (candidate) =>
+        isWithinDocsRoot(docsRoot, candidate) &&
+        fs.existsSync(candidate) &&
+        fs.statSync(candidate).isFile(),
+    );
+  if (!filePath) return next();
 
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/plain; charset=utf-8");

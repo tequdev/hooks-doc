@@ -10,9 +10,10 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "noUncheckedIndexedAccess": true,
     "types": ["node"]
   },
-  "include": ["hook-docs/.vitepress/config.mts"],
+  "include": ["hook-docs/.vitepress/config.mts", "middleware.ts", "middleware.test.ts"],
   "exclude": ["node_modules", "hook-docs/.vitepress/cache", "hook-docs/.vitepress/dist"]
 }
