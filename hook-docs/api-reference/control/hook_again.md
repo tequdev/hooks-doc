@@ -22,8 +22,10 @@ another weak pass from within a weak pass).
 
 **Caveats / notes.**
 - Strong execution runs *before* the transaction is applied and can `rollback`; the weak
-  re-execution runs *after* apply and is observational (its rollback cannot undo the applied
-  transaction). Use the `reserved` argument of `hook()` to tell which pass you are in.
+  re-execution runs *after* apply and cannot rollback the originating transaction. It can still
+  perform hook operations such as writing hook state. Use the `reserved` argument of `hook()`
+  to tell which pass you are in.
+  <!-- evidence: `Transactor::operator()` runs weak hooks after `apply()` and states that they do not have the ability to rollback; the release test confirms that a state write in the weak pass persists even when the strong pass rolls back (`src/xrpld/app/tx/detail/Transactor.cpp:2037-2039,2369-2398`, `src/test/app/SetHook_test.cpp:11070-11160`). -->
 - Only meaningful from a strong execution; hence `PREREQUISITE_NOT_MET` when `isStrong` is
   false.
 
