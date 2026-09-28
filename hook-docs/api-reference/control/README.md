@@ -94,9 +94,9 @@ build the `guard_id` from the source line number so each loop gets a distinct id
 | [`_g`](_g.md) | Loop/branch guard; required at the top of every loop. |
 | [`hook_account`](hook_account.md) | Write the AccountID the hook is installed on. |
 | [`hook_hash`](hook_hash.md) | Write the WASM hash of a hook in the chain. |
-| [`hook_pos`](hook_pos.md) | Return this hook's position within the hook chain. |
-| [`hook_param`](hook_param.md) | Read this hook's install-time parameter value by key. |
-| [`hook_param_set`](hook_param_set.md) | Override a parameter for a later hook in the chain. |
+| [`hook_pos`](hook_pos.md) | Return this hook's position within the hook chain. <!-- evidence: `HookAPI::hook_pos()` returns `hookCtx.result.hookChainPosition`, and the generated `hook_pos` wrapper in `applyHook.cpp` returns it directly without `HOOK_SETUP()` or `HOOK_TEARDOWN()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1794-1798`, `src/xrpld/app/hook/detail/applyHook.cpp:3898-3901`). --> |
+| [`hook_param`](hook_param.md) | Read this hook's install-time parameter value by key. <!-- evidence: `HookAPI::hook_param` checks `hookParamOverrides[hookHash]` before `hookParams`, and returns `DOESNT_EXIST` for empty override values (`src/xrpld/app/hook/detail/HookAPI.cpp:1674-1709`). --> |
+| [`hook_param_set`](hook_param_set.md) | Override a parameter for a hook in the chain, identified by hash. <!-- evidence: `HookAPI::hook_param_set` stores overrides under the target hash, and `HookAPI::hook_param` checks the current hook's hash-specific override before falling back to its own parameters (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1741`). --> |
 | [`hook_again`](hook_again.md) | Request a weak (post-apply) re-execution of the hook. |
 | [`hook_skip`](hook_skip.md) | Skip (or un-skip) a named hook in the chain. |
 
