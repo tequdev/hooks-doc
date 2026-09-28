@@ -27,8 +27,7 @@ WASM-facing wrappers that marshal arguments across the guest boundary.
 | [`ledger_last_time`](ledger_last_time.md) | Close time of the last closed ledger. |
 | [`ledger_last_hash`](ledger_last_hash.md) | Hash of the last closed ledger. |
 | [`ledger_nonce`](ledger_nonce.md) | A unique per-call nonce. |
-| [`ledger_keylet`](ledger_keylet.md) | Enumerate the first existing keylet strictly after `lo` and no later than `hi`. |
-<!-- evidence: `HookAPI::ledger_keylet` delegates to `Ledger::succ`, which uses `upper_bound(key)` and rejects results at or above `hi.next()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1849-1863`, `src/xrpld/app/ledger/Ledger.cpp:471-478`). -->
+| [`ledger_keylet`](ledger_keylet.md) | Enumerate the first existing keylet strictly after `lo` and no later than `hi`. <!-- evidence: `HookAPI::ledger_keylet` delegates to `succ`, which uses `upper_bound(key)` and rejects results at or above `hi.next()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1849-1863`, `src/xrpld/app/ledger/Ledger.cpp:471-478`). --> |
 
 ## Related documents
 
