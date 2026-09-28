@@ -11,8 +11,8 @@ const rewriteFor = (path: string, accept?: string) =>
 test("rewrites clean page URLs to their .md twin when Markdown is accepted", () => {
   assert.equal(rewriteFor("/overview", "text/markdown"), `${ORIGIN}/overview.md`);
   assert.equal(rewriteFor("/tools/", "text/html, text/markdown;q=0.9"), `${ORIGIN}/tools.md`);
-  assert.equal(rewriteFor("/", "text/markdown"), `${ORIGIN}/README.md`);
-  assert.equal(rewriteFor("/index", "text/markdown"), `${ORIGIN}/README.md`);
+  assert.equal(rewriteFor("/", "text/markdown"), `${ORIGIN}/index.md`);
+  assert.equal(rewriteFor("/index", "text/markdown"), `${ORIGIN}/index.md`);
 });
 
 test("leaves other requests alone", () => {

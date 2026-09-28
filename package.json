@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
     "format": "biome format --write .",
-    "test": "node --experimental-strip-types --test middleware.test.ts"
+    "test": "node --experimental-strip-types --test middleware.test.ts hook-docs/.vitepress/plugins/rawMarkdown.test.ts"
   },
   "keywords": [],
   "author": "",

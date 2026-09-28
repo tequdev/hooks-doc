@@ -282,6 +282,27 @@ function toSidebarItem(
   return item;
 }
 
+/**
+ * Depth-first flattening of the sidebar tree: the home page first, then each
+ * top-level doc immediately followed by its own children (recursively) —
+ * unlike `loadDocs()`'s flat, sort-order list, which detaches children
+ * (macros/*, tools/*, sethook-fields/*, api-reference groups) from their
+ * parent and leaves the home page wherever it happens to sort.
+ */
+function sidebarPageOrder(): string[] {
+  const { topLevel, childrenBySlug } = buildTree(loadDocs());
+  const order: string[] = [];
+  const visit = (doc: DocMeta) => {
+    order.push(doc.slug);
+    for (const child of childrenBySlug.get(doc.slug) ?? []) visit(child);
+  };
+  for (const doc of topLevel) {
+    if (doc.slug === "") continue; // added first, below
+    visit(doc);
+  }
+  return ["", ...order];
+}
+
 function prefixOf(slug: string): (typeof NAMED_PREFIXES)[number] | "guides" {
   for (const prefix of NAMED_PREFIXES) {
     if (slug === prefix || slug.startsWith(`${prefix}/`)) return prefix;
@@ -330,7 +351,10 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [rawMarkdownPlugin(docsRoot), llmstxt()],
+    plugins: [
+      rawMarkdownPlugin(docsRoot, { pageOrder: sidebarPageOrder() }),
+      llmstxt({ generateLLMFriendlyDocsForEachPage: false, generateLLMsFullTxt: false }),
+    ],
   },
 
   themeConfig: {

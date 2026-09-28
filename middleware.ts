@@ -6,15 +6,15 @@ import { next, rewrite } from "@vercel/functions";
  * `/overview.md`). Vercel checks the filesystem before applying `vercel.json`
  * rewrites, so only middleware can intercept a URL that already resolves to HTML.
  *
- * The build emits `<page>.md` next to every `<page>.html`; the site root is the one
- * page without a Markdown twin, so `/` falls back to the raw `README.md`. Vercel treats
- * `/index` as an alias of `/` when matching middleware routes, so it gets the same fallback.
+ * The build emits `<page>.md` next to every `<page>.html`, including `index.md` for
+ * the site root. Vercel treats `/index` as an alias of `/` when matching middleware
+ * routes, so both map to `/index.md`.
  */
 export default function middleware(request: Request): Response {
   if (!request.headers.get("accept")?.includes("text/markdown")) return next();
   const url = new URL(request.url);
   const page = url.pathname.replace(/\/$/, "");
-  url.pathname = page === "" || page === "/index" ? "/README.md" : `${page}.md`;
+  url.pathname = `${page || "/index"}.md`;
   return rewrite(url);
 }
 
