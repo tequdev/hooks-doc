@@ -3,13 +3,12 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import { type DefaultTheme, defineConfig } from "vitepress";
 import llmstxt from "vitepress-plugin-llms";
-import { rawMarkdownPlugin } from "./plugins/rawMarkdown";
+import { collectMarkdownFiles, pageSlugOf, rawMarkdownPlugin } from "./plugins/rawMarkdown";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // hook-docs/ (the VitePress project root / srcDir)
 const docsRoot = path.resolve(__dirname, "..");
 
-const INDEX_BASENAMES = new Set(["readme", "index"]);
 const NAMED_PREFIXES = ["api-reference", "examples"] as const;
 
 /**
@@ -192,31 +191,6 @@ interface DocMeta {
   title: string;
 }
 
-function collectMarkdownFiles(dir: string): string[] {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  let files: string[] = [];
-  for (const entry of entries) {
-    if (entry.name.startsWith(".")) continue; // skip .vitepress, dotfiles
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      files = files.concat(collectMarkdownFiles(full));
-    } else if (entry.isFile() && entry.name.toLowerCase().endsWith(".md")) {
-      files.push(full);
-    }
-  }
-  return files;
-}
-
-function slugOf(relPath: string): string {
-  const withoutExt = relPath.replace(/\.md$/i, "");
-  const parts = withoutExt.split(path.sep);
-  const base = parts[parts.length - 1];
-  if (base !== undefined && INDEX_BASENAMES.has(base.toLowerCase())) {
-    parts.pop();
-  }
-  return parts.join("/");
-}
-
 function sidebarTitleOf(filePath: string): string {
   const text = fs.readFileSync(filePath, "utf8");
   const frontmatter = text.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/)?.[1];
@@ -234,8 +208,8 @@ function sidebarTitleOf(filePath: string): string {
 function loadDocs(): DocMeta[] {
   return collectMarkdownFiles(docsRoot)
     .map((filePath) => {
-      const relPath = path.relative(docsRoot, filePath);
-      return { slug: slugOf(relPath), title: sidebarTitleOf(filePath) };
+      const relPath = path.relative(docsRoot, filePath).split(path.sep).join("/");
+      return { slug: pageSlugOf(relPath), title: sidebarTitleOf(filePath) };
     })
     .sort((a, b) => {
       const aOrder = sidebarOrderBySlug.get(a.slug);

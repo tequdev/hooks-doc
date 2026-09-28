@@ -21,15 +21,11 @@ interface MiddlewareServer {
   };
 }
 
-interface RawMarkdownOptions {
-  /** Page slugs (clean path without leading "/" and without ".md") in sidebar order; root is "". */
-  pageOrder: string[];
-}
-
 const INDEX_BASENAMES = new Set(["readme", "index"]);
 const URL_SCHEME = /^[a-z][a-z0-9+.-]*:/i;
 
-function collectMarkdownFiles(dir: string): string[] {
+/** Recursively lists every ".md" file under `dir` (absolute paths), skipping dotfiles/dirs. */
+export function collectMarkdownFiles(dir: string): string[] {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
   let files: string[] = [];
   for (const entry of entries) {
@@ -44,30 +40,26 @@ function collectMarkdownFiles(dir: string): string[] {
   return files;
 }
 
-function toPosixPath(filePath: string): string {
-  return filePath.split(path.sep).join("/");
-}
-
-function isWithinDocsRoot(docsRoot: string, filePath: string): boolean {
-  const relative = path.relative(docsRoot, filePath);
-  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
-}
-
 function stripMarkdownFrontmatter(text: string): string {
-  return text.replace(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/, "");
+  return text.replace(/^---\n([\s\S]*?)\n---(?:\n|$)/, "");
 }
 
 /**
- * Maps a source file's docsRoot-relative posix path to its clean-URL Markdown
- * output path. A README.md/index.md collapses onto its parent directory
- * (the root index becomes "/index.md").
+ * A source file's docsRoot-relative posix path, collapsed onto its page
+ * slug: a README.md/index.md collapses onto its parent directory, and the
+ * root index's slug is "".
  */
-export function cleanPathOf(relPath: string): string {
-  const parts = relPath.replace(/\.md$/i, "").split("/");
+export function pageSlugOf(relPosixPath: string): string {
+  const parts = relPosixPath.replace(/\.md$/i, "").split("/");
   const base = parts[parts.length - 1];
   if (base !== undefined && INDEX_BASENAMES.has(base.toLowerCase())) parts.pop();
-  const dir = parts.join("/");
-  return dir === "" ? "/index.md" : `/${dir}.md`;
+  return parts.join("/");
+}
+
+/** A source file's docsRoot-relative posix path to its clean-URL Markdown output path. */
+export function cleanPathOf(relPath: string): string {
+  const slug = pageSlugOf(relPath);
+  return slug === "" ? "/index.md" : `/${slug}.md`;
 }
 
 /** Splits a link target into its path portion and its "#fragment"/"?query" suffix. */
@@ -140,36 +132,27 @@ function rewriteLineLinks(
   });
 }
 
-interface FenceRun {
-  char: string;
-  len: number;
-}
-
-/** The opening run of a fence delimiter line (3+ backticks or tildes), if any. */
-function matchFence(line: string): FenceRun | undefined {
-  const match = line.match(/^\s*(`{3,}|~{3,})/);
-  const run = match?.[1];
-  return run === undefined ? undefined : { char: run[0] as string, len: run.length };
-}
-
 function rewriteLinks(
   text: string,
   relPath: string,
   hasPage: (cleanPath: string) => boolean,
 ): string {
-  let fence: FenceRun | undefined;
+  // `fence` holds the delimiter run (e.g. "````") that opened the current
+  // fenced block, if any. Only a run of the same character, at least as long
+  // as that one, closes it — a shorter or differently-fenced block nested
+  // inside (e.g. ``` inside a ```` block) does not.
+  let fence: string | undefined;
   return text
     .split("\n")
     .map((line) => {
-      const run = matchFence(line);
+      const run = line.match(/^\s*(`{3,}|~{3,})/)?.[1];
       if (fence) {
-        // Only a run of the same character, at least as long as the one that
-        // opened it, closes the fence — a shorter or differently-fenced
-        // block nested inside (e.g. ``` inside a ```` block) does not.
-        if (run && run.char === fence.char && run.len >= fence.len) fence = undefined;
+        if (run !== undefined && run[0] === fence[0] && run.length >= fence.length) {
+          fence = undefined;
+        }
         return line;
       }
-      if (run) {
+      if (run !== undefined) {
         fence = run;
         return line;
       }
@@ -181,18 +164,12 @@ function rewriteLinks(
 const WHITESPACE_ONLY = /^[ \t]*$/;
 
 /**
- * Removes HTML comments while keeping surrounding text and avoiding stray
- * whitespace: a comment alone on its line (with anything spanned inside it)
- * takes the whole line with it; a comment at the start of a line followed by
- * text drops the space(s) after it so the following text starts at column 0;
- * any other inline comment eats the whitespace immediately before it.
- *
- * Each `<!-- ... -->` match is resolved independently by looking only at its
- * own line, rather than folding the "is this line blank around it" check
- * into the removal regex itself: a combined pattern's trailing
- * whitespace-then-newline requirement can fail against the nearest `-->`
- * (because real text follows it), forcing the lazy quantifier to backtrack
- * past it and swallow everything up to the next comment's closing tag.
+ * Removes HTML comments while keeping surrounding text: a comment alone on
+ * its line takes the whole line with it, a line-start comment followed by
+ * text drops the space(s) after it, and any other inline comment eats the
+ * whitespace immediately before it. Each comment is decided by looking only
+ * at its own line; a single regex with a trailing-newline constraint
+ * backtracks past the nearest `-->` and swallows text up to the next comment.
  */
 function stripMarkdownComments(text: string): string {
   const commentRe = /<!--[\s\S]*?-->/g;
@@ -282,14 +259,10 @@ interface CleanPathEntry {
 function buildCleanPathMap(docsRoot: string): Map<string, CleanPathEntry> {
   const map = new Map<string, CleanPathEntry>();
   for (const absPath of collectMarkdownFiles(docsRoot)) {
-    const relPath = toPosixPath(path.relative(docsRoot, absPath));
+    const relPath = path.relative(docsRoot, absPath).split(path.sep).join("/");
     map.set(cleanPathOf(relPath), { absPath, relPath });
   }
   return map;
-}
-
-function makeHasPage(map: Map<string, CleanPathEntry>): (cleanPath: string) => boolean {
-  return (cleanPath: string) => map.has(cleanPath);
 }
 
 function handleRawMarkdownRequest(
@@ -316,28 +289,27 @@ function handleRawMarkdownRequest(
     return next();
   }
 
-  const acceptHeader = req.headers?.accept;
-  const accept = Array.isArray(acceptHeader) ? acceptHeader[0] : acceptHeader;
+  // Node joins duplicate headers of the same name into one comma-separated string.
+  const accept = String(req.headers?.accept ?? "");
   const requested = requestedMarkdownPath(pathname, accept);
   if (!requested) return next();
 
   const map = buildCleanPathMap(docsRoot);
   const entry = map.get(requested);
-  if (!entry || !isWithinDocsRoot(docsRoot, entry.absPath)) return next();
+  if (!entry) return next();
 
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/plain; charset=utf-8");
   res.end(
-    transformMarkdown(fs.readFileSync(entry.absPath, "utf8"), entry.relPath, makeHasPage(map)),
+    transformMarkdown(fs.readFileSync(entry.absPath, "utf8"), entry.relPath, (p) => map.has(p)),
   );
 }
 
-function slugOfCleanPath(cleanPath: string): string {
-  const slug = cleanPath.slice(1, -".md".length);
-  return slug === "index" ? "" : slug;
-}
-
-export function rawMarkdownPlugin(docsRoot: string, options: RawMarkdownOptions): Plugin {
+export function rawMarkdownPlugin(
+  docsRoot: string,
+  // `pageOrder`: page slugs (as `pageSlugOf` returns them) in sidebar order; root is "".
+  options: { pageOrder: string[] },
+): Plugin {
   return {
     name: "hooks-docs-raw-markdown",
     configureServer(server: MiddlewareServer) {
@@ -351,7 +323,7 @@ export function rawMarkdownPlugin(docsRoot: string, options: RawMarkdownOptions)
     // `<page>.md` files (see generateBundle below) already serve `pnpm preview`.
     generateBundle() {
       const map = buildCleanPathMap(docsRoot);
-      const hasPage = makeHasPage(map);
+      const hasPage = (p: string) => map.has(p);
       const docsBySlug = new Map<string, string>();
 
       for (const entry of map.values()) {
@@ -360,25 +332,19 @@ export function rawMarkdownPlugin(docsRoot: string, options: RawMarkdownOptions)
           entry.relPath,
           hasPage,
         );
-        const cleanPath = cleanPathOf(entry.relPath);
-        this.emitFile({ type: "asset", fileName: cleanPath.slice(1), source: transformed });
-        docsBySlug.set(slugOfCleanPath(cleanPath), transformed);
+        this.emitFile({
+          type: "asset",
+          fileName: cleanPathOf(entry.relPath).slice(1),
+          source: transformed,
+        });
+        docsBySlug.set(pageSlugOf(entry.relPath), transformed);
       }
 
-      const seen = new Set<string>();
-      const ordered: string[] = [];
-      for (const slug of options.pageOrder) {
+      // `pageOrder` comes from the same directory walk, so it already covers every page.
+      const ordered = options.pageOrder.flatMap((slug) => {
         const doc = docsBySlug.get(slug);
-        if (doc !== undefined) {
-          ordered.push(doc);
-          seen.add(slug);
-        }
-      }
-      const remaining = [...docsBySlug.keys()].filter((slug) => !seen.has(slug)).sort();
-      for (const slug of remaining) {
-        const doc = docsBySlug.get(slug);
-        if (doc !== undefined) ordered.push(doc);
-      }
+        return doc === undefined ? [] : [doc];
+      });
 
       this.emitFile({ type: "asset", fileName: "llms-full.txt", source: ordered.join("\n") });
     },
