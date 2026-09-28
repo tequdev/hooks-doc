@@ -1,7 +1,8 @@
 # ledger_keylet
 
-**Summary.** Given a lo and a hi keylet of the same type, return the next existing keylet in
-that range — a way to walk ledger objects.
+**Summary.** Given a lo and a hi keylet of the same type, return the first existing keylet strictly
+after `lo` and no later than `hi` — a way to walk ledger objects.
+<!-- evidence: `HookAPI::ledger_keylet` calls `Ledger::succ`, whose `upper_bound(key)` search is strictly greater than the low key and whose `last` check excludes keys at or above `hi.next()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1849-1863`, `src/xrpld/app/ledger/Ledger.cpp:471-478`). -->
 
 **Signature.**
 
@@ -34,10 +35,15 @@ serialized keylet; `DOES_NOT_MATCH` (-40) if the lo and hi keylets are of differ
 - Any keylet buffer not exactly 34 bytes → `TOO_SMALL`/`TOO_BIG`.
 
 **Caveats / notes.**
-- Both bounds must be the same keylet type; the search is `view().succ(lo, hi.next())`, i.e.
-  the first key `>= lo` and `<= hi`.
-- To enumerate a whole range, feed the returned keylet (advanced by one) back in as the new
+- Both bounds must be the same keylet type; the search is `view().succ(lo, hi.next())`, which returns the
+  first key strictly greater than `lo` and less than `hi.next()` (therefore `<= hi`).
+  <!-- evidence: `HookAPI::ledger_keylet` rejects different keylet types, then passes `klLo.key` and
+  `klHi.key.next()` to `succ`; `Ledger::succ` uses `upper_bound(key)` and rejects keys `>= last`
+  (`src/xrpld/app/hook/detail/HookAPI.cpp:1851-1863`, `src/xrpld/app/ledger/Ledger.cpp:471-478`). -->
+- To enumerate a whole range, feed the returned keylet back in as the new
   low bound and loop until `DOESNT_EXIST`.
+  <!-- evidence: `Ledger::succ` searches strictly above its low-key argument, so the returned keylet
+  itself can be reused as the next low bound (`src/xrpld/app/ledger/Ledger.cpp:471-478`). -->
 - Build the input keylets with [`util_keylet`](../utility/util_keylet.md).
 
 **Minimal example.**
