@@ -2,7 +2,7 @@
 
 **Summary.** Verify a cryptographic signature over a payload using a supplied public
 key. Both secp256k1 and ed25519 signatures are supported; the key type is inferred
-from the public key using the standard XRPLD convention (an ed25519 public key is 33
+from the public key using the standard Xahaud convention (an ed25519 public key is 33
 bytes prefixed with `0xED`; a secp256k1 public key is a 33-byte compressed point).
 
 **Signature.**
@@ -42,7 +42,7 @@ int64_t util_verify(
 
 **Caveats.** Signature canonicalization is not enforced by this call (it verifies with
 `mustBeFullyCanonical = false`). The function does not hash the data for you — pass the
-exact bytes that were signed (many XRPL signing schemes sign a prefixed/serialized
+exact bytes that were signed (many Xahau signing schemes sign a prefixed/serialized
 blob; reproduce that blob before verifying).
 
 **Minimal example.**

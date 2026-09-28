@@ -11,7 +11,8 @@ int64_t state(uint32_t write_ptr, uint32_t write_len,
 ```
 
 `state` is a thin wrapper that calls `state_foreign` with a zero-length namespace and account
-(`applyHook.cpp`), so it reads the hook account under the current namespace.
+so it reads the hook account under the current namespace.
+<!-- Wrapper implementation: `applyHook.cpp`. -->
 
 **Parameters.**
 
@@ -49,7 +50,8 @@ uint8_t buf[32];
 int64_t n = state((uint32_t)buf, sizeof(buf), SBUF("key"));  // n = value length or error
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test state").**
+**Practical example.**
+<!-- Adapted from `SetHook_test.cpp`, "Test state". -->
 
 ```c
 int64_t hook(uint32_t reserved)

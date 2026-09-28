@@ -39,7 +39,8 @@ entry is corrupt; `NOT_AN_OBJECT` (-23) if the parent is not an object.
 uint32_t amt = slot_subfield(txn_slot, sfAmount, 0);
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test slot_subfield").**
+**Practical example.**
+<!-- adapted from `SetHook_test.cpp`, "Test slot_subfield" -->
 
 ```c
 // Load the originating transaction, then drill to its Amount field.

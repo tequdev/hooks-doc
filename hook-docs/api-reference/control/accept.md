@@ -20,7 +20,9 @@ int64_t accept(uint32_t read_ptr, uint32_t read_len, int64_t error_code);
 **Return value.** Does not return to the caller in the normal sense — it terminates hook
 execution. Internally returns the sentinel `RC_ACCEPT` (-20) to the VM. The only error it
 can produce is `OUT_OF_BOUNDS` (-1), if `read_ptr`/`read_len` point outside WASM memory
-while a reason string is supplied (see the `HOOK_EXIT` macro in `include/xrpl/hook/Macro.h`).
+while a reason string is supplied.
+
+<!-- see the HOOK_EXIT macro in include/xrpl/hook/Macro.h -->
 
 **Common failure patterns.**
 - Passing a non-zero `read_ptr` with a `read_len` that runs past the end of memory returns

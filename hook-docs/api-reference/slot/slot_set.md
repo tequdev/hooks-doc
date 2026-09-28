@@ -43,7 +43,8 @@ util_keylet((uint32_t)kl, 34, KEYLET_ACCOUNT, (uint32_t)accid, 20, 0,0,0,0);
 int64_t s = slot_set((uint32_t)kl, 34, 0);   // s = allocated slot number
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test slot_set").**
+**Practical example.**
+<!-- adapted from `SetHook_test.cpp`, "Test slot_set" -->
 
 ```c
 int64_t hook(uint32_t reserved)

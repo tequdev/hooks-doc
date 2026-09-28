@@ -11,7 +11,8 @@ int64_t state_set(uint32_t read_ptr, uint32_t read_len,
 ```
 
 `state_set` is a wrapper that calls `state_foreign_set` with a zero-length namespace and
-account (`applyHook.cpp`), targeting the hook account under the current namespace.
+account, targeting the hook account under the current namespace.
+<!-- Wrapper implementation: `applyHook.cpp`. -->
 
 **Parameters.**
 
@@ -38,11 +39,12 @@ account (`applyHook.cpp`), targeting the hook account under the current namespac
 
 **Caveats / notes.**
 - **Deletion:** passing a zero-length value (`state_set(0, 0, key_ptr, key_len)`) deletes the
-  entry, as noted in `applyHook.cpp` ("passing 0 size causes a delete operation which is
-  as-intended").
+  entry.
+  <!-- `applyHook.cpp` notes: "passing 0 size causes a delete operation which is as-intended". -->
 - Overwriting an existing key does not consume additional reserve; only new keys do.
-- Writes are cached during execution and flushed by `finalizeHookState` on `accept`. A
-  `rollback` (or falling off the end of `hook()`) discards all staged writes.
+- Writes are cached during execution and flushed on `accept`.
+  <!-- The internal function that flushes them is `finalizeHookState`. -->
+  A `rollback` (or falling off the end of `hook()`) discards all staged writes.
 - The current namespace is the hook's `sfHookNamespace`; use [`state_foreign_set`](state_foreign_set.md)
   to write into a different namespace or account.
 
@@ -53,7 +55,8 @@ state_set(SBUF("content"), SBUF("key"));   // create/update
 state_set(0, 0, SBUF("key"));              // delete
 ```
 
-**Practical example (state counter, adapted from `SetHook_test.cpp`, "Test state").**
+**Practical example (state counter).**
+<!-- Adapted from `SetHook_test.cpp`, "Test state". -->
 
 ```c
 // increment an 8-byte big-endian counter stored under "ctr"

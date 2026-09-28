@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Control APIs"
+---
+
 # Control APIs
 
 This page documents the ten **control** Hook APIs: the functions that terminate hook
@@ -5,8 +9,8 @@ execution, guard loops, and inspect or influence the hook's position and paramet
 the hook chain.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary.md](../../glossary.md); the values quoted below come from
-`include/xrpl/hook/Enum.h` and `hook/error.h`.
+error table in [../../glossary](../../glossary.md); the values quoted below come from
+<!-- include/xrpl/hook/Enum.h and --> `hook/error.h`.
 
 ---
 
@@ -25,13 +29,16 @@ and return the special sentinel codes `RC_ACCEPT` (-20) or `RC_ROLLBACK` (-19) t
 which stops execution. Code after an `accept`/`rollback` call in the same path never runs.
 
 If a hook function returns normally (falls off the end of `hook()`) without calling either,
-the default exit type is `ROLLBACK` (see `applyHook.cpp`, where the result is initialised
-with `exitType = ROLLBACK` "unless the hook calls accept()"). Under the `fixXahauV3`
+the default exit type is `ROLLBACK`. Under the `fixXahauV3`
 amendment the default becomes `WASM_ERROR` instead; either way, not calling `accept`
 rejects the transaction. **Always call `accept` explicitly on the success path.**
 
-Each hook execution records a metadata entry (`sfHookExecution`) that captures the outcome
-(verified in `applyHook.cpp`):
+<!-- see applyHook.cpp: the result is initialised with exitType = ROLLBACK "unless the
+hook calls accept()". -->
+
+Each hook execution records a metadata entry (`sfHookExecution`) that captures the outcome:
+
+<!-- verified in applyHook.cpp -->
 
 - `sfHookResult` — the exit type as a `uint8_t` (`ExitType`: `WASM_ERROR=1`, `ROLLBACK=2`,
   `ACCEPT=3`; `UNSET=0`).
@@ -57,12 +64,14 @@ hooks halt.
 Two enforcement points exist:
 
 1. **Install time (static validation).** When a hook is set, the server runs the guard
-   validator in `include/xrpl/hook/Guard.h` (`check_guard`) over the WASM. It walks the code
+   validator over the WASM. It walks the code
    section and, for every `loop` opcode (`0x03`), requires the *immediately following*
    instructions to be exactly `i32.const <guard_id>`, `i32.const <maxiter>`, `call _g`. A
    loop that is missing this prologue, that specifies `maxiter == 0`, or that calls a
    function other than `_g` there is **rejected** and the `SetHook` fails (log codes such as
    `GUARD_MISSING`). There is a hard limit of 1024 guard calls per hook.
+
+   <!-- validator: include/xrpl/hook/Guard.h (check_guard) -->
 
 2. **Run time (dynamic enforcement).** During execution `_g` counts calls per `guard_id`. If
    a guarded loop exceeds its declared `maxiter`, `_g` sets the exit type to `ROLLBACK` with
@@ -71,7 +80,7 @@ Two enforcement points exist:
 
 The developer-facing `GUARD(maxiter)` / `GUARDM(maxiter, n)` macros (in `hook/macro.h`)
 build the `guard_id` from the source line number so each loop gets a distinct id; see
-[../macros.md](../../macros/guards.md). You rarely call `_g` by hand except for the mandatory
+[../macros](../../macros/guards.md). You rarely call `_g` by hand except for the mandatory
 `_g(1,1)` at the top of `hook()`.
 
 ---
@@ -83,22 +92,22 @@ build the `guard_id` from the source line number so each loop gets a distinct id
 | [`accept`](accept.md) | Terminate the hook and let the originating transaction proceed. |
 | [`rollback`](rollback.md) | Terminate the hook and reject the originating transaction. |
 | [`_g`](_g.md) | Loop/branch guard; required at the top of every loop. |
-| [`hook_account`](hook_account.md) | Write the AccountID the hook is installed on. |
+| [`hook_account`](hook_account.md) | Write the AccountID the hook is installed on. <!-- evidence: `hook_account` returns the running hook's `hookCtx.result.account` (`src/xrpld/app/hook/detail/HookAPI.cpp:1630-1634`). --> |
 | [`hook_hash`](hook_hash.md) | Write the WASM hash of a hook in the chain. |
-| [`hook_pos`](hook_pos.md) | Return this hook's position within the hook chain. |
-| [`hook_param`](hook_param.md) | Read this hook's install-time parameter value by key. |
-| [`hook_param_set`](hook_param_set.md) | Override a parameter for a later hook in the chain. |
+| [`hook_pos`](hook_pos.md) | Return this hook's position within the hook chain. <!-- evidence: `HookAPI::hook_pos()` returns `hookCtx.result.hookChainPosition`, and the generated `hook_pos` wrapper in `applyHook.cpp` returns it directly without `HOOK_SETUP()` or `HOOK_TEARDOWN()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1794-1798`, `src/xrpld/app/hook/detail/applyHook.cpp:3898-3901`). --> |
+| [`hook_param`](hook_param.md) | Read this hook's install-time parameter value by key. <!-- evidence: `HookAPI::hook_param` checks `hookParamOverrides[hookHash]` before `hookParams`, and returns `DOESNT_EXIST` for empty override values (`src/xrpld/app/hook/detail/HookAPI.cpp:1674-1709`). --> |
+| [`hook_param_set`](hook_param_set.md) | Override a parameter for a hook in the chain, identified by hash. <!-- evidence: `HookAPI::hook_param_set` stores overrides under the target hash, and `HookAPI::hook_param` checks the current hook's hash-specific override before falling back to its own parameters (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1741`). --> |
 | [`hook_again`](hook_again.md) | Request a weak (post-apply) re-execution of the hook. |
 | [`hook_skip`](hook_skip.md) | Skip (or un-skip) a hook in the chain by hash. <!-- evidence: `HookAPI::hook_skip` accepts a 32-byte hash, checks that it exists in the current account's `sfHooks` array, and adds/removes it from `hookSkips` (`src/xrpld/app/hook/detail/HookAPI.cpp:1745-1790`). --> |
 
 ## Related documents
 
-- [../../README.md](../../README.md) — documentation index.
-- [../../overview.md](../../overview.md) — hook execution model and lifecycle.
-- [../../glossary.md](../../glossary.md) — full error-code and term reference.
-- [../../macros.md](../../macros/README.md) — `GUARD`, `ASSERT`, `NOPE`, `SBUF`, and other helpers.
-- [../../best-practices.md](../../best-practices.md) — guarding loops and structuring accept/rollback.
-- [transaction.md](../transaction/README.md) — the `otxn_*` originating-transaction APIs.
-- [state.md](../state/README.md) — persistent state read/write.
-- [emit-and-etxn.md](../emit/README.md) — emitting transactions from a hook.
-- [utility.md](../utility/README.md) — `util_raddr`, `util_keylet`, STO helpers.
+- [../../README](../../README.md) — documentation index.
+- [../../overview](../../overview.md) — hook execution model and lifecycle.
+- [../../glossary](../../glossary.md) — full error-code and term reference.
+- [../../macros](../../macros/README.md) — `GUARD`, `ASSERT`, `NOPE`, `SBUF`, and other helpers.
+- [../../best-practices](../../best-practices.md) — guarding loops and structuring accept/rollback.
+- [transaction](../transaction/README.md) — the `otxn_*` originating-transaction APIs.
+- [state](../state/README.md) — persistent state read/write.
+- [emit-and-etxn](../emit/README.md) — emitting transactions from a hook.
+- [utility](../utility/README.md) — `util_raddr`, `util_keylet`, STO helpers.

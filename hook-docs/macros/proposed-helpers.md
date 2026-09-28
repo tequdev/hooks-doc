@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Proposed Helpers"
+---
+
 # Proposed helpers (not in the repository)
 
 The following do **not** exist in `hook/macro.h`. They are suggestions consistent with

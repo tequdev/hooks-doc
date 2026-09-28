@@ -1,3 +1,7 @@
+---
+sidebarTitle: "Transaction APIs"
+---
+
 # Transaction APIs
 
 This page documents the seven **transaction** Hook APIs: the `otxn_*` family, which reads
@@ -5,10 +9,13 @@ the *originating transaction* — the transaction that caused the hook to run �
 lineage (burden and generation) and its carried parameters.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary.md](../../glossary.md); the values quoted below come from
-`include/xrpl/hook/Enum.h` and `hook/error.h`. The implementations are in
-`src/xrpld/app/hook/detail/HookAPI.cpp` (the `HookAPI::otxn_*` methods) and their WASM
-wrappers in `src/xrpld/app/hook/detail/applyHook.cpp`.
+error table in [../../glossary](../../glossary.md); the values quoted below come from
+<!-- include/xrpl/hook/Enum.h and --> `hook/error.h`.
+
+<!--
+Implementations: src/xrpld/app/hook/detail/HookAPI.cpp (the HookAPI::otxn_* methods) and
+their WASM wrappers in src/xrpld/app/hook/detail/applyHook.cpp.
+-->
 
 ---
 
@@ -31,8 +38,10 @@ transaction and that emitted transaction later *fails*, the hook's `cbak` entry 
 invoked with the low bit of its `reserved` argument set. In that case the server populates an
 internal `emitFailure` object with the *emitted* transaction (read back from the emitted-txn
 ledger directory), and the `otxn_*` functions read from **that** transaction instead of the
-incoming one (verified in `applyHook.cpp`, where `emitFailure` is set to the emitted
-`STObject` when `isCallback && (wasmParam & 1)`). Concretely:
+incoming one. Concretely:
+
+<!-- verified in applyHook.cpp: emitFailure is set to the emitted STObject when
+isCallback && (wasmParam & 1). -->
 
 - `otxn_type` returns the *emitted* transaction's `sfTransactionType`.
 - `otxn_field` reads fields from the *emitted* transaction.
@@ -41,7 +50,7 @@ incoming one (verified in `applyHook.cpp`, where `emitFailure` is set to the emi
 
 When `cbak` is invoked for a *successful* emitted transaction (low bit clear), `emitFailure`
 is not set and the `otxn_*` functions behave as in a normal execution. See
-[`hook_again`](../control/hook_again.md) and [../../overview.md](../../overview.md) for the
+[`hook_again`](../control/hook_again.md) and [../../overview](../../overview.md) for the
 strong/weak/callback execution model.
 
 ---
@@ -60,17 +69,17 @@ strong/weak/callback execution model.
 
 ## Related documents
 
-- [../../README.md](../../README.md) — documentation index.
-- [../../overview.md](../../overview.md) — hook execution model (strong / weak / callback).
-- [../../glossary.md](../../glossary.md) — full error-code and term reference.
-- [../../macros.md](../../macros/README.md) — `SBUF`, `ASSERT`, `AMOUNT_TO_DROPS`, and other helpers.
-- [../../best-practices.md](../../best-practices.md) — validating inputs and guarding loops.
-- [control.md](../control/README.md) — `accept`, `rollback`, `hook_account`, and the guard system.
-- [state.md](../state/README.md) — persistent state read/write.
-- [ledger-and-slot.md](../slot/README.md) — `otxn_slot`, `slot_subfield`, `slot_float`, `meta_slot`.
-- [emit-and-etxn.md](../emit/README.md) — emitting transactions; `etxn_burden`, `etxn_generation`.
-- [float-and-amount.md](../float/README.md) — XFL and amount handling.
-- [utility.md](../utility/README.md) — `util_raddr`, STO helpers for parsing serialized fields.
+- [../../README](../../README.md) — documentation index.
+- [../../overview](../../overview.md) — hook execution model (strong / weak / callback).
+- [../../glossary](../../glossary.md) — full error-code and term reference.
+- [../../macros](../../macros/README.md) — `SBUF`, `ASSERT`, `AMOUNT_TO_DROPS`, and other helpers.
+- [../../best-practices](../../best-practices.md) — validating inputs and guarding loops.
+- [control](../control/README.md) — `accept`, `rollback`, `hook_account`, and the guard system.
+- [state](../state/README.md) — persistent state read/write.
+- [ledger-and-slot](../slot/README.md) — `otxn_slot`, `slot_subfield`, `slot_float`, `meta_slot`.
+- [emit-and-etxn](../emit/README.md) — emitting transactions; `etxn_burden`, `etxn_generation`.
+- [float-and-amount](../float/README.md) — XFL and amount handling.
+- [utility](../utility/README.md) — `util_raddr`, STO helpers for parsing serialized fields.
 - Examples: [payment-filter](../../examples/payment-filter.md),
   [state-counter](../../examples/state-counter.md),
   [emitted-transaction](../../examples/emitted-transaction.md),

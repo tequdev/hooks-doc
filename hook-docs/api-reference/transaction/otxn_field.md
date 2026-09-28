@@ -17,9 +17,11 @@ int64_t otxn_field(uint32_t write_ptr, uint32_t write_len, uint32_t field_id);
 | `write_len` | `uint32_t` | Buffer length. Must be `0` when `write_ptr` is `0`. |
 | `field_id` | `uint32_t` | The SField code of the field to read (see `hook/sfcodes.h`). |
 
-**Return value.** With a real buffer: the number of bytes written (the serialized field
-length). With `write_ptr == 0` and `write_len == 0`: the field value packed into an
-`int64_t` (via `data_as_int64`), useful for small numeric fields. Errors:
+**Return value.** With a real buffer: the number of bytes written for the field payload. With
+`write_ptr == 0` and `write_len == 0`: the field value packed into an `int64_t` (via
+`data_as_int64`), useful for small numeric fields. Errors:
+
+<!-- evidence: `otxn_field` serializes the field, then `WRITE_WASM_MEMORY_OR_RETURN_AS_INT64` strips the leading variable-length byte for account fields and returns the number of payload bytes written (`src/xrpld/app/hook/detail/applyHook.cpp:1906-1916`, `include/xrpl/hook/Macro.h:272-297`, xahaud `origin/release`). -->
 `INVALID_ARGUMENT` (-7) if `write_ptr == 0` but `write_len != 0`;
 `OUT_OF_BOUNDS` (-1) for a bad buffer; `INVALID_FIELD` (-17) if `field_id` resolves to
 `sfInvalid`; `DOESNT_EXIST` (-5) if the field is not present on the transaction;
@@ -52,12 +54,12 @@ Evidence:
 - Common `field_id` values from `hook/sfcodes.h`: `sfAccount` (`(8U<<16)+1`),
   `sfDestination` (`(8U<<16)+3`), `sfAmount` (`(6U<<16)+1`), `sfFee` (`(6U<<16)+8`),
   `sfSequence` (`(2U<<16)+4`), `sfTransactionType` (`(1U<<16)+2`), `sfMemos` (`(15U<<16)+9`).
-- For an `STI_AMOUNT` field like `sfAmount` the serialized form is 8 bytes for native XRP
+- For an `STI_AMOUNT` field like `sfAmount` the serialized form is 8 bytes for native XAH
   (drops with the high bits set) or 48 bytes for an IOU/issued amount; size your buffer for
-  the worse case (see [../macros.md](../../macros/amount-and-sto.md) `AMOUNT_TO_DROPS`).
+  the worse case (see [../macros](../../macros/amount-and-sto.md) `AMOUNT_TO_DROPS`).
 - To parse a returned amount as a floating value, prefer loading the transaction into a slot
   and using [`slot_float`](../slot/slot_float.md), or the STO helpers in
-  [utility.md](../sto/README.md).
+  [utility](../sto/README.md).
 
 **Minimal example.**
 
@@ -66,7 +68,9 @@ uint8_t acc[20];
 otxn_field((uint32_t)acc, 20, sfAccount);   // sender AccountID
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test otxn_field").**
+**Practical example.**
+
+<!-- adapted from SetHook_test.cpp, "Test otxn_field" -->
 
 ```c
 #define sfAccount ((8U << 16U) + 1U)

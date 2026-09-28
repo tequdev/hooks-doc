@@ -1,7 +1,7 @@
 # util_sha512h
 
 **Summary.** Compute the SHA-512Half of a buffer — the first 32 bytes of the SHA-512
-digest. This is the hashing primitive XRPL uses throughout (ledger hashes, transaction
+digest. This is the hashing primitive Xahau uses throughout (ledger hashes, transaction
 IDs, and, when combined with a namespace prefix, keylet indices).
 
 **Signature.**

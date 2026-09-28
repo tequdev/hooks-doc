@@ -43,7 +43,7 @@ Because a valid result is always non-negative and an error is always negative, t
 - Building `field_id` incorrectly. Use the `sf*` constant from `hook/sfcodes.h`
   directly (they already encode `type<<16 | index`); do not pass a bare field index.
 - Forgetting that non-array payloads exclude the field prefix — an `sfAmount` payload
-  is 8 bytes (XRP) or 48 bytes (IOU), not the header+payload.
+  is 8 bytes (XAH) or 48 bytes (IOU), not the header+payload.
 
 **Caveats.** The returned offset is relative to `read_ptr`, so the absolute pointer is
 `read_ptr + SUB_OFFSET(result)`.

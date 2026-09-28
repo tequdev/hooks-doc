@@ -9,9 +9,8 @@ ledger objects, emit new transactions, and ultimately `accept` (apply) or
 This doc set describes the **C / WebAssembly Hook API** as it exists in this
 repository (branch `dev`). Every claim here is grounded in repository source —
 primarily `hook/extern.h`, `hook/error.h`, `hook/macro.h`, `hook/hookapi.h`,
-`include/xrpl/hook/Enum.h`, `include/xrpl/hook/hook_api.macro`, the Hook
-execution engine under `src/xrpld/app/hook/`, and the example hooks embedded in
-`src/test/app/SetHook_test.cpp`.
+the Hook execution engine, and the example hooks embedded in the test suite.
+<!-- include/xrpl/hook/Enum.h, include/xrpl/hook/hook_api.macro, src/xrpld/app/hook/, and src/test/app/SetHook_test.cpp -->
 
 **Who this is for:** developers writing Hook smart contracts in C, and anyone
 who needs an accurate reference for the 75 Hook API functions, their error
@@ -21,11 +20,15 @@ codes, and the execution model.
 
 | Document | Description |
 |---|---|
-| [overview.md](overview.md) | Conceptual foundation: what Hooks are, entry points, execution modes, environment limits, and the typical processing flow. |
+| [overview](overview.md) | Conceptual foundation: what Hooks are, entry points, execution modes, environment limits, and the typical processing flow. |
 | [sethook-fields/](sethook-fields/README.md) | `SetHook` fields that control hook triggering and permissions: `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, `HookName`. |
-| [glossary.md](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
+| [tsh](tsh.md) | Transactional Stake Holders: strong vs. weak TSH, the two-condition gate for weak-TSH ("collect call") execution, and a per-transaction-type TSH table. |
+| [glossary](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
+| [xfl](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
+| [nop-bytes](nop-bytes.md) | The `0x99` NOP byte Xahau's deserializer skips: its rules and limits, which Hook APIs honor it, and how to use it for optional and variable-length fields in an emitted-transaction template. |
 | [macros/](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
-| [best-practices.md](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
+| [tools/](tools/README.md) | Community tooling for building Hooks, including the Transaction Builder code generator and the Binary Visualizer. |
+| [best-practices](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
 
 ### API reference, by group
 
@@ -46,23 +49,23 @@ codes, and the execution model.
 
 | Document | Description |
 |---|---|
-| [examples/payment-filter.md](examples/payment-filter.md) | Worked example: inspect an incoming Payment and accept or rollback. |
-| [examples/state-counter.md](examples/state-counter.md) | Worked example: read/increment/write a counter in hook state. |
-| [examples/emitted-transaction.md](examples/emitted-transaction.md) | Worked example: reserve, prepare, and emit a transaction. |
-| [examples/foreign-state.md](examples/foreign-state.md) | Worked example: read another account's state via `state_foreign`. |
-| [examples/memo-routing.md](examples/memo-routing.md) | Worked example: route behavior based on transaction memos/parameters. |
+| [examples/payment-filter](examples/payment-filter.md) | Worked example: inspect an incoming Payment and accept or rollback. |
+| [examples/state-counter](examples/state-counter.md) | Worked example: read/increment/write a counter in hook state. |
+| [examples/emitted-transaction](examples/emitted-transaction.md) | Worked example: reserve, prepare, and emit a transaction. |
+| [examples/foreign-state](examples/foreign-state.md) | Worked example: read another account's state via `state_foreign`. |
+| [examples/memo-routing](examples/memo-routing.md) | Worked example: route behavior based on transaction memos/parameters. |
 
 ## Suggested reading order
 
 For newcomers, read in this order:
 
-1. [overview.md](overview.md) — the model and vocabulary.
+1. [overview](overview.md) — the model and vocabulary.
 2. [api-reference/control/](api-reference/control/README.md) — how a hook starts, guards loops, and terminates.
 3. [api-reference/transaction/](api-reference/transaction/README.md) — how to read the transaction that triggered the hook.
 4. [api-reference/state/](api-reference/state/README.md) — how to persist data.
 5. The [examples/](examples/) — end-to-end hooks that tie it together.
 
-Keep [glossary.md](glossary.md) and [macros/](macros/README.md) open alongside the
+Keep [glossary](glossary.md) and [macros/](macros/README.md) open alongside the
 above; both are lookup references rather than linear reading.
 
 ## Reference use
@@ -70,35 +73,47 @@ above; both are lookup references rather than linear reading.
 Experienced developers can jump straight to the relevant `api-reference/*` page.
 Each function is documented with its exact C signature from `hook/extern.h`, its
 parameters, return convention, and error codes. The full error-code table lives
-in [overview.md](overview.md) and is repeated per function where relevant.
+in [overview](overview.md) and is repeated per function where relevant.
 
 ## Source of truth
 
-These documents were derived from the following repository sources (repo root
-`/Users/tequ/projects/xahaud`):
+These documents were derived from the developer-facing Hook API headers
+(repo root `https://github.com/Xahau/xahaud`):
 
 - `hook/extern.h` — canonical developer-facing declarations of all 75 API functions.
 - `hook/error.h` — developer-facing error `#define`s.
 - `hook/macro.h` — helper macros.
 - `hook/hookapi.h` — top-level include; `KEYLET_*` and `COMPARE_*` constants.
 - `hook/sfcodes.h`, `hook/tts.h`, `hook/ls_flags.h`, `hook/tx_flags.h` — field, transaction-type, and flag codes.
+
+The `hook_return_code` enum, limits, keylet codes, exit types, HookSet log
+codes, SetHook operations/flags, guard-validation rules, amendment gating
+(`featureHooksUpdate1`, `featureHooksUpdate2`), and the Hook execution engine
+itself round out the picture, and the example hooks referenced throughout
+this doc set come from the project's own test suite.
+<!--
 - `include/xrpl/hook/Enum.h` — `hook_return_code` enum, limits, keylet codes, exit types, HookSet log codes, SetHook operations/flags.
 - `include/xrpl/hook/hook_api.macro` — WasmEdge registration and amendment gating (`featureHooksUpdate1`, `featureHooksUpdate2`).
 - `include/xrpl/hook/Guard.h` — guard validation rules.
 - `src/xrpld/app/hook/applyHook.h` and `src/xrpld/app/hook/detail/applyHook.cpp` — the Hook execution engine.
 - `src/test/app/SetHook_test.cpp` — real example hooks (between the `R"[test.hook](` and `)[test.hook]"` markers).
 - `src/test/app/build_test_hooks.sh` — the test-hook compilation pipeline.
+-->
 
 The consolidated, cross-checked inventory these docs build on is
 `.claude/plans/hook-docs/api-inventory.md`.
 
 ## Related documents
 
-- [overview.md](overview.md)
+- [overview](overview.md)
 - [sethook-fields/](sethook-fields/README.md)
-- [glossary.md](glossary.md)
+- [tsh](tsh.md)
+- [glossary](glossary.md)
+- [xfl](xfl.md)
+- [nop-bytes](nop-bytes.md)
 - [macros/](macros/README.md)
-- [best-practices.md](best-practices.md)
+- [tools/](tools/README.md)
+- [best-practices](best-practices.md)
 - [api-reference/control/](api-reference/control/README.md)
 - [api-reference/transaction/](api-reference/transaction/README.md)
 - [api-reference/state/](api-reference/state/README.md)
@@ -109,8 +124,8 @@ The consolidated, cross-checked inventory these docs build on is
 - [api-reference/utility/](api-reference/utility/README.md)
 - [api-reference/sto/](api-reference/sto/README.md)
 - [api-reference/trace/](api-reference/trace/README.md)
-- [examples/payment-filter.md](examples/payment-filter.md)
-- [examples/state-counter.md](examples/state-counter.md)
-- [examples/emitted-transaction.md](examples/emitted-transaction.md)
-- [examples/foreign-state.md](examples/foreign-state.md)
-- [examples/memo-routing.md](examples/memo-routing.md)
+- [examples/payment-filter](examples/payment-filter.md)
+- [examples/state-counter](examples/state-counter.md)
+- [examples/emitted-transaction](examples/emitted-transaction.md)
+- [examples/foreign-state](examples/foreign-state.md)
+- [examples/memo-routing](examples/memo-routing.md)

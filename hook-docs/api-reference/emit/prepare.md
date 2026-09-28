@@ -12,7 +12,7 @@ int64_t prepare(uint32_t write_ptr, uint32_t write_len,
                 uint32_t read_ptr, uint32_t read_len);
 ```
 
-**Amendment gate.** Registered in `hook_api.macro` with `featureHooksUpdate2`; on a network
+**Amendment gate.** Registered with `featureHooksUpdate2`<!-- in hook_api.macro -->; on a network
 where that amendment is not enabled, the import is unavailable.
 
 **Parameters.**
@@ -51,17 +51,21 @@ object cannot be built.
 - Fields you *do* provide in the template (for example an explicit `sfLastLedgerSequence`) are
   respected — `prepare` only fills the ledger-sequence and emit-details fields when they are
   absent, but always overrides `sfAccount`, `sfSequence`, `sfSigningPubKey`, and `sfFee`.
+- The template may contain `0x99` NOP bytes (see [nop-bytes](../../nop-bytes.md)); the
+  returned blob is re-serialized from the parsed fields and never contains them, so `prepare`
+  also serves to turn a NOP-padded template into a clean blob the `sto_*` APIs can read.
 
 **Minimal example.**
 
 ```c
-uint8_t out[PREPARE_PAYMENT_SIMPLE_SIZE];
+uint8_t out[512];
 int64_t n = prepare((uint32_t)out, sizeof(out), (uint32_t)template, template_len);
 if (n < 0)
     rollback(SBUF("prepare failed"), n);
 ```
 
-**Practical example (adapted from `SetHook_test.cpp`, "Test prepare").**
+**Practical example.**
+<!-- adapted from `SetHook_test.cpp`, "Test prepare" -->
 
 ```c
 int64_t hook(uint32_t r)
@@ -73,7 +77,7 @@ int64_t hook(uint32_t r)
     ASSERT(prepare(1000000, 32, 0, 32) == OUT_OF_BOUNDS);
 
     // fill fixed fields on the template, then emit the completed transaction
-    uint8_t out[PREPARE_PAYMENT_SIMPLE_SIZE];
+    uint8_t out[512];
     int64_t n = prepare((uint32_t)out, sizeof(out), (uint32_t)tmpl, tmpl_len);
     if (n < 0)
         rollback(SBUF("prepare failed"), n);
