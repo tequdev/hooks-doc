@@ -2,9 +2,9 @@
 
 **Summary.** Declare the number of transactions this hook execution will emit. Must be called
 before the emission APIs that require a reservation, such as `etxn_burden`, `etxn_details`,
-`etxn_fee_base`, and `emit`. `etxn_generation` and `etxn_nonce` do not require a reservation.
+`etxn_fee_base`, `emit`, and `prepare`. `etxn_generation` and `etxn_nonce` do not require a reservation.
 <!-- evidence: `HookAPI::etxn_burden`, `HookAPI::etxn_details`, `HookAPI::etxn_fee_base`, and
-`HookAPI::emit` reject an unset `expected_etxn_count`, while `HookAPI::etxn_generation` and
+`HookAPI::emit` reject an unset `expected_etxn_count` (as does `HookAPI::prepare`, `HookAPI.cpp:387-388`), while `HookAPI::etxn_generation` and
 `HookAPI::etxn_nonce` do not check it (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:475-476,
 813-816, 827-834, 858-863, 932-947, 949-979`; wrappers in
 `src/xrpld/app/hook/detail/applyHook.cpp:1834-1839, 2765-2795`). -->

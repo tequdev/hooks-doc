@@ -24,12 +24,12 @@ every behaviour is taken from the implementations in
 
 A hook does not "send" a transaction directly; it hands the ledger a fully-formed,
 already-serialized transaction blob, and the ledger queues it for application in a later
-ledger. The steps below are enforced in this order. The APIs that calculate burden/details, price, or
+ledger. The steps below are enforced in this order. The APIs that calculate burden/details, price, prepare, or
 submit an emitted transaction check that a reservation exists (`hookCtx.expected_etxn_count`,
 which starts at `-1`), so `etxn_reserve` must come before those APIs. The independent
 `etxn_generation` and `etxn_nonce` helpers do not require a reservation.
 <!-- evidence: `HookAPI::etxn_burden`, `HookAPI::etxn_details`, `HookAPI::etxn_fee_base`, and
-`HookAPI::emit` check `expected_etxn_count`, while `HookAPI::etxn_generation` and
+`HookAPI::emit` check `expected_etxn_count` (as does `HookAPI::prepare`, `HookAPI.cpp:387-388`), while `HookAPI::etxn_generation` and
 `HookAPI::etxn_nonce` do not (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:475-476,
 813-816, 827-834, 858-863, 932-979`; wrappers in
 `src/xrpld/app/hook/detail/applyHook.cpp:1834-1839, 2765-2795`). -->
@@ -117,8 +117,7 @@ reservation.
 
 | Function | Purpose |
 |---|---|
-| [`etxn_reserve`](etxn_reserve.md) | Declare how many transactions this hook will emit. Must precede reservation-dependent emission calls. |
-<!-- evidence: reservation-dependent emission APIs reject an unset `expected_etxn_count`, while `etxn_generation` and `etxn_nonce` do not (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:813-816, 827-834, 858-863, 932-979`). -->
+| [`etxn_reserve`](etxn_reserve.md) | Declare how many transactions this hook will emit. Must precede reservation-dependent emission calls. <!-- evidence: reservation-dependent emission APIs reject an unset `expected_etxn_count`, while `etxn_generation` and `etxn_nonce` do not (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:387-388, 475-476, 813-816, 827-834, 858-863, 932-979`). --> |
 | [`etxn_nonce`](etxn_nonce.md) | Write a unique nonce for an emitted transaction. |
 | [`etxn_details`](etxn_details.md) | Write the `sfEmitDetails` object required in every emitted transaction. |
 | [`etxn_fee_base`](etxn_fee_base.md) | Compute the minimum fee an emitted transaction must pay. |
