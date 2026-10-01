@@ -1,6 +1,7 @@
 # ledger_last_time
 
 **Summary.** Return the close time of the last closed ledger.
+<!-- evidence: `HookAPI::ledger_last_time` reads `view().info().parentCloseTime` and returns its duration count (`src/xrpld/app/hook/detail/HookAPI.cpp:1820-1827` in xahaud `origin/release`). -->
 
 **Signature.**
 
