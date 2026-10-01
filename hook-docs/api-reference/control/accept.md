@@ -22,7 +22,9 @@ execution. Internally returns the sentinel `RC_ACCEPT` (-20) to the VM. The only
 can produce is `OUT_OF_BOUNDS` (-1), if `read_ptr`/`read_len` point outside WASM memory
 while a reason string is supplied.
 
-<!-- see the HOOK_EXIT macro in include/xrpl/hook/Macro.h -->
+<!-- evidence: `HOOK_EXIT` caps `read_len` at 256, skips the memory read when `read_ptr` is
+zero, validates non-zero pointers after truncation, stores the reason, and returns `RC_ACCEPT`
+(`include/xrpl/hook/Macro.h:235-269` from `origin/release`). -->
 
 **Common failure patterns.**
 - Passing a non-zero `read_ptr` with a `read_len` that runs past the end of memory returns
