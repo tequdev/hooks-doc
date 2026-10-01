@@ -32,7 +32,9 @@ int64_t ledger_nonce(uint32_t write_ptr, uint32_t write_len);
 - Each call increments an internal counter and hashes ledger sequence, parent close time,
   parent hash, the transaction id, the counter, and the hook account, so successive nonces
   differ and are deterministic across validators.
-<!-- hashing implemented in `HookAPI.cpp` -->
+  <!-- evidence: `HookAPI::ledger_nonce` passes those six context values to `sha512Half` and
+  post-increments `ledger_nonce_counter` (`src/xrpld/app/hook/detail/HookAPI.cpp:1830-1845`
+  in xahaud `origin/release`). -->
 - This is the general-purpose nonce; for emitting transactions use
   [`etxn_nonce`](../emit/etxn_nonce.md), which serves the emission machinery.
 
