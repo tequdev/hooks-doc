@@ -29,10 +29,10 @@ int64_t ledger_nonce(uint32_t write_ptr, uint32_t write_len);
   (`src/xrpld/app/hook/detail/applyHook.cpp:2807-2816`, `src/xrpld/app/hook/detail/HookAPI.cpp:1833-1843`). -->
 
 **Caveats / notes.**
-- Each call increments an internal counter and hashes ledger sequence, parent close time,
-  parent hash, the transaction id, the counter, and the hook account, so successive nonces
-  differ and are deterministic across validators.
-<!-- hashing implemented in `HookAPI.cpp` -->
+- Each call increments an internal counter and hashes the ledger sequence, parent close time,
+  parent hash, transaction ID, counter, and hook account. The distinct counter input makes
+  successive requests distinct and deterministic across validators.
+<!-- evidence: `HookAPI::ledger_nonce` passes those fields to `sha512Half` and increments `ledger_nonce_counter` after using it (`src/xrpld/app/hook/detail/HookAPI.cpp:1830-1843`). -->
 - This is the general-purpose nonce; for emitting transactions use
   [`etxn_nonce`](../emit/etxn_nonce.md), which serves the emission machinery.
 
