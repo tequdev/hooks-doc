@@ -22,7 +22,7 @@ WASM-facing wrappers that marshal arguments across the guest boundary.
 
 | Function | Purpose |
 |---|---|
-| [`fee_base`](fee_base.md) | Base fee (drops) of the current ledger. |
+| [`fee_base`](fee_base.md) | Base fee (drops) of the current ledger. <!-- evidence: `HookAPI::fee_base()` reads `view().fees().base.drops()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1802-1806` from xahaud `origin/release`). --> |
 | [`ledger_seq`](ledger_seq.md) | Current ledger sequence number. |
 | [`ledger_last_time`](ledger_last_time.md) | Close time of the last closed ledger. |
 | [`ledger_last_hash`](ledger_last_hash.md) | Hash of the last closed ledger. <!-- evidence: `HookAPI::ledger_last_hash` returns `view().info().parentHash` (`src/xrpld/app/hook/detail/HookAPI.cpp:1814-1818` from xahaud `origin/release`). --> |
