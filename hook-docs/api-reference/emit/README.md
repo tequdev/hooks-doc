@@ -118,7 +118,7 @@ reservation.
 | Function | Purpose |
 |---|---|
 | [`etxn_reserve`](etxn_reserve.md) | Declare how many transactions this hook will emit. Must precede reservation-dependent emission calls. <!-- evidence: reservation-dependent emission APIs reject an unset `expected_etxn_count`, while `etxn_generation` and `etxn_nonce` do not (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:387-388, 475-476, 813-816, 827-834, 858-863, 932-979`). --> |
-| [`etxn_nonce`](etxn_nonce.md) | Write a unique nonce for an emitted transaction. |
+| [`etxn_nonce`](etxn_nonce.md) | Write a unique nonce for an emitted transaction. <!-- evidence: `HookAPI::etxn_nonce` hashes the transaction ID, counter, hook account, hook hash, and flags, then increments the counter and records the nonce for emission validation (`src/xrpld/app/hook/detail/HookAPI.cpp:956-978` from `origin/release`). --> |
 | [`etxn_details`](etxn_details.md) | Write the `sfEmitDetails` object required in every emitted transaction. |
 | [`etxn_fee_base`](etxn_fee_base.md) | Compute the minimum fee an emitted transaction must pay. |
 | [`etxn_generation`](etxn_generation.md) | Generation counter that an emitted transaction will carry. |
