@@ -1,6 +1,7 @@
 # slot_subfield
 
 **Summary.** Extract a named subfield of a slotted object into a (new or specified) slot.
+<!-- evidence: `HookAPI::slot_subfield` resolves the requested field from the parent `STObject`, allocates a free slot when `new_slot == 0`, and stores the child entry in the destination slot (`src/xrpld/app/hook/detail/HookAPI.cpp:2244-2269` from xahaud `origin/release`). -->
 
 **Signature.**
 
@@ -32,6 +33,7 @@ entry is corrupt; `NOT_AN_OBJECT` (-23) if the parent is not an object.
   [`otxn_field`](../transaction/otxn_field.md) and defined in `hook/sfcodes.h`.
 - If `new_slot` equals `parent_slot`, the child replaces the parent in place; otherwise the
   parent slot is left intact.
+  <!-- evidence: the release implementation copies the parent slot only when `new_slot != parent_slot`, then replaces the destination entry with the requested child (`src/xrpld/app/hook/detail/HookAPI.cpp:2261-2269`). -->
 - When `new_slot == 0`, the free-slot check runs right after the parent-slot lookup: a missing
   parent slot still returns `DOESNT_EXIST`, but with a full slot pool an invalid `field_id` or a
   field absent from the parent returns `NO_FREE_SLOTS` rather than `INVALID_FIELD` /
