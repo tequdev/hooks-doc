@@ -2,7 +2,6 @@
 
 **Summary.** Return the byte size of the serialized data currently held in a slot.
 <!-- evidence: `HookAPI::slot_size` checks for a missing slot, rejects a null entry, then serializes the stored `STBase` and returns `Serializer::getDataLength()` (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:2143-2155`). -->
-<!-- evidence: `HookAPI::slot_size` checks for a missing slot, rejects a null entry, then serializes the stored `STBase` and returns `Serializer::getDataLength()` (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:2143-2155`). -->
 
 **Signature.**
 
@@ -24,10 +23,9 @@ if the slot is missing; `INTERNAL_ERROR` (-2) if the slot entry pointer is null.
 - Measuring a cleared or never-set slot → `DOESNT_EXIST`.
 
 **Caveats / notes.**
-<!-- evidence: the implementation literally serializes the slot entry on every call and carries an `RH TODO` to cache the size (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:2152-2155`). -->
-- Size is computed by re-serializing the object each call (there's a noted `RH TODO` to cache
-  it internally); prefer calling it once and reusing the result.
 <!-- evidence: the implementation serializes the slot entry on every call and carries an `RH TODO` to cache the size (xahaud `src/xrpld/app/hook/detail/HookAPI.cpp:2152-2155`). -->
+- Size is computed by serializing the slot entry on each call (there's a noted `RH TODO` to cache
+  it internally); prefer calling it once and reusing the result.
 - Use it to size a buffer before calling [`slot`](slot.md).
 
 **Minimal example.**
