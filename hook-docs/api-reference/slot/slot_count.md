@@ -1,6 +1,7 @@
 # slot_count
 
 **Summary.** Return the number of elements in a slotted array (`STI_ARRAY`).
+<!-- evidence: `HookAPI::slot_count` requires the slotted entry type to be `STI_ARRAY` and returns the array's `size()` (xahaud `origin/release` `src/xrpld/app/hook/detail/HookAPI.cpp:2065-2077`). -->
 
 **Signature.**
 
@@ -17,6 +18,7 @@ int64_t slot_count(uint32_t slot);
 **Return value.** Returns the element count on success. Errors: `DOESNT_EXIST` (-5) if the
 slot is empty; `INTERNAL_ERROR` (-2) if corrupt; `NOT_AN_ARRAY` (-22) if the slotted object is
 not an `STI_ARRAY`.
+<!-- evidence: the release implementation returns `DOESNT_EXIST` for an absent slot, `INTERNAL_ERROR` for a null entry, and `NOT_AN_ARRAY` for a non-array entry before returning `STArray::size()` (`src/xrpld/app/hook/detail/HookAPI.cpp:2066-2077`). -->
 
 **Common failure patterns.**
 - Calling it on a non-array slot (e.g. a plain object or leaf field) → `NOT_AN_ARRAY`.
