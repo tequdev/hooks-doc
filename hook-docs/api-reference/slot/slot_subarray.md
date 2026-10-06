@@ -1,6 +1,7 @@
 # slot_subarray
 
 **Summary.** Extract an array element of a slotted array into a (new or specified) slot.
+<!-- evidence: `HookAPI::slot_subarray` requires an `STI_ARRAY`, indexes the element by `array_id`, and stores it in the requested or an allocated slot (`src/xrpld/app/hook/detail/HookAPI.cpp:2158-2204` from xahaud `origin/release`). -->
 
 **Signature.**
 
