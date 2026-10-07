@@ -36,7 +36,7 @@ int64_t n = slot_count(arr_slot);
 **Practical example.**
 
 ```c
-// Iterate a slotted array (e.g. the originating transaction's Memos).
+// Iterate a slotted array.
 int64_t n = slot_count(arr_slot);
 for (int i = 0; GUARD(256), i < n; ++i)
 {
