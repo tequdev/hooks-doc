@@ -25,7 +25,7 @@ not an `STI_ARRAY`.
 
 **Caveats / notes.**
 - Pair with [`slot_subarray`](slot_subarray.md) to iterate: `slot_count` gives the loop bound,
-  `slot_subarray(parent, i, new)` extracts element `i`.
+  and `slot_subarray(parent, i, new)` extracts element `i`.
 
 **Minimal example.**
 
@@ -36,7 +36,7 @@ int64_t n = slot_count(arr_slot);
 **Practical example.**
 
 ```c
-// Iterate a slotted array (e.g. Memos or a signer list).
+// Iterate a slotted array (e.g. the originating transaction's Memos).
 int64_t n = slot_count(arr_slot);
 for (int i = 0; GUARD(256), i < n; ++i)
 {
