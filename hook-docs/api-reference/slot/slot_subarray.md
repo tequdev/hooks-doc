@@ -28,7 +28,9 @@ exceeds `max_slots`; `NO_FREE_SLOTS` (-6) if `new_slot == 0` and none are free.
 
 **Caveats / notes.**
 - Use [`slot_count`](slot_count.md) to get the valid index range first.
-- Extracted elements are objects; drill further with [`slot_subfield`](slot_subfield.md).
+- An extracted element may be an object or a leaf field. Use [`slot_subfield`](slot_subfield.md)
+  only when the selected element is an object.
+<!-- evidence: `HookAPI::slot_subarray` stores the selected `STArray` element directly in the destination slot without requiring it to be an `STObject` (`src/xrpld/app/hook/detail/HookAPI.cpp:2182-2204` from xahaud `origin/release`). -->
 
 **Minimal example.**
 
