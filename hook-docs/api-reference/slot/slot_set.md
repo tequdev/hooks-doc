@@ -1,6 +1,7 @@
 # slot_set
 
 **Summary.** Load a ledger object (by keylet) or a transaction (by hash) into a slot.
+<!-- evidence: `slot_set` accepts a 34-byte serialized keylet or a 32-byte transaction hash, then stores the resolved object in the requested slot (`src/xrpld/app/hook/detail/HookAPI.cpp:2081-2140` in xahaud `release`). -->
 
 **Signature.**
 
@@ -21,6 +22,7 @@ Errors: `OUT_OF_BOUNDS` (-1) for a bad read buffer; `INVALID_ARGUMENT` (-7) if `
 not 32 or 34, or `slot` exceeds `max_slots`; `NO_FREE_SLOTS` (-6) if `slot == 0` and all slots
 are in use; `DOESNT_EXIST` (-5) if the keylet/hash does not resolve to a ledger object or a
 retrievable transaction.
+<!-- evidence: the WASM wrapper returns `OUT_OF_BOUNDS` before calling the API for an invalid guest-memory range, while the API validates the input length and slot number (`src/xrpld/app/hook/detail/applyHook.cpp:1991-2010`; `src/xrpld/app/hook/detail/HookAPI.cpp:2081-2088`). -->
 
 **Common failure patterns.**
 - A `read_len` other than 32 or 34 → `INVALID_ARGUMENT`.
@@ -34,6 +36,7 @@ retrievable transaction.
 - Passing a specific `slot` overwrites its previous contents; passing `0` returns the newly
   allocated slot number.
 - A keylet with a zero key returns `DOESNT_EXIST`.
+<!-- evidence: slot `0` is replaced with a free slot before the object is stored; a non-zero slot is assigned directly, and a zero key is rejected (`src/xrpld/app/hook/detail/HookAPI.cpp:2093-2105,2129-2140`). -->
 
 **Minimal example.**
 
