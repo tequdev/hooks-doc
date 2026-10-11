@@ -27,6 +27,7 @@ server-side handle — and then drills into it.
 - A slot holds a parsed serialized object (an `STObject`, `STArray`, or a leaf field). There
   are at most `max_slots` = **255** slots per hook execution<!-- (Enum.h) -->. Requesting a slot
   when none are free returns `NO_FREE_SLOTS` (-6).
+  <!-- evidence: `slot_set` rejects slot numbers above `max_slots` and returns `NO_FREE_SLOTS` when slot `0` requests allocation with no free slot; the release tests exercise the 255-slot boundary (`src/xrpld/app/hook/detail/HookAPI.cpp:2083-2088,2129-2134`; `src/test/app/SetHook_test.cpp:9132-9140`). -->
 - Slot **0 is special as an argument**: passing `0` for a destination slot means "allocate any
   free slot for me", and the chosen slot number is returned. Passing a specific number targets
   that slot (overwriting whatever was there).
