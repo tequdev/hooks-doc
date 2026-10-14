@@ -15,6 +15,7 @@ int64_t otxn_generation();
 this is `0`. For an emitted transaction it is the `sfEmitGeneration` recorded in
 `sfEmitDetails`. Does not return an error; if `sfEmitDetails` is present but missing the
 field it defensively returns `0`.
+<!-- evidence: `HookAPI::otxn_generation` returns `0` without `sfEmitDetails`, warns and returns `0` when `sfEmitGeneration` is absent, otherwise caches and returns the `sfEmitGeneration` value (`src/xrpld/app/hook/detail/HookAPI.cpp:1551-1576` in xahaud `release`). -->
 
 **Common failure patterns.**
 - None. A `0` means the originating transaction was directly submitted, not emitted.
