@@ -50,7 +50,7 @@ See [`error.h` / the full error table](../../glossary.md) for the complete list.
 |---|---|
 | [`util_raddr`](util_raddr.md) | 20-byte AccountID → base58 r-address string. |
 | [`util_accid`](util_accid.md) | base58 r-address string → 20-byte AccountID. |
-| [`util_verify`](util_verify.md) | Verify a secp256k1/ed25519 signature over a payload. |
+| [`util_verify`](util_verify.md) | Verify a secp256k1/ed25519 signature over a payload. <!-- evidence: the release implementation validates the 33-byte public key with `publicKeyType` and calls `ripple::verify` over the supplied data and signature (`src/xrpld/app/hook/detail/HookAPI.cpp:43-59`). --> |
 | [`util_sha512h`](util_sha512h.md) | SHA-512Half (first 32 bytes of SHA-512) of a buffer. |
 | [`util_keylet`](util_keylet.md) | Compute a ledger keylet of a given `KEYLET_*` type. |
 
