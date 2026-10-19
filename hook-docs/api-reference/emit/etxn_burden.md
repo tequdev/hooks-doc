@@ -14,6 +14,7 @@ int64_t etxn_burden();
 **Return value.** `otxn_burden() * expected_etxn_count` on success. Errors:
 `PREREQUISITE_NOT_MET` (-9) if `etxn_reserve` was not called; `FEE_TOO_LARGE` (-10) if the
 multiplication overflows.
+<!-- evidence: `HookAPI::etxn_burden` rejects an unset reservation, multiplies the originating burden by `expected_etxn_count`, and reports `FEE_TOO_LARGE` when the product wraps (`src/xrpld/app/hook/detail/HookAPI.cpp:852-862` in Xahau/xahaud `release`). -->
 
 **Common failure patterns.**
 - Calling it before `etxn_reserve` → `PREREQUISITE_NOT_MET`.
@@ -22,6 +23,7 @@ multiplication overflows.
 **Caveats / notes.**
 - Because burden multiplies the originating burden by the number of transactions reserved,
   reserving a large count inflates every child's burden — reserve only what you will emit.
+<!-- evidence: `HookAPI::etxn_reserve` stores the requested count after enforcing the valid range, and `HookAPI::etxn_burden` uses that stored count (`src/xrpld/app/hook/detail/HookAPI.cpp:980-993, 852-862` in Xahau/xahaud `release`). -->
 - `emit` checks that the `sfEmitBurden` you wrote equals this computed value, so it cannot be
   understated.
 - [`etxn_details`](etxn_details.md) writes this value into `sfEmitBurden` for you.
