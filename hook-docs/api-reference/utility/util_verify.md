@@ -4,6 +4,10 @@
 key. Both secp256k1 and ed25519 signatures are supported; the key type is inferred
 from the public key using the standard Xahaud convention (an ed25519 public key is 33
 bytes prefixed with `0xED`; a secp256k1 public key is a 33-byte compressed point).
+<!-- evidence: the release implementation requires a 33-byte key, validates it with
+`publicKeyType`, then passes it to `ripple::verify`; the wrapper reads all three
+WASM-memory regions before calling the API (`src/xrpld/app/hook/detail/HookAPI.cpp:43-59`,
+`src/xrpld/app/hook/detail/applyHook.cpp:3346-3377`). -->
 
 **Signature.**
 
@@ -31,6 +35,10 @@ int64_t util_verify(
 | `OUT_OF_BOUNDS` | -1 | A region is out of bounds. |
 | `INVALID_KEY` | -41 | `kread_len != 33`, or the key is not a valid secp256k1/ed25519 public key. |
 | `TOO_SMALL` | -4 | `dread_len == 0`, or `sread_len < 30`. |
+<!-- evidence: `HookAPI::util_verify` returns `TOO_SMALL` for empty data or signatures
+shorter than 30 bytes, and `INVALID_KEY` for a key other than 33 bytes or an
+unrecognized key type (`src/xrpld/app/hook/detail/HookAPI.cpp:43-59` in xahaud
+`origin/release`). -->
 
 **Common failure patterns.**
 - Passing an uncompressed (65-byte) secp256k1 key → `INVALID_KEY`; use the 33-byte
@@ -44,6 +52,8 @@ int64_t util_verify(
 `mustBeFullyCanonical = false`). The function does not hash the data for you — pass the
 exact bytes that were signed (many Xahau signing schemes sign a prefixed/serialized
 blob; reproduce that blob before verifying).
+<!-- evidence: the release API calls `ripple::verify(pubkey, data, sig, false)` and
+does not transform `data` before verification (`src/xrpld/app/hook/detail/HookAPI.cpp:55-59`). -->
 
 **Minimal example.**
 
