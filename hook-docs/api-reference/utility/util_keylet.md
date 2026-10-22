@@ -22,6 +22,9 @@ int64_t util_keylet(
 **General rules.**
 - `write_len` must be at least 34; on success exactly 34 bytes are written and `34`
   is returned.
+  <!-- evidence: the release wrapper rejects `write_len < 34` and each successful
+  branch serializes a 34-byte keylet (`src/xrpld/app/hook/detail/applyHook.cpp:2151-2155`,
+  `2193-2222`, `2225-2262`). -->
 - Arguments come in pairs. A pair usually means `(ptr, len)`, but for numeric inputs
   a pair can mean a 64-bit value split as `(high32, low32)`, or a single 32-bit value
   with its partner set to 0. Unused argument slots **must be 0** — passing a non-zero
@@ -109,9 +112,13 @@ implemented by `util_keylet`: `AMM` (27, gated on `featureAMM`), `DID` (31, gate
 `PERMISSIONED_DOMAIN`) are present in the switch but return `INVALID_ARGUMENT` — they
 are placeholders whose amendments are not yet supported.
 
-Also note **`KEYLET_TICKET` (13) is `#define`d in `hook/hookapi.h` but has no case in
-the `util_keylet` switch** — calling `util_keylet` with type 13 falls through to the
+Also note **`KEYLET_TICKET` (13) is `#define`d in `hook/hookapi.h` but has no case in the
+`util_keylet` switch** — calling `util_keylet` with type 13 falls through to the
 default and returns `INVALID_ARGUMENT`. Treat ticket keylets as unsupported here.
+<!-- evidence: the release enum assigns `TICKET` the value 13, while the
+`util_keylet` switch has no `TICKET` case and falls through to its final
+`INVALID_ARGUMENT` return (`include/xrpl/hook/Enum.h:279-317`; `src/xrpld/app/hook/detail/applyHook.cpp:2157-2160`,
+`2661-2668`). -->
 
 **Return value.**
 
