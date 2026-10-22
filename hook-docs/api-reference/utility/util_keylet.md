@@ -46,7 +46,7 @@ int64_t util_keylet(
 | `KEYLET_LINE` | 9 | `KEYLET_HOOK_DEFINITION` | 24 |
 | `KEYLET_OFFER` | 10 | `KEYLET_HOOK_STATE_DIR` | 25 |
 | `KEYLET_QUALITY` | 11 | `KEYLET_CRON` | 26 |
-| `KEYLET_EMITTED_DIR` | 12 | | |
+| `KEYLET_EMITTED_DIR` | 12 | `KEYLET_MANIFEST` | 37 |
 | `KEYLET_TICKET` | 13 | | |
 | `KEYLET_SIGNERS` | 14 | | |
 | `KEYLET_CHECK` | 15 | | |
@@ -70,6 +70,7 @@ value (its length partner must be 0); "u64" = a 64-bit value split as `(high, lo
 | `KEYLET_PAGE` (19) | u256 (ptr,32) | u64 index (high,low) | 0,0 | — |
 | `KEYLET_ORACLE` (32)* | acc | oracle seq as u32 in `c` (`d=0`) | 0,0 | `featurePriceOracle` |
 | `KEYLET_CRON` (26) | acc | seq as u32 in `c` (`d=0`) | 0,0 | `featureCron` |
+| `KEYLET_MANIFEST` (37) | validator public key | 0,0 | 0,0 | `featureOnChainManifests` |
 | `KEYLET_OFFER` (10) | acc | seq: u32 in `c` if `d=0`, else `c`=ptr to u256, `d=32` | 0,0 | — |
 | `KEYLET_CHECK` (15) | acc | seq (as OFFER) | 0,0 | — |
 | `KEYLET_ESCROW` (20) | acc | seq (as OFFER) | 0,0 | — |
@@ -95,22 +96,27 @@ Notes:
   currency, as parsed by the server's currency parser.
 
 **Header vs. server gap (important).** The server-side `keylet_code` enum defines
-additional codes **27–36**:
-<!-- include/xrpl/hook/Enum.h -->
+additional codes **27–37**:
+<!-- evidence: `keylet_code` assigns the release values in `include/xrpl/hook/Enum.h:279-317`. -->
 `AMM=27, BRIDGE=28, XCHAIN_OWNED_CLAIM_ID=29,
 XCHAIN_OWNED_CREATE_ACCOUNT_CLAIM_ID=30, DID=31, ORACLE=32,
-MPTOKEN_ISSUANCE=33, MPTOKEN=34, CREDENTIAL=35, PERMISSIONED_DOMAIN=36`.
-The developer header `hook/hookapi.h` only `#define`s `KEYLET_*` up to 26, so
-**there is no `KEYLET_AMM`/`KEYLET_DID`/`KEYLET_ORACLE`/… constant shipped for hook
-authors.** If you target those types you must define the numeric constant yourself,
-as test hooks targeting these codes do.
-<!-- SetHook_test.cpp -->
-Of codes 27–36, only three are actually
-implemented by `util_keylet`: `AMM` (27, gated on `featureAMM`), `DID` (31, gated on
-`featureDID`), and `ORACLE` (32, gated on `featurePriceOracle`). The remaining codes
-(`BRIDGE`, both `XCHAIN_*`, `MPTOKEN_ISSUANCE`, `MPTOKEN`, `CREDENTIAL`,
-`PERMISSIONED_DOMAIN`) are present in the switch but return `INVALID_ARGUMENT` — they
-are placeholders whose amendments are not yet supported.
+MPTOKEN_ISSUANCE=33, MPTOKEN=34, CREDENTIAL=35, PERMISSIONED_DOMAIN=36,
+MANIFEST=37`.
+The developer header `hook/hookapi.h` defines `KEYLET_MANIFEST` (37), but does not
+ship `KEYLET_*` constants for codes 27–36, so **there is no `KEYLET_AMM`/`KEYLET_DID`/
+`KEYLET_ORACLE`/… constant shipped for hook authors.** If you target those types you
+must define the numeric constant yourself, as test hooks targeting these codes do.
+<!-- evidence: the release hook header defines `KEYLET_TICKET` (13), `KEYLET_CRON` (26),
+and `KEYLET_MANIFEST` (37), but no constants for 27–36 (`hook/hookapi.h:27-41`). -->
+Of codes 27–37, four are actually implemented by `util_keylet`: `AMM` (27, gated on
+`featureAMM`), `DID` (31, gated on `featureDID`), `ORACLE` (32, gated on
+`featurePriceOracle`), and `MANIFEST` (37, gated on `featureOnChainManifests`). The
+remaining codes (`BRIDGE`, both `XCHAIN_*`, `MPTOKEN_ISSUANCE`, `MPTOKEN`,
+`CREDENTIAL`, `PERMISSIONED_DOMAIN`) are present in the switch but return
+`INVALID_ARGUMENT` — they are placeholders whose amendments are not yet supported.
+<!-- evidence: the release `util_keylet` switch implements `AMM`, `DID`, `ORACLE`, and
+`MANIFEST`, while the remaining 27–36 cases return `INVALID_ARGUMENT`
+(`src/xrpld/app/hook/detail/applyHook.cpp:2265-2291`, `2296-2319`, `2607-2658`). -->
 
 Also note **`KEYLET_TICKET` (13) is `#define`d in `hook/hookapi.h` but has no case in the
 `util_keylet` switch** — calling `util_keylet` with type 13 falls through to the
