@@ -144,6 +144,10 @@ default and returns `INVALID_ARGUMENT`. Treat ticket keylets as unsupported here
   required, or vice versa.
 - Using a value ≥ 27 without defining the constant yourself, then being surprised
   that unimplemented types return `INVALID_ARGUMENT`.
+- If the output pointer/length pair is out of bounds, the wrapper returns
+  `OUT_OF_BOUNDS` before checking whether `write_len` is at least 34.
+  <!-- evidence: the release wrapper checks `NOT_IN_BOUNDS(write_ptr, write_len, memory_length)`
+  before `write_len < 34` (`src/xrpld/app/hook/detail/applyHook.cpp:2151-2155`). -->
 
 **Caveats.** `util_keylet` computes an index; it does not check that the object
 exists. Follow it with [`slot_set`](../slot/slot_set.md) to actually load the object,
