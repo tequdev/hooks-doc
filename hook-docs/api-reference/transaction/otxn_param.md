@@ -3,6 +3,8 @@
 **Summary.** Read the value of a `HookParameter` carried on the *originating transaction* (the
 transaction's `sfHookParameters` array), by key.
 
+<!-- evidence: `HookAPI::otxn_param` reads `sfHookParameters` from the originating transaction, matches `sfHookParameterName`, and returns the matching `sfHookParameterValue` (`src/xrpld/app/hook/detail/HookAPI.cpp:1669-1690` in Xahau/xahaud `release`). -->
+
 **Signature.**
 
 ```c
@@ -23,7 +25,9 @@ int64_t otxn_param(uint32_t write_ptr, uint32_t write_len,
 `OUT_OF_BOUNDS` (-1) for bad pointers; `TOO_SMALL` (-4) if the key length is 0 **or** the
 destination buffer is smaller than the value; `TOO_BIG` (-3) if the key length exceeds 32;
 `DOESNT_EXIST` (-5) if the transaction carries no `sfHookParameters`, if no parameter with
-that key is present, or if the matching parameter has an empty/absent value.
+the key is present, or if the matching parameter has an empty/absent value.
+
+<!-- evidence: the WASM wrapper checks both pointer/length pairs before the API call and returns `TOO_SMALL` when the value exceeds `write_len`; the release API returns `TOO_SMALL`, `TOO_BIG`, or `DOESNT_EXIST` for the documented key/value cases (`src/xrpld/app/hook/detail/applyHook.cpp:3877-3894`, `src/xrpld/app/hook/detail/HookAPI.cpp:1663-1690`). -->
 
 **Common failure patterns.**
 - Key length 0 → `TOO_SMALL`; key length > 32 → `TOO_BIG`.

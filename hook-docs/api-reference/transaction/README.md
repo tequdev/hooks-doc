@@ -62,7 +62,7 @@ strong/weak/callback execution model.
 | [`otxn_type`](otxn_type.md) | Transaction type of the originating transaction. |
 | [`otxn_id`](otxn_id.md) | Write the originating transaction's hash/ID. |
 | [`otxn_field`](otxn_field.md) | Write (or return) a field of the originating transaction. |
-| [`otxn_param`](otxn_param.md) | Read a HookParameter carried on the originating transaction by key. |
+| [`otxn_param`](otxn_param.md) | Read a HookParameter carried on the originating transaction by key. <!-- evidence: `HookAPI::otxn_param` reads `sfHookParameters`, matches the requested `sfHookParameterName`, and returns its non-empty `sfHookParameterValue` (`src/xrpld/app/hook/detail/HookAPI.cpp:1669-1690` in Xahau/xahaud `release`). --> |
 | [`otxn_slot`](otxn_slot.md) | Load the whole originating transaction into a slot. |
 | [`otxn_burden`](otxn_burden.md) | Burden value of the originating transaction. |
 | [`otxn_generation`](otxn_generation.md) | Emit-generation counter of the originating transaction. |
