@@ -3,6 +3,8 @@
 **Summary.** Convert a 20-byte AccountID into its base58-check encoded r-address
 string (e.g. `rB6v18pQ765Z9DH5RQsTFevoQPFmRtBqhT`). This is the inverse of
 [`util_accid`](util_accid.md).
+<!-- evidence: `util_raddr` rejects inputs whose length is not 20 and encodes the
+AccountID with the AccountID base58 token (`src/xrpld/app/hook/detail/HookAPI.cpp:24-30`). -->
 
 **Signature.**
 
@@ -23,6 +25,9 @@ int64_t util_raddr(
 
 **Return value.** On success, the number of bytes written (the r-address length).
 Errors:
+<!-- evidence: the release wrapper checks both WASM regions, returns `TOO_SMALL`
+before writing, and returns the byte count from `WRITE_WASM_MEMORY_AND_RETURN`
+(`src/xrpld/app/hook/detail/applyHook.cpp:3086-3107`; `include/xrpl/hook/Macro.h:209-227`). -->
 
 | Code | Value | Cause |
 |---|---|---|
