@@ -31,6 +31,10 @@ int64_t util_sha512h(
 **Common failure patterns.**
 - Sizing the output buffer at 64 bytes and assuming a full SHA-512 — only the first
   32 bytes (SHA-512Half) are produced.
+- If `write_len < 32`, the wrapper returns `TOO_SMALL` before checking either memory
+  region for bounds errors.
+  <!-- evidence: the release wrapper checks `write_len < 32` before its two
+  `NOT_IN_BOUNDS` checks (`src/xrpld/app/hook/detail/applyHook.cpp:3007-3012`). -->
 
 **Caveats.** SHA-512Half ≠ SHA-256. Do not use this where a counterpart expects a
 plain SHA-256 or full SHA-512 digest.

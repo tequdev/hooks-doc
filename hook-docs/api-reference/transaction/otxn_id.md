@@ -17,6 +17,8 @@ int64_t otxn_id(uint32_t write_ptr, uint32_t write_len, uint32_t flags);
 | `write_len` | `uint32_t` | Buffer length; must be at least 32. |
 | `flags` | `uint32_t` | `0` = during a failed-emit callback, return the emitted txn's stored hash (`sfTransactionHash`); otherwise return the computed transaction id. |
 
+<!-- evidence: `HookAPI::otxn_id` selects `sfTransactionHash` only when `emitFailure` is active and `flags == 0`; every other case uses `getTransactionID()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1610-1617` in Xahau/xahaud `origin/release`). -->
+
 **Return value.** Returns the number of bytes written (32) on success. Errors:
 `TOO_SMALL` (-4) if `write_len < 32`; `OUT_OF_BOUNDS` (-1) if the buffer is outside memory.
 

@@ -11,7 +11,7 @@ enumeration). The slot family is documented here; the ledger-info family has its
 [Ledger APIs](../ledger/README.md).
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary](../../glossary.md); values come from <!-- include/xrpl/hook/Enum.h and -->
+error table in [Glossary](../../glossary.md); values come from <!-- include/xrpl/hook/Enum.h and -->
 `hook/error.h`. The implementation is split between core lookup/read logic and the
 WASM-facing wrappers that marshal arguments across the guest boundary.
 <!-- core logic: `src/xrpld/app/hook/detail/HookAPI.cpp`; WASM-facing wrappers: `src/xrpld/app/hook/detail/applyHook.cpp` -->
@@ -57,24 +57,25 @@ produces the 34-byte serialized keylet these functions expect.
 | [`slot_count`](slot_count.md) | Number of elements in a slotted array. |
 | [`slot_subfield`](slot_subfield.md) | Expand a subfield of a slotted object into a new slot. |
 | [`slot_subarray`](slot_subarray.md) | Expand an array element of a slotted array into a new slot. |
-| [`slot_type`](slot_type.md) | Return the field type of a slot (and whether an amount is XAH). |
+| [`slot_type`](slot_type.md) | Return a slot field code, or whether an amount is XAH. |
+<!-- evidence: `slot_type` returns `fieldCode` for `flags == 0` and `amount.native()` for `flags == 1` (`src/xrpld/app/hook/detail/applyHook.cpp:2075-2084` in xahaud `origin/release`). -->
 | [`slot_float`](slot_float.md) | Interpret a slotted amount as an XFL value. |
 | [`meta_slot`](meta_slot.md) | Load the originating transaction's metadata into a slot. |
-| [`xpop_slot`](xpop_slot.md) | Load an XPOP's inner transaction and metadata into two slots. |
+| [`xpop_slot`](xpop_slot.md) | Load an XPOP's inner transaction and metadata into two slots. <!-- evidence: `HookAPI::xpop_slot` extracts both objects and returns their slot numbers (`src/xrpld/app/hook/detail/HookAPI.cpp:2405-2458` in xahaud `release`). --> |
 
 ## Related documents
 
 - [../../README](../../README.md) — documentation index.
-- [../../overview](../../overview.md) — hook execution model and lifecycle.
-- [../../glossary](../../glossary.md) — full error-code and term reference.
-- [../../macros](../../macros/README.md) — `SBUF`, `GUARD`, and buffer helpers.
-- [../../best-practices](../../best-practices.md) — slot budgets and iterating ledger objects.
+- [Overview](../../overview.md) — hook execution model and lifecycle.
+- [Glossary](../../glossary.md) — full error-code and term reference.
+- [Helper Macros](../../macros/README.md) — `SBUF`, `GUARD`, and buffer helpers.
+- [Best Practices](../../best-practices.md) — slot budgets and iterating ledger objects.
 - [Ledger APIs](../ledger/README.md) — `fee_base`, `ledger_seq`, `ledger_nonce`, and the rest of the ledger-info family.
-- [control](../control/README.md) — `hook_again` and the strong/weak execution model.
-- [transaction](../transaction/README.md) — `otxn_slot`, `otxn_field`, and originating-txn access.
-- [state](../state/README.md) — persistent state read/write.
-- [emit-and-etxn](../emit/README.md) — `etxn_fee_base`, `etxn_nonce`, and emission.
-- [float-and-amount](../float/README.md) — XFL math for `slot_float` values.
-- [utility](../utility/README.md) — `util_keylet` for building the keylets `slot_set`/`ledger_keylet` consume.
-- [../../examples/emitted-transaction](../../examples/emitted-transaction.md) — reading slots and emitting.
-- [../../examples/memo-routing](../../examples/memo-routing.md) — drilling arrays and subfields.
+- [Control APIs](../control/README.md) — `hook_again` and the strong/weak execution model.
+- [Transaction APIs](../transaction/README.md) — `otxn_slot`, `otxn_field`, and originating-txn access.
+- [State APIs](../state/README.md) — persistent state read/write.
+- [Emit APIs](../emit/README.md) — `etxn_fee_base`, `etxn_nonce`, and emission.
+- [Float & Amount APIs](../float/README.md) — XFL math for `slot_float` values.
+- [Utility APIs](../utility/README.md) — `util_keylet` for building the keylets `slot_set`/`ledger_keylet` consume.
+- [Emitted Transaction](../../examples/emitted-transaction.md) — reading slots and emitting.
+- [Memo Routing](../../examples/memo-routing.md) — drilling arrays and subfields.

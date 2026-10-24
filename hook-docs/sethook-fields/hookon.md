@@ -3,7 +3,7 @@
 **Purpose:** selects which transaction types cause a hook to fire, as a 256-bit
 field where each bit position corresponds to a `TxType` value.
 
-**Amendment gating:** before `featureHookOnV2`, `sfHookOn` is mandatory on
+**Amendment gating:** before `featureHookOnV2_1`, `sfHookOn` is mandatory on
 create — omitting it is rejected.
 <!-- From `SetHook.cpp:458-469`:
 
@@ -11,11 +11,11 @@ create — omitting it is rejected.
 // validate sfHookOn
 if (!hookSetObj.isFieldPresent(sfHookOn))
 {
-    if (!ctx.rules.enabled(featureHookOnV2))
+    if (!ctx.rules.enabled(featureHookOnV2_1))
     {
         ...
             << "]: Malformed transaction: SetHook must include "
-               "sfHookOn before featureHookOnV2 is enabled.";
+               "sfHookOn before featureHookOnV2_1 is enabled.";
         return false;
     }
     ...
@@ -23,10 +23,14 @@ if (!hookSetObj.isFieldPresent(sfHookOn))
 -->
 
 
-Once `featureHookOnV2` is enabled, a create/install/update may supply **either**
+Once `featureHookOnV2_1` is enabled, a create/install/update may supply **either**
 `sfHookOn` alone **or** the `sfHookOnIncoming`/`sfHookOnOutgoing` pair, but never
 both — see [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md) for
-the mutual-exclusivity rule and confirming test cases.
+the mutual-exclusivity rule and confirming test cases. `featureHookOnV2` is
+unsupported in the current release.<!-- Release commit
+`d20e8ffb561034101d24668adbe9a513f639cb37`: `include/xrpl/protocol/detail/features.macro:42,74`
+and `src/xrpld/app/tx/detail/SetHook.cpp:257-287` establish the replacement
+amendment and its validation rules. -->
 
 **Runtime semantics — the bit layout.** The active-high/active-low split is
 easy to get backwards, so it's worth spelling out precisely.

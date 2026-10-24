@@ -1,0 +1,170 @@
+/*
+ * Xahau Design System (Blue theme) mapped onto VitePress's default theme.
+ * Token values are vendored from
+ * https://github.com/tequdev/xahau-design-system (tokens.css @ 8594442);
+ * the package is not published on npm. Only the tokens are used: the
+ * component stylesheet (xahau.css) sets global body/link rules that would
+ * fight VitePress's own theme, and VitePress drives dark mode with `.dark`
+ * alone, so the OS-preference block in tokens.css is deliberately left out.
+ */
+
+:root {
+  /* design-system primitives */
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --amber-200: #fde68a;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706;
+  --amber-800: #92400e;
+  --red-50: #fef2f2;
+  --red-200: #fecaca;
+  --red-400: #f87171;
+  --red-700: #b91c1c;
+  --yellow-50: #fefce8;
+
+  /* brand (Blue theme) */
+  --brand: #183fb7;
+  --brand-hover: #1d4ed8;
+  --brand-light: #7592f7;
+  --grad: linear-gradient(to right, #183fb7, #7592f7);
+  --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* VitePress mapping, light */
+  --vp-c-brand-1: var(--brand);
+  --vp-c-brand-2: var(--brand-hover);
+  --vp-c-brand-3: var(--brand);
+  --vp-c-brand-soft: rgb(24 63 183 / 0.12);
+
+  --vp-c-bg: #fff;
+  --vp-c-bg-alt: var(--gray-50);
+  --vp-c-bg-elv: #fff;
+  --vp-c-bg-soft: var(--gray-100);
+
+  --vp-c-text-1: var(--gray-900);
+  --vp-c-text-2: var(--gray-600);
+  --vp-c-text-3: var(--gray-500);
+
+  --vp-c-border: var(--gray-300);
+  --vp-c-divider: var(--gray-200);
+  --vp-c-gutter: var(--gray-200);
+
+  --vp-c-gray-1: var(--gray-300);
+  --vp-c-gray-2: var(--gray-200);
+  --vp-c-gray-3: var(--gray-100);
+  --vp-c-gray-soft: rgb(107 114 128 / 0.14);
+
+  --vp-c-warning-1: var(--amber-600);
+  --vp-c-warning-2: var(--amber-500);
+  --vp-c-warning-3: var(--amber-500);
+  --vp-c-warning-soft: rgb(245 158 11 / 0.14);
+  --vp-c-danger-1: var(--red-700);
+  --vp-c-danger-2: var(--red-400);
+  --vp-c-danger-3: var(--red-400);
+  --vp-c-danger-soft: rgb(185 28 28 / 0.12);
+
+  --vp-custom-block-warning-bg: var(--yellow-50);
+  --vp-custom-block-warning-text: var(--amber-800);
+  --vp-custom-block-danger-bg: var(--red-50);
+  --vp-custom-block-danger-text: var(--red-700);
+
+  --vp-font-family-mono: "Source Code Pro", ui-monospace, "Menlo", "Monaco", "Consolas", monospace;
+
+  --vp-code-color: var(--vp-c-text-1);
+  --vp-code-bg: var(--gray-100);
+  --vp-code-block-bg: var(--gray-100);
+  --vp-code-copy-code-bg: var(--gray-200);
+  --vp-code-copy-code-hover-bg: var(--gray-300);
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: var(--grad);
+}
+
+.dark {
+  --vp-c-brand-1: var(--brand-light);
+  --vp-c-brand-2: #93c5fd;
+  --vp-c-brand-3: var(--brand);
+  --vp-c-brand-soft: rgb(117 146 247 / 0.16);
+
+  --vp-c-bg: var(--gray-900);
+  --vp-c-bg-alt: var(--gray-800);
+  --vp-c-bg-elv: var(--gray-800);
+  --vp-c-bg-soft: var(--gray-800);
+
+  --vp-c-text-1: var(--gray-100);
+  --vp-c-text-2: var(--gray-400);
+  --vp-c-text-3: var(--gray-500);
+
+  --vp-c-border: var(--gray-600);
+  --vp-c-divider: var(--gray-700);
+  --vp-c-gutter: var(--gray-900);
+
+  --vp-c-gray-1: var(--gray-600);
+  --vp-c-gray-2: var(--gray-700);
+  --vp-c-gray-3: var(--gray-800);
+  --vp-c-gray-soft: rgb(156 163 175 / 0.16);
+
+  --vp-c-warning-1: var(--amber-200);
+  --vp-c-danger-1: var(--red-200);
+  --vp-custom-block-warning-bg: rgb(120 53 15 / 0.2);
+  --vp-custom-block-warning-text: var(--amber-200);
+  --vp-custom-block-danger-bg: rgb(127 29 29 / 0.2);
+  --vp-custom-block-danger-text: var(--red-200);
+
+  /* solid fills keep the brand blue with white text; links use brand-light */
+  --vp-button-brand-bg: var(--brand);
+  --vp-button-brand-hover-bg: var(--brand-hover);
+  --vp-button-brand-active-bg: var(--brand-hover);
+
+  --vp-code-bg: var(--gray-700);
+  --vp-code-block-bg: var(--gray-800);
+  --vp-code-copy-code-bg: var(--gray-700);
+  --vp-code-copy-code-hover-bg: var(--gray-600);
+}
+
+/* Design-system shapes: 8px buttons and elevated 12px cards. Descendant selectors
+   match the specificity of VitePress's scoped `[data-v-*]` rules so these win by order. */
+.VPNavBarTitle .title {
+  color: var(--vp-c-brand-1);
+}
+.VPHero .VPButton {
+  border-radius: 8px;
+  font-weight: 500;
+}
+.VPFeatures .VPFeature {
+  background: var(--vp-c-bg-elv);
+  border: 1px solid var(--vp-c-divider);
+  box-shadow: var(--shadow-card);
+}
+.VPFeatures .VPFeature .title {
+  color: var(--vp-c-brand-1);
+}
+.vp-doc h1,
+.vp-doc h2,
+.vp-doc h3 {
+  letter-spacing: -0.01em;
+}
+.vp-doc h2 {
+  border-top-color: var(--vp-c-divider);
+}
+.vp-doc table {
+  border-collapse: collapse;
+}
+.vp-doc tr:nth-child(2n) {
+  background-color: var(--vp-c-bg-alt);
+}
+.vp-doc th,
+.vp-doc td {
+  border-color: var(--vp-c-divider);
+}
+.vp-doc th {
+  background-color: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+}

@@ -15,6 +15,7 @@ int64_t slot_clear(uint32_t slot);
 | `slot` | `uint32_t` | Slot to free. |
 
 **Return value.** Returns `1` on success. Errors: `DOESNT_EXIST` (-5) if the slot was not set.
+<!-- evidence: `HookAPI::slot_clear` returns `DOESNT_EXIST` for an absent slot; otherwise it erases the slot, queues its number for reuse, and returns `1` (`src/xrpld/app/hook/detail/HookAPI.cpp:2055-2063` in xahaud `release`). -->
 
 **Common failure patterns.**
 - Clearing a slot twice → `DOESNT_EXIST` on the second call.

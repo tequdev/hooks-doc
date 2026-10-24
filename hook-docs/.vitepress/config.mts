@@ -311,6 +311,19 @@ export default defineConfig({
   srcDir: ".",
   cleanUrls: true,
 
+  // Source Code Pro is the design system's mono face; VitePress already bundles Inter.
+  head: [
+    ["link", { rel: "preconnect", href: "https://fonts.googleapis.com" }],
+    ["link", { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" }],
+    [
+      "link",
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;700&display=swap",
+      },
+    ],
+  ],
+
   // README.md and best-practices.md link to the bare "api-reference/" and
   // "examples/" directories (no index page exists there, unlike the
   // per-group READMEs) — not real dead links, just directory references.

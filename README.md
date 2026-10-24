@@ -51,7 +51,8 @@ pnpm format        # biome format --write .
   otherwise preserving the source formatting; `pnpm dev` and the build serve the identical
   document. `llms.txt` comes from `vitepress-plugin-llms`, and `llms-full.txt` is these same
   per-page documents concatenated in sidebar order.
-- Theming is the VitePress default theme, unmodified — no custom CSS or theme overrides.
+- Theming is the VitePress default theme plus `hook-docs/.vitepress/theme/custom.css`, which
+  maps the Xahau Design System (Blue theme) tokens onto VitePress's CSS variables.
   Local full-text search (`themeConfig.search.provider: "local"`) and Shiki C/TypeScript
   syntax highlighting come from VitePress out of the box.
 - `api-reference/` and `examples/` bare-directory links in `README.md` / `best-practices.md`

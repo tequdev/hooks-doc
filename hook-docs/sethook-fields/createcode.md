@@ -52,7 +52,7 @@ an explicitly-set-but-empty blob (`ripple::Blob{}`) infers `hsoDELETE`.
 **Omitting `sfCreateCode` entirely is not the same as an empty one** — with
 neither `sfCreateCode` nor `sfHookHash` present, inference falls through to
 the NOOP/UPDATE/NSDELETE branch instead (see
-[operations-field-matrix](operations-field-matrix.md)).
+[Operation Matrix](operations-field-matrix.md)).
 
 **Size limit — checked in `preflight`, before operation-specific
 validation.** `maxHookWasmSize()` returns `0xFFFFU` (65,535 bytes). The
@@ -211,7 +211,7 @@ upgrades.
 
 ## Related documents
 
-- [fees](../fees.md) — the full creation/execution/collect-call/emission
+- [Hook Fees](../fees.md) — the full creation/execution/collect-call/emission
   fee model this creation-fee figure fits into.
 - [HookHash](hookhash.md) — install semantics and the full
   `ltHOOK_DEFINITION` reference-counting lifecycle that `hsoCREATE` falls
@@ -219,7 +219,7 @@ upgrades.
 - [HookNamespace](hooknamespace.md), [HookApiVersion](hookapiversion.md),
   [HookOn](hookon.md) — the other fields `hsoCREATE` requires alongside
   `sfCreateCode`.
-- [flags](flags.md) — `hsfOVERRIDE`/`hsfNSDELETE`/`hsfCOLLECT` and their
+- [Flags](flags.md) — `hsfOVERRIDE`/`hsfNSDELETE`/`hsfCOLLECT` and their
   per-operation legality, including the delete-flag requirement above.
-- [operations-field-matrix](operations-field-matrix.md) — full
+- [Operation Matrix](operations-field-matrix.md) — full
   per-operation field matrix.

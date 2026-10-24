@@ -51,14 +51,14 @@ int64_t emit(uint32_t write_ptr, uint32_t write_len,
 
 **Caveats / notes.**
 - The queued transaction is only kept if the hook goes on to `accept`; a `rollback` discards
-  this hook's emitted transactions (see [control](../control/README.md)).
+  this hook's emitted transactions (see [Control APIs](../control/README.md)).
 - Build the transaction with [`etxn_details`](etxn_details.md) + [`etxn_fee_base`](etxn_fee_base.md)
   (or [`prepare`](prepare.md)) so the rule checks pass; emitting a hand-built blob without these
   almost always fails.
 - The blob is parsed with the ledger's deserializer, so it may contain `0x99` NOP bytes
   (at most 63 per object or array) to blank out an optional template field or pad a
   shortened blob; they are dropped from the emitted transaction and its hash. See
-  [nop-bytes](../../nop-bytes.md).
+  [NOP Bytes (0x99)](../../nop-bytes.md).
 
 **Minimal example.**
 
@@ -104,7 +104,7 @@ int64_t hook(uint32_t r)
 }
 ```
 
-See [../examples/emitted-transaction](../../examples/emitted-transaction.md) for a fuller
+See [Emitted Transaction](../../examples/emitted-transaction.md) for a fuller
 walkthrough, including building the template with the [Transaction Builder](/tools/tx-builder).
 
 **Related APIs.** [`etxn_reserve`](etxn_reserve.md), [`etxn_details`](etxn_details.md),

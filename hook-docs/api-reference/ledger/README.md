@@ -11,7 +11,7 @@ single "Ledger and Slot APIs" page; that page has been split in two, and this pa
 the ledger-info half.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary](../../glossary.md); values come from <!-- include/xrpl/hook/Enum.h and -->
+error table in [Glossary](../../glossary.md); values come from <!-- include/xrpl/hook/Enum.h and -->
 `hook/error.h`. The implementation is split between core lookup/read logic and the
 WASM-facing wrappers that marshal arguments across the guest boundary.
 <!-- core logic: `src/xrpld/app/hook/detail/HookAPI.cpp`; WASM-facing wrappers: `src/xrpld/app/hook/detail/applyHook.cpp` -->
@@ -24,20 +24,20 @@ WASM-facing wrappers that marshal arguments across the guest boundary.
 |---|---|
 | [`fee_base`](fee_base.md) | Base fee (drops) of the current ledger. <!-- evidence: `HookAPI::fee_base()` reads `view().fees().base.drops()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1802-1806` from xahaud `origin/release`). --> |
 | [`ledger_seq`](ledger_seq.md) | Current ledger sequence number. <!-- evidence: `HookAPI::ledger_seq()` reads `view().info().seq` (`src/xrpld/app/hook/detail/HookAPI.cpp:1808-1812` from xahaud `origin/release`). --> |
-| [`ledger_last_time`](ledger_last_time.md) | Close time of the last closed ledger. |
+| [`ledger_last_time`](ledger_last_time.md) | Close time of the last closed ledger. <!-- evidence: `HookAPI::ledger_last_time()` reads `view().info().parentCloseTime.time_since_epoch().count()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1886-1891` from xahaud `origin/release`). --> |
 | [`ledger_last_hash`](ledger_last_hash.md) | Hash of the last closed ledger. <!-- evidence: `HookAPI::ledger_last_hash` returns `view().info().parentHash` (`src/xrpld/app/hook/detail/HookAPI.cpp:1814-1818` from xahaud `origin/release`). --> |
-| [`ledger_nonce`](ledger_nonce.md) | A unique per-call nonce. |
+| [`ledger_nonce`](ledger_nonce.md) | A unique per-call nonce. <!-- evidence: `HookAPI::ledger_nonce` hashes ledger/transaction context with a per-execution counter and rejects requests after `max_nonce` (`src/xrpld/app/hook/detail/HookAPI.cpp:1895-1910`, `include/xrpl/hook/Enum.h:403` from xahaud `origin/release`). --> |
 | [`ledger_keylet`](ledger_keylet.md) | Enumerate the first existing keylet strictly after `lo` and no later than `hi`. <!-- evidence: `HookAPI::ledger_keylet` delegates to `succ`, which uses `upper_bound(key)` and rejects results at or above `hi.next()` (`src/xrpld/app/hook/detail/HookAPI.cpp:1849-1863`, `src/xrpld/app/ledger/Ledger.cpp:471-478`). --> |
 
 ## Related documents
 
 - [../../README](../../README.md) — documentation index.
-- [../../overview](../../overview.md) — hook execution model and lifecycle.
-- [../../glossary](../../glossary.md) — full error-code and term reference.
-- [../../macros](../../macros/README.md) — `SBUF`, `GUARD`, and buffer helpers.
-- [../../best-practices](../../best-practices.md) — slot budgets and iterating ledger objects.
+- [Overview](../../overview.md) — hook execution model and lifecycle.
+- [Glossary](../../glossary.md) — full error-code and term reference.
+- [Helper Macros](../../macros/README.md) — `SBUF`, `GUARD`, and buffer helpers.
+- [Best Practices](../../best-practices.md) — slot budgets and iterating ledger objects.
 - [Slot APIs](../slot/README.md) — `slot_set`, `slot_subfield`, `meta_slot`, `xpop_slot`, and the rest of the slot family.
-- [control](../control/README.md) — `hook_again` and the strong/weak execution model.
-- [transaction](../transaction/README.md) — `otxn_slot`, `otxn_field`, and originating-txn access.
-- [emit-and-etxn](../emit/README.md) — `etxn_fee_base`, `etxn_nonce`, and emission.
-- [utility](../utility/README.md) — `util_keylet` for building the keylets `slot_set`/`ledger_keylet` consume.
+- [Control APIs](../control/README.md) — `hook_again` and the strong/weak execution model.
+- [Transaction APIs](../transaction/README.md) — `otxn_slot`, `otxn_field`, and originating-txn access.
+- [Emit APIs](../emit/README.md) — `etxn_fee_base`, `etxn_nonce`, and emission.
+- [Utility APIs](../utility/README.md) — `util_keylet` for building the keylets `slot_set`/`ledger_keylet` consume.
