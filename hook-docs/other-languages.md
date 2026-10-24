@@ -359,7 +359,6 @@ derived and charged.
 ## Related documents
 
 - [Validating Hooks](validating.md)
-
 - [Overview: The Xahau Hook Model](overview.md)
 - [Compiling Hooks](compiling.md)
 - [Hook Best Practices](best-practices.md)

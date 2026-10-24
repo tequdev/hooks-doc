@@ -100,8 +100,9 @@ Three details worth knowing when you script against it:
 
 ### A valid module
 
-The payment-filter example from this site, compiled with
-[hooks-compiler](tools/hooks-compiler.md) and submitted to a standalone node:
+[Example: Payment Filter](examples/payment-filter.md) from this site, compiled
+with [hooks-compiler](tools/hooks-compiler.md) and submitted to a standalone
+node:
 
 ```json
 {

@@ -19,10 +19,11 @@ used by web IDEs; this page covers the local command-line use.
   dependencies, so the first `npx` run downloads it once.
 - The Hook API headers. The compiler does not bundle `hookapi.h`; point it at
   a directory that holds the headers your hook includes. The canonical set is
-  xahaud's `hook/genesis/headers` directory (`hookapi.h`, `macro.h`,
-  `sfcodes.h`, `extern.h`, `error.h`, `types.h`), which is what the compiler's
-  own determinism tests compile against.
-  <!-- README "Install": Node >= 20.12, assets ship in the dependency; README test/fixtures: include/ is "every .h from Xahau/xahaud hook/genesis/headers". The five example hooks on this site (examples/*.md) compile with those headers; the hookapi.h in the package's examples/include is an older, smaller header that lacks e.g. COMPARE_GREATER -->
+  xahaud's [`hook/genesis/headers`](https://github.com/Xahau/xahaud/tree/dev/hook/genesis/headers)
+  directory (`hookapi.h`, `macro.h`, `sfcodes.h`, `extern.h`, `error.h`,
+  `types.h`), which is what the compiler's own determinism tests compile
+  against.
+  <!-- README "Install": Node >= 20.12, assets ship in the dependency; README test/fixtures: include/ is "every .h from Xahau/xahaud hook/genesis/headers". Four of the five example hooks on this site (examples/*.md; emitted-transaction.md's snippet depends on macros defined in another block) compile with those headers; the hookapi.h in the package's examples/include is an older, smaller header that lacks e.g. COMPARE_GREATER -->
 
 ## Build a hook
 

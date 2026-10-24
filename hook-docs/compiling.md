@@ -202,8 +202,8 @@ install, and produces byte-identical output for the same source.
 npx hooks-compiler build hook.c -I include -o hook.wasm -Oz
 ```
 
-Its output is already the cleaned module, ready for
-[validation](validating.md) and `sfCreateCode`:
+Its output is already the cleaned module, ready for `hook_validate` (see
+[Validating Hooks](validating.md)) and `sfCreateCode`:
 
 ```
 hook.c  →  hooks-compiler  →  hook.wasm (clean)  →  hook_validate
