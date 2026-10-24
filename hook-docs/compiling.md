@@ -262,8 +262,9 @@ A practical development cycle:
 
 ## Common install-rejection causes
 
-The number is the code's numeric value, which is how
-[`hook_validate`](validating.md) prints it (`HookSet(28)` is `GUARD_MISSING`).
+The number is the code's numeric value, which is how validator log lines
+print it (`HookSet(28)` is `GUARD_MISSING`); the
+[`hook_validate`](validating.md) RPC returns those lines in its `log` array.
 <!-- include/xrpl/hook/Enum.h:134-273 (2026.10.13-release+4119) — enum hook_log_code : uint16_t; values listed per row below -->
 
 | Symptom (log code) | Code | Cause |

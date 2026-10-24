@@ -1,8 +1,4 @@
----
-sidebarTitle: "Validating Hooks"
----
-
-# Validating a Hook with `hook_validate`
+# Validating Hooks
 
 `hook_validate` is an RPC method, added in xahaud release
 `2026.10.13-release+4119`, that runs the `SetHook` install-time validator
@@ -140,9 +136,12 @@ The same request for a hook whose `for` loop has no `GUARD()` call:
 ```
 
 No instruction counts are reported, because the guard checker stopped at the
-first failing check. The byte offset points into the module's code section,
-which is where to look in the `wasm2wat` output.
-<!-- Live output; Guard.h:378-422 loop branch, GUARD_MISSING = 28 -->
+first failing check. The byte offset is counted from the start of the module
+and points at the first instruction inside the loop body, where the guard's
+`i32.const` was expected; `codesec` is the index of the function within the
+code section.
+<!-- Guard.h:131-139 GUARD_ERROR prints the parser position i, which indexes the whole wasm vector; in the sample module the loop opcode 0x03 sits at offset 0x6E and 0x70 is the byte after its block type -->
+<!-- Live output; Guard.h:378-422 loop branch, GUARD_MISSING = 28. The WebSocket form was exercised live as well (command: hook_validate, valid: true) -->
 
 ### Over the instruction budget
 
