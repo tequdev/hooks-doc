@@ -193,14 +193,36 @@ apply-time detail.
 
 ## Toolchain pipeline
 
-The repo's own pages name a specific toolchain for producing a conforming
-binary from C source:
-[Overview: Compilation pipeline](overview.md#compilation-pipeline) and
-[Best Practices: No user-defined functions — inline everything](best-practices.md#no-user-defined-functions-—-inline-everything)
-reference:
+The recommended way to produce a conforming binary from C source is
+[hooks-compiler](tools/hooks-compiler.md): one `npx` command that runs clang,
+`wasm-opt`, and `hook-cleaner` as WebAssembly inside Node, needs no toolchain
+install, and produces byte-identical output for the same source.
+
+```sh
+npx hooks-compiler build hook.c -I include -o hook.wasm -Oz
+```
+
+Its output is already the cleaned module, ready for
+[validation](validating.md) and `sfCreateCode`:
+
+```
+hook.c  →  hooks-compiler  →  hook.wasm (clean)  →  hook_validate
+                                      │
+                         hex-encode into sfCreateCode
+                                      │
+                              SetHook transaction
+```
+
+### The underlying tools
+
+hooks-compiler packages the tools the Hooks ecosystem has always used; knowing
+them explains what the one command does, and they remain the way to build when
+you are not compiling from C (see
+[Developing Hooks in Languages Other Than C](other-languages.md)):
 
 1. **`wasmcc`** (from `wasienv`) — a clang-based compiler that targets
-   `wasm32`, producing the raw WASM module from C source.
+   `wasm32`, producing the raw WASM module from C source. hooks-compiler runs
+   clang and `wasm-ld` directly for this step.
 2. **`hook-cleaner`** (from `hook-cleaner-c`) — strips custom sections and
    non-`hook`/`cbak` exports from the raw compiler output. The custom-section
    strip is what actually makes the difference between "installs" and
@@ -209,25 +231,15 @@ reference:
 3. **`wat2wasm`** (from `wabt`) — only needed if you're hand-writing or
    inspecting WebAssembly Text (`.wat`) rather than compiling from C.
 
-[hooks-compiler](tools/hooks-compiler.md) packages the first two steps (plus a
-`wasm-opt` shrink pass) into one `npx` command that runs clang and
-`hook-cleaner` as WebAssembly inside Node, needs no toolchain install, and
-produces byte-identical output for the same source. Its output is the cleaned
-module below, ready for validation and `sfCreateCode`.
-
-The reference hooks used throughout these docs are compiled from C source
-embedded in xahaud's own test suite, via a repeatable local build task.
-<!-- overview.md:302-307 and best-practices.md:100-101 already document these tool names and the mise task; not independently re-verified against the xahaud checkout in this pass since they are build-tooling names, not consensus-affecting runtime behavior. This project's own test hooks are compiled through src/test/app/build_test_hooks.sh, which extracts embedded C source from SetHook_test.cpp and produces SetHook_wasm.h; the repeatable local command is `mise run build-test-hook`. -->
-
-A typical pipeline looks like:
+Run by hand, the pipeline is:
 
 ```
 hook.c  →  wasmcc  →  hook.wasm (raw)  →  hook-cleaner  →  hook.wasm (clean)
-                                                                  │
-                                                     hex-encode into sfCreateCode
-                                                                  │
-                                                          SetHook transaction
 ```
+
+The reference hooks used throughout these docs are compiled from C source
+embedded in xahaud's own test suite, via a repeatable local build task.
+<!-- overview.md and best-practices.md document these tool names and the mise task; not independently re-verified against the xahaud checkout in this pass since they are build-tooling names, not consensus-affecting runtime behavior. This project's own test hooks are compiled through src/test/app/build_test_hooks.sh, which extracts embedded C source from SetHook_test.cpp and produces SetHook_wasm.h; the repeatable local command is `mise run build-test-hook`. -->
 
 The final step — hex-encoding the cleaned WASM bytes into `sfCreateCode` — is
 mechanical; see [CreateCode](sethook-fields/createcode.md)
@@ -242,8 +254,8 @@ A practical development cycle:
 1. **Edit** the C source, following the mandatory rules in
    [Best Practices: Mandatory rules](best-practices.md#mandatory-rules) — guard discipline,
    inlined helpers only, size/instruction budgets.
-2. **Compile and clean** with `wasmcc` then `hook-cleaner`, or with
-   [hooks-compiler](tools/hooks-compiler.md) in one step.
+2. **Compile** with [hooks-compiler](tools/hooks-compiler.md), which also
+   cleans the module (or run `wasmcc` then `hook-cleaner` by hand).
 3. **Validate** the module with the [`hook_validate`](validating.md) RPC on
    a node whose amendments match your target network. It runs the same
    checks as `SetHook` preflight and reports the worst-case instruction count,

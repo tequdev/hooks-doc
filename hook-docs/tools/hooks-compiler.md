@@ -86,7 +86,7 @@ imports; binaryen's `wasm-opt` shrinks the module while restricted to the
 WebAssembly MVP feature set, so no post-MVP opcode such as `memory.copy` can
 be introduced; and `hook-cleaner` strips the custom sections and extra exports
 that would otherwise fail install. The output is already the "clean" module
-of the pipeline on [Compiling Hooks](../compiling.md#toolchain-pipeline);
+described under [Compiling Hooks: The underlying tools](../compiling.md#the-underlying-tools);
 there is no separate cleaning step to run.
 <!-- README "Exact arguments": clang -target wasm32 -mcpu=mvp -O2 -nostdlib -nostartfiles -Werror=implicit-function-declaration -Wno-error=int-conversion -w -I/src -c; wasm-ld --no-entry --allow-undefined --export=hook --export-if-defined=cbak; wasm-opt setFeatures(Features.MVP), -Oz; "wasm-opt runs before hook-cleaner because the cleaner strips the memory export". Toolchain is clang 22 via @live-codes/clang-wasm -->
 

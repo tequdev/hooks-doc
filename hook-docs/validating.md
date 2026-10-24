@@ -51,8 +51,8 @@ xxd -p -c0 hook.wasm
 JSON-RPC over HTTP:
 
 ```sh
-curl -s -X POST http://localhost:5005 \
-  -d "{\"method\":\"hook_validate\",\"params\":[{\"code\":\"$(xxd -p -c0 hook.wasm)\"}]}"
+curl --json "{\"method\":\"hook_validate\",\"params\":[{\"code\":\"$(xxd -p -c0 hook.wasm)\"}]}" \
+  http://localhost:5005
 ```
 
 WebSocket, with the usual `command` form:
