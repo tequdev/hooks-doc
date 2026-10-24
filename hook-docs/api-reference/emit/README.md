@@ -9,7 +9,7 @@ construct, price, and emit a new transaction of its own, plus the counters that 
 transactions deterministic and loop-safe.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary](../../glossary.md).
+error table in [Glossary](../../glossary.md).
 <!-- the values quoted below come from `include/xrpl/hook/Enum.h` and `hook/error.h`, and
 every behaviour is taken from the implementations in
 `src/xrpld/app/hook/detail/applyHook.cpp` and `src/xrpld/app/hook/detail/HookAPI.cpp` -->
@@ -129,18 +129,18 @@ reservation.
 ## Related documents
 
 - [../../README](../../README.md) — documentation index.
-- [../../overview](../../overview.md) — hook execution model, strong/weak/callback executions.
-- [../../glossary](../../glossary.md) — full error-code and term reference.
-- [../../macros](../../macros/README.md) — the `ENCODE_*`, `SBUF`, and `ASSERT` helpers used to
+- [Overview](../../overview.md) — hook execution model, strong/weak/callback executions.
+- [Glossary](../../glossary.md) — full error-code and term reference.
+- [Helper Macros](../../macros/README.md) — the `ENCODE_*`, `SBUF`, and `ASSERT` helpers used to
   build emitted transactions.
-- [../../tools/tx-builder](../../tools/tx-builder.md) — generate emitted-transaction templates
+- [Transaction Builder](../../tools/tx-builder.md) — generate emitted-transaction templates
   and the `PREPARE_TXN()` macro.
-- [../../best-practices](../../best-practices.md) — structuring emissions and callbacks.
-- [../../fees](../../fees.md) — how `etxn_fee_base` fits into the full hook fee model.
-- [../../examples/emitted-transaction](../../examples/emitted-transaction.md) — a full
+- [Best Practices](../../best-practices.md) — structuring emissions and callbacks.
+- [Hook Fees](../../fees.md) — how `etxn_fee_base` fits into the full hook fee model.
+- [Emitted Transaction](../../examples/emitted-transaction.md) — a full
   emit-a-payment example.
-- [control](../control/README.md) — `accept`/`rollback` and how they keep or discard emissions.
-- [transaction](../transaction/README.md) — `otxn_generation`, `otxn_burden`, and the other
+- [Control APIs](../control/README.md) — `accept`/`rollback` and how they keep or discard emissions.
+- [Transaction APIs](../transaction/README.md) — `otxn_generation`, `otxn_burden`, and the other
   originating-transaction accessors.
-- [ledger-and-slot](../ledger/README.md) — `fee_base`, `ledger_seq`, `ledger_nonce`.
-- [float-and-amount](../float/README.md) — building the `sfAmount` values you emit.
+- [Ledger APIs](../ledger/README.md) — `fee_base`, `ledger_seq`, `ledger_nonce`.
+- [Float & Amount APIs](../float/README.md) — building the `sfAmount` values you emit.

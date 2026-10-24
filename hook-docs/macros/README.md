@@ -7,7 +7,7 @@ sidebarTitle: "Helper Macros"
 `hook/macro.h` is an **optional** convenience header. Its first comment says so
 directly: *"all of them are optional as is including macro.h at all."* Every macro
 here expands to plain calls against the API documented in
-[api-reference/](../api-reference/control/README.md) — nothing in this file is a distinct runtime
+[Control APIs](../api-reference/control/README.md) — nothing in this file is a distinct runtime
 capability. You can use the macros, ignore them, or copy the ones you like into your
 own project. In fact many hooks in the xahaud test suite re-`#define` a handful of
 these locally (their own `SBUF`, `GUARD`, `BUFFER_EQUAL_32`) rather than including the
@@ -60,13 +60,13 @@ nothing.
   serialization background
 - [Best practices](../best-practices.md) — guarding rules, resource limits, hook structure
 - API reference:
-  [control](../api-reference/control/README.md),
-  [transaction](../api-reference/transaction/README.md),
-  [state](../api-reference/state/README.md),
+  [Control APIs](../api-reference/control/README.md),
+  [Transaction APIs](../api-reference/transaction/README.md),
+  [State APIs](../api-reference/state/README.md),
   [ledger and slot](../api-reference/slot/README.md),
   [emit and etxn](../api-reference/emit/README.md),
   [float and amount](../api-reference/float/README.md),
-  [utility](../api-reference/utility/README.md) — `SBUF`, `SUB_OFFSET`/`SUB_LENGTH`, `TRACE*`,
+  [Utility APIs](../api-reference/utility/README.md) — `SBUF`, `SUB_OFFSET`/`SUB_LENGTH`, `TRACE*`,
   and STO helpers in context
 - Worked examples:
   [payment filter](../examples/payment-filter.md),

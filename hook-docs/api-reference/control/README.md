@@ -9,7 +9,7 @@ execution, guard loops, and inspect or influence the hook's position and paramet
 the hook chain.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary](../../glossary.md); the values quoted below come from
+error table in [Glossary](../../glossary.md); the values quoted below come from
 <!-- include/xrpl/hook/Enum.h and --> `hook/error.h`.
 
 ---
@@ -80,7 +80,7 @@ Two enforcement points exist:
 
 The developer-facing `GUARD(maxiter)` / `GUARDM(maxiter, n)` macros (in `hook/macro.h`)
 build the `guard_id` from the source line number so each loop gets a distinct id; see
-[../macros](../../macros/guards.md). You rarely call `_g` by hand except for the mandatory
+[Guards](../../macros/guards.md). You rarely call `_g` by hand except for the mandatory
 `_g(1,1)` at the top of `hook()`.
 
 ---
@@ -103,11 +103,11 @@ build the `guard_id` from the source line number so each loop gets a distinct id
 ## Related documents
 
 - [../../README](../../README.md) — documentation index.
-- [../../overview](../../overview.md) — hook execution model and lifecycle.
-- [../../glossary](../../glossary.md) — full error-code and term reference.
-- [../../macros](../../macros/README.md) — `GUARD`, `ASSERT`, `NOPE`, `SBUF`, and other helpers.
-- [../../best-practices](../../best-practices.md) — guarding loops and structuring accept/rollback.
-- [transaction](../transaction/README.md) — the `otxn_*` originating-transaction APIs.
-- [state](../state/README.md) — persistent state read/write.
-- [emit-and-etxn](../emit/README.md) — emitting transactions from a hook.
-- [utility](../utility/README.md) — `util_raddr`, `util_keylet`, STO helpers.
+- [Overview](../../overview.md) — hook execution model and lifecycle.
+- [Glossary](../../glossary.md) — full error-code and term reference.
+- [Helper Macros](../../macros/README.md) — `GUARD`, `ASSERT`, `NOPE`, `SBUF`, and other helpers.
+- [Best Practices](../../best-practices.md) — guarding loops and structuring accept/rollback.
+- [Transaction APIs](../transaction/README.md) — the `otxn_*` originating-transaction APIs.
+- [State APIs](../state/README.md) — persistent state read/write.
+- [Emit APIs](../emit/README.md) — emitting transactions from a hook.
+- [Utility APIs](../utility/README.md) — `util_raddr`, `util_keylet`, STO helpers.

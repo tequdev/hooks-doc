@@ -197,5 +197,5 @@ discussion.
   including its side-effect behavior on non-`hsoNSDELETE` operations.
 - [HookOn](hookon.md) — the strong/weak execution model `hsfCOLLECT` plugs
   into.
-- [operations-field-matrix](operations-field-matrix.md) — full
+- [Operation Matrix](operations-field-matrix.md) — full
   per-operation field/flag matrix.

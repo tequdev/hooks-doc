@@ -251,7 +251,7 @@ examples:
 - **The template's size is fixed at compile time.** To leave out an optional
   field, or to send a blob shorter than the space you reserved for it, overwrite
   the unused bytes with the `0x99` NOP byte instead of shifting the template —
-  see [nop-bytes](../nop-bytes.md) for the rules and worked examples.
+  see [NOP Bytes (0x99)](../nop-bytes.md) for the rules and worked examples.
 
 ## Related documents
 
