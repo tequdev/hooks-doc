@@ -263,7 +263,7 @@ if (!hook::canHook(ctx_.tx.getTxnType(), hookOn))
 -->
 
 `HookOn` (or its `HookOnIncoming`/`HookOnOutgoing` split under
-`featureHookOnV2`) then decides **whether** a specific installed hook fires
+`featureHookOnV2_1`) then decides **whether** a specific installed hook fires
 for this transaction's type, independent of TSH strength. A hook on a strong
 TSH account whose `HookOnIncoming` excludes this transaction type never runs,
 even though its account was nominated as a strong TSH; conversely `hsfCOLLECT`

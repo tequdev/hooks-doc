@@ -130,13 +130,13 @@ condition" above) makes the object something other than NOOP.
 [^ns-update]: If both `sfHookNamespace` and `hsfNSDELETE` (in `sfFlags`)
     are present, the object infers `hsoNSDELETE`, not `hsoUPDATE` — see
     [HookNamespace](hooknamespace.md).
-[^onv2]: Before `featureHookOnV2`: `sfHookOn` alone is required. With
-    `featureHookOnV2`: either `sfHookOn` alone, **or** both
+[^onv2]: Before `featureHookOnV2_1`: `sfHookOn` alone is required. With
+    `featureHookOnV2_1`: either `sfHookOn` alone, **or** both
     `sfHookOnIncoming` and `sfHookOnOutgoing` together (and they must
     differ) — never a mix of `sfHookOn` with either directional field. See
     [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md).
 [^onv2-gate]: Directional `HookOn` fields are only valid when
-    `featureHookOnV2` is enabled and **both** `sfHookOnIncoming` and
+    `featureHookOnV2_1` is enabled and **both** `sfHookOnIncoming` and
     `sfHookOnOutgoing` are supplied together with different values. See
     [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md).
 [^canemit]: Gated globally: any non-blank `sfHook` object carrying
@@ -181,7 +181,7 @@ condition" above) makes the object something other than NOOP.
 - `sfHookApiVersion` required, must equal `0` (`API_MISSING`/`API_INVALID`).
 - Exactly one of `sfHookOn` alone, or `sfHookOnIncoming` +
   `sfHookOnOutgoing` together (distinct values, requires
-  `featureHookOnV2`); before the amendment, `sfHookOn` alone is mandatory.
+  `featureHookOnV2_1`); before the amendment, `sfHookOn` alone is mandatory.
 - `sfHookGrants`/`sfHookParameters`, if present, validated by
   `validateHookGrants`/`validateHookParams` and become the new
   definition's *default* set — not merged against anything, since there is
@@ -209,10 +209,9 @@ condition" above) makes the object something other than NOOP.
   create; parameters go through the three-way merge described in
   [HookParameters](hookparameters.md) (starting from an empty prior set).
 - `sfHookNamespace`, `sfHookOn`/`sfHookOnIncoming`/`sfHookOnOutgoing`,
-  `sfHookCanEmit`, `sfHookName` are all accepted with no
-  install-specific structural checks in `validateHookSetEntry` beyond the
-  global amendment gates on `HookCanEmit`/`HookName` — see the deviation
-  note below regarding the Incoming/Outgoing pair. At apply time each is
+  `sfHookCanEmit`, `sfHookName` are accepted. When `featureHookOnV2_1` is
+  enabled, supplied `HookOn` fields must pass the same pair, mutual-exclusion,
+  and unequal-value checks as create; at apply time each is
   stored on the entry only if it differs from the target definition's
   resolved value (the same storage-optimization pattern as `hsoUPDATE`).
   <!-- SetHook.cpp:1962-2016 -->
@@ -298,11 +297,11 @@ condition" above) makes the object something other than NOOP.
 
 - `featureHooks` gates the entire transaction type.
   <!-- include/xrpl/protocol/detail/features.macro:99; SetHook.cpp:733-739 -->
-- `featureHookOnV2` governs the directional
+- `featureHookOnV2_1` governs the directional
   `HookOn` form: use plain `sfHookOn`, or use the
   `sfHookOnIncoming`/`sfHookOnOutgoing` pair with different values. See
   [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md).
-  <!-- features.macro:67 -->
+  <!-- Release commit `d20e8ffb561034101d24668adbe9a513f639cb37`: `include/xrpl/protocol/detail/features.macro:42,74`; `src/xrpld/app/tx/detail/SetHook.cpp:427-432,478-483`. -->
 - `featureHookCanEmit` and `featureNamedHooks`
   each gate their field **globally**, on every
   non-blank `sfHook` object regardless of inferred operation.
