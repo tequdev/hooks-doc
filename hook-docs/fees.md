@@ -182,9 +182,9 @@ caps emission depth independently of burden.
 | `SetHook`-nested `HookParameters`, 1 drop/byte | `sfHooks[].sfHookParameters` present on create/install/update | `SetHook` sender | [HookParameters](sethook-fields/hookparameters.md) |
 | Hook-slot/grant/parameter owner reserve | Occupied chain slot, stored grant, or stored parameter | The hook's own account (refundable) | This page, [Ledger reserves vs fees](#ledger-reserves-vs-fees) |
 | Hook State/namespace owner reserve | Stored state entry / new namespace | The state-owning account (refundable) | [api-reference/state/README](api-reference/state/README.md) |
-| Own-chain execution fee (`sfFee`, precomputed) | Originator's hooks fire | Originating account | [Transactional Stake Holders (TSH)](tsh.md) |
-| Strong-TSH execution fee | A strong TSH's hooks fire | Originating account (folded into base fee) | [Transactional Stake Holders (TSH)](tsh.md) |
-| Weak/collect-call execution fee | A weak TSH's hooks fire (opted in) | The TSH account itself | [Transactional Stake Holders (TSH)](tsh.md) |
+| Own-chain execution fee (`sfFee`, precomputed) | Originator's hooks fire | Originating account | [TSH](tsh.md) |
+| Strong-TSH execution fee | A strong TSH's hooks fire | Originating account (folded into base fee) | [TSH](tsh.md) |
+| Weak/collect-call execution fee | A weak TSH's hooks fire (opted in) | The TSH account itself | [TSH](tsh.md) |
 | Transaction-level `HookParameters`, 1 drop/byte | Any tx carries top-level `sfHookParameters` (`fixXahauV1`) | Transaction sender | This page, [Runtime execution costs](#runtime-execution-costs) |
 | Emitted-transaction fee, burden-multiplied | `emit()` queues a transaction | The emitting hook's own account | [Emit APIs](api-reference/emit/etxn_fee_base.md) |
 

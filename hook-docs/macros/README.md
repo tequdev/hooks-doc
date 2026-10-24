@@ -41,17 +41,17 @@ nothing.
 
 | Page | Covers |
 |---|---|
-| [Control flow: accept / rollback / assert](control-flow.md) | `DONEEMPTY`, `DONEMSG`, `DONE`, `ASSERT`, `NOPE`, `REQUIRE` |
+| [Control Flow](control-flow.md) | `DONEEMPTY`, `DONEMSG`, `DONE`, `ASSERT`, `NOPE`, `REQUIRE` |
 | [Guards](guards.md) | `GUARD`, `GUARDM` |
-| [Buffer pair helpers](buffer-helpers.md) | `SBUF`, `SVAR`, `CLEARBUF`, `BUFFER_SWAP` |
-| [Report-buffer builders](report-buffers.md) | `RBUF`, `RBUF2` |
-| [Tracing helpers](tracing.md) | `TRACEVAR`, `TRACEHEX`, `TRACEXFL`, `TRACESTR` |
+| [Buffer Pairs](buffer-helpers.md) | `SBUF`, `SVAR`, `CLEARBUF`, `BUFFER_SWAP` |
+| [Report Buffers](report-buffers.md) | `RBUF`, `RBUF2` |
+| [Tracing](tracing.md) | `TRACEVAR`, `TRACEHEX`, `TRACEXFL`, `TRACESTR` |
 | [Buffer comparison](buffer-comparison.md) | `BUFFER_EQUAL_20`/`_32`/`_64`, `BUFFER_EQUAL_GUARD`, `BUFFER_EQUAL_STR*`, `ACCOUNT_COMPARE` |
-| [Integer ↔ buffer (big-endian)](integer-conversion.md) | `UINT*_TO_BUF`/`_FROM_BUF`, `INT64_TO_BUF`/`_FROM_BUF`, `BYTES20`/`BYTES32` copies, `FLIP_ENDIAN_*` |
-| [Amount and STO helpers](amount-and-sto.md) | `AMOUNT_TO_DROPS`, `SUB_OFFSET`/`SUB_LENGTH` |
-| [Constants defined in `macro.h`](constants.md) | `tfCANONICAL`, account-type (`at*`) and amount-type (`am*`) selectors |
+| [Integer Conversion](integer-conversion.md) | `UINT*_TO_BUF`/`_FROM_BUF`, `INT64_TO_BUF`/`_FROM_BUF`, `BYTES20`/`BYTES32` copies, `FLIP_ENDIAN_*` |
+| [Amount & STO](amount-and-sto.md) | `AMOUNT_TO_DROPS`, `SUB_OFFSET`/`SUB_LENGTH` |
+| [Constants](constants.md) | `tfCANONICAL`, account-type (`at*`) and amount-type (`am*`) selectors |
 | [Recommended patterns](patterns.md) | Idioms combining the macros above, lifted from the test hooks |
-| [Proposed helpers (not in the repository)](proposed-helpers.md) | `REQUIRE_LEN`, `CHECK` — suggested, not shipped |
+| [Proposed Helpers](proposed-helpers.md) | `REQUIRE_LEN`, `CHECK` — suggested, not shipped |
 
 ## Related documents
 

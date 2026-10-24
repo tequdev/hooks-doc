@@ -140,12 +140,12 @@ explained and every rule cited.
 | [HookNamespace](hooknamespace.md) | Selects the Hook State key-space a hook reads/writes; also the target of `hsoNSDELETE`. |
 | [HookParameters](hookparameters.md) | Per-install/update overrides of a hook's named parameters, three-way-merged against the definition's defaults. |
 | [HookOn](hookon.md) | Selects which transaction types cause a hook to fire. |
-| [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md) | Splits `HookOn` into independent incoming/outgoing bit fields. |
+| [HookOnIncoming/Outgoing](hookon-incoming-outgoing.md) | Splits `HookOn` into independent incoming/outgoing bit fields. |
 | [HookCanEmit](hookcanemit.md) | Restricts which transaction types a hook is permitted to `emit()`. |
 | [HookApiVersion](hookapiversion.md) | Declares the Hook API ABI version; on this branch, must be `0`, and is stored only on `ltHOOK_DEFINITION` after create. |
 | [HookName](hookname.md) | Names one installed hook so any transaction can target it directly. |
-| [Flags (on the `sfHook` object)](flags.md) | The `hsf*` control/persistent bits (`hsfOVERRIDE`, `hsfNSDELETE`, `hsfCOLLECT`) carried in each `sfHook` object's own `Flags`. |
-| [SetHook Operations: Field Matrix](operations-field-matrix.md) | Per-operation field legality matrix (see "Start here" above). |
+| [Flags](flags.md) | The `hsf*` control/persistent bits (`hsfOVERRIDE`, `hsfNSDELETE`, `hsfCOLLECT`) carried in each `sfHook` object's own `Flags`. |
+| [Operation Matrix](operations-field-matrix.md) | Per-operation field legality matrix (see "Start here" above). |
 
 ## Related documents
 

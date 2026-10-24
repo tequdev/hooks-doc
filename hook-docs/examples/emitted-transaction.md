@@ -21,7 +21,7 @@ Payment when a condition is met, and handles the result in the callback `cbak`.
 | `etxn_details` | Write the `EmitDetails` object into the transaction template. | [Emit APIs](../api-reference/emit/etxn_details.md) |
 | `etxn_fee_base` | Compute the required fee for the prepared transaction. | [Emit APIs](../api-reference/emit/etxn_fee_base.md) |
 | `emit` | Submit the built transaction; writes its 32-byte hash. | [Emit APIs](../api-reference/emit/emit.md) |
-| `etxn_generation` / `etxn_burden` | Emit-chain generation / burden bookkeeping. | [Emit and Emitted-Transaction APIs](../api-reference/emit/README.md) |
+| `etxn_generation` / `etxn_burden` | Emit-chain generation / burden bookkeeping. | [Emit APIs](../api-reference/emit/README.md) |
 | `hook_account` | Source account for the emitted Payment. | [control](../api-reference/control/hook_account.md) |
 | `otxn_field` / `otxn_param` | Read the trigger (e.g. destination) from the incoming txn. | [Transaction APIs](../api-reference/transaction/README.md) |
 | `accept` / `rollback` | Terminate the hook. | [Control APIs](../api-reference/control/README.md) |

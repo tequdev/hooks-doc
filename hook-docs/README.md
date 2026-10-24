@@ -31,15 +31,15 @@ codes, and the execution model.
 
 | Document | Description |
 |---|---|
-| [Overview: The Xahau Hook Model](overview.md) | Conceptual foundation: what Hooks are, entry points, execution modes, environment limits, and the typical processing flow. |
+| [Overview](overview.md) | Conceptual foundation: what Hooks are, entry points, execution modes, environment limits, and the typical processing flow. |
 | [SetHook Fields](sethook-fields/README.md) | `SetHook` fields that control hook triggering and permissions: `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, `HookName`. |
-| [Transactional Stake Holders (TSH)](tsh.md) | Transactional Stake Holders: strong vs. weak TSH, the two-condition gate for weak-TSH ("collect call") execution, and a per-transaction-type TSH table. |
+| [TSH](tsh.md) | Transactional Stake Holders: strong vs. weak TSH, the two-condition gate for weak-TSH ("collect call") execution, and a per-transaction-type TSH table. |
 | [Glossary](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
-| [XFL: Xahau's Fixed-Precision Floating-Point Format](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
-| [NOP Bytes: Skippable Padding in Serialized Objects](nop-bytes.md) | The `0x99` NOP byte Xahau's deserializer skips: its rules and limits, which Hook APIs honor it, and how to use it for optional and variable-length fields in an emitted-transaction template. |
-| [Helper Macros (`hook/macro.h`)](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
+| [XFL](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
+| [NOP Bytes (0x99)](nop-bytes.md) | The `0x99` NOP byte Xahau's deserializer skips: its rules and limits, which Hook APIs honor it, and how to use it for optional and variable-length fields in an emitted-transaction template. |
+| [Helper Macros](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
 | [Tools](tools/README.md) | Community tooling for building Hooks, including the Transaction Builder code generator and the Binary Visualizer. |
-| [Hook Best Practices](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
+| [Best Practices](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
 
 ### API reference, by group
 
@@ -50,8 +50,8 @@ codes, and the execution model.
 | [State APIs](api-reference/state/README.md) | Hook state: `state`, `state_set`, `state_foreign`, `state_foreign_set`. |
 | [Slot APIs](api-reference/slot/README.md) | The slot system: `slot_set`, `slot*`, `meta_slot`, `xpop_slot`. |
 | [Ledger APIs](api-reference/ledger/README.md) | Ledger info: `ledger_*`, `fee_base`. |
-| [Emit and Emitted-Transaction APIs](api-reference/emit/README.md) | Emitting transactions: `etxn_*`, `prepare`, `emit`. |
-| [Float and Amount APIs](api-reference/float/README.md) | XFL floating-point math and amount serialization: `float_*`. |
+| [Emit APIs](api-reference/emit/README.md) | Emitting transactions: `etxn_*`, `prepare`, `emit`. |
+| [Float & Amount APIs](api-reference/float/README.md) | XFL floating-point math and amount serialization: `float_*`. |
 | [Utility APIs](api-reference/utility/README.md) | Cryptography, address conversion, and keylet computation: `util_*`. |
 | [STO APIs](api-reference/sto/README.md) | Serialized-object (STO) inspection/editing: `sto_*`. |
 | [Trace APIs](api-reference/trace/README.md) | Debug tracing: `trace*`. |
@@ -60,11 +60,11 @@ codes, and the execution model.
 
 | Document | Description |
 |---|---|
-| [Example: Payment Filter](examples/payment-filter.md) | Worked example: inspect an incoming Payment and accept or rollback. |
-| [Example: State Counter](examples/state-counter.md) | Worked example: read/increment/write a counter in hook state. |
-| [Example: Emitting a Transaction](examples/emitted-transaction.md) | Worked example: reserve, prepare, and emit a transaction. |
-| [Example: Foreign State](examples/foreign-state.md) | Worked example: read another account's state via `state_foreign`. |
-| [Example: Memo Routing](examples/memo-routing.md) | Worked example: route behavior based on transaction memos/parameters. |
+| [Payment Filter](examples/payment-filter.md) | Worked example: inspect an incoming Payment and accept or rollback. |
+| [State Counter](examples/state-counter.md) | Worked example: read/increment/write a counter in hook state. |
+| [Emitted Transaction](examples/emitted-transaction.md) | Worked example: reserve, prepare, and emit a transaction. |
+| [Foreign State](examples/foreign-state.md) | Worked example: read another account's state via `state_foreign`. |
+| [Memo Routing](examples/memo-routing.md) | Worked example: route behavior based on transaction memos/parameters. |
 
 ## Suggested reading order
 
