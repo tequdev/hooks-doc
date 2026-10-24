@@ -25,6 +25,7 @@ const SIDEBAR_ORDER = [
   "xfl",
   "nop-bytes",
   "compiling",
+  "validating",
   "best-practices",
 
   "sethook-fields",
@@ -48,6 +49,7 @@ const SIDEBAR_ORDER = [
   "macros/proposed-helpers",
 
   // Tools: the dedicated Transaction Builder page orders under the tools index.
+  "tools/hooks-compiler",
   "tools/tx-builder",
 
   // SetHook: operation selection, installation fields, runtime behavior, then permissions.

@@ -311,8 +311,11 @@ The associated `HookSetFlags`:
 
 Hooks are compiled with **wasmcc**, post-processed with **hook-cleaner**, and
 (for WAT-text hooks) with **wat2wasm** — sourced from wasienv, hook-cleaner-c,
-and wabt respectively. See [Compiling Hooks](compiling.md) for a full walkthrough
-of the toolchain and why a stock build needs cleaning before it validates.
+and wabt respectively; [hooks-compiler](tools/hooks-compiler.md) bundles the
+same steps into one command. See [Compiling Hooks](compiling.md) for a full
+walkthrough of the toolchain and why a stock build needs cleaning before it
+validates, and [Validating Hooks](validating.md) for checking the result with
+the `hook_validate` RPC before you install it.
 <!-- Test hooks in this repo are compiled by src/test/app/build_test_hooks.sh, which extracts the C source embedded between the R"[test.hook]( and )[test.hook]" markers in SetHook_test.cpp and produces SetHook_wasm.h. -->
 
 ## Related documents
