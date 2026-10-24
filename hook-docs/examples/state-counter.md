@@ -22,10 +22,10 @@ with simple multi-key layouts.
 | `state` | Read a value from the hook account's current namespace. | [state](../api-reference/state/state.md) |
 | `state_set` | Write (or delete) a value under a key. | [state](../api-reference/state/state_set.md) |
 | `otxn_field` | Read `sfAccount` (the sender) to key per-account state. | [transaction](../api-reference/transaction/otxn_field.md) |
-| `accept` / `rollback` | Terminate the hook. | [control](../api-reference/control/README.md) |
+| `accept` / `rollback` | Terminate the hook. | [Control APIs](../api-reference/control/README.md) |
 
 Helper macros used: `SBUF`, `UINT64_TO_BUF`, `UINT64_FROM_BUF` — see
-[macros](../macros/README.md).
+[Helper Macros](../macros/README.md).
 
 ## Processing flow
 
@@ -166,12 +166,12 @@ AccountID fits comfortably.
 
 ## Related documents
 
-- [overview](../overview.md)
-- [glossary](../glossary.md)
-- [macros](../macros/README.md)
-- [best-practices](../best-practices.md)
-- [api-reference/state](../api-reference/state/README.md)
-- [api-reference/transaction](../api-reference/transaction/README.md)
-- [api-reference/control](../api-reference/control/README.md)
-- [examples/foreign-state](foreign-state.md)
-- [examples/payment-filter](payment-filter.md)
+- [Overview: The Xahau Hook Model](../overview.md)
+- [Glossary](../glossary.md)
+- [Helper Macros (`hook/macro.h`)](../macros/README.md)
+- [Hook Best Practices](../best-practices.md)
+- [State APIs](../api-reference/state/README.md)
+- [Transaction APIs](../api-reference/transaction/README.md)
+- [Control APIs](../api-reference/control/README.md)
+- [Example: Foreign State](foreign-state.md)
+- [Example: Payment Filter](payment-filter.md)

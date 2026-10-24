@@ -194,14 +194,14 @@ exactly as in the optional-field pattern.
 
 ## Related documents
 
-- [tools/tx-builder](tools/tx-builder.md) — generating the fixed-size template that NOPs
+- [Transaction Builder](tools/tx-builder.md) — generating the fixed-size template that NOPs
   are applied to.
-- [api-reference/emit/emit](api-reference/emit/emit.md),
-  [api-reference/emit/prepare](api-reference/emit/prepare.md),
-  [api-reference/emit/etxn_fee_base](api-reference/emit/etxn_fee_base.md) — the APIs
+- [`emit`](api-reference/emit/emit.md),
+  [`prepare`](api-reference/emit/prepare.md),
+  [`etxn_fee_base`](api-reference/emit/etxn_fee_base.md) — the APIs
   that accept NOP-padded blobs.
-- [api-reference/sto](api-reference/sto/README.md) — the APIs that do not.
-- [examples/emitted-transaction](examples/emitted-transaction.md) — a complete emit
+- [STO APIs](api-reference/sto/README.md) — the APIs that do not.
+- [Emitted Transaction](examples/emitted-transaction.md) — a complete emit
   walkthrough.
-- [macros/guards](macros/guards.md) — the `GUARD` macro used by `NOP_FILL`.
-- [glossary](glossary.md)
+- [Guards](macros/guards.md) — the `GUARD` macro used by `NOP_FILL`.
+- [Glossary](glossary.md)
