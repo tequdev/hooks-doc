@@ -16,6 +16,7 @@
   },
   "include": [
     "hook-docs/.vitepress/config.mts",
+    "hook-docs/.vitepress/theme/index.ts",
     "hook-docs/.vitepress/plugins/rawMarkdown.test.ts",
     "middleware.ts",
     "middleware.test.ts"

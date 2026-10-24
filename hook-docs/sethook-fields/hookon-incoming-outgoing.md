@@ -9,15 +9,16 @@ differently depending on whether the triggering transaction is outgoing from
 the hook's own account or incoming to it (from some other account's
 transaction).
 
-**Amendment gating:** both fields require `featureHookOnV2`<!--
-(`include/xrpl/protocol/detail/features.macro:67`, `Supported::yes,
-VoteBehavior::DefaultNo`) -->. Before the amendment, only plain `HookOn` is
-accepted; supplying `HookOnIncoming`/`HookOnOutgoing` without the amendment is
-rejected (`temMALFORMED`).<!-- confirmed by the `!hookOnV2 ? ter(temMALFORMED) :
-ter(tesSUCCESS)` assertions at `SetHook_test.cpp:1408-1437` -->
+**Amendment gating:** both fields require `featureHookOnV2_1`, which replaces
+unsupported `featureHookOnV2`. Before the replacement amendment, only plain
+`HookOn` is accepted; supplying `HookOnIncoming`/`HookOnOutgoing` without the
+directional amendment is rejected (`temMALFORMED`).<!-- Release commit
+`d20e8ffb561034101d24668adbe9a513f639cb37`: `include/xrpl/protocol/detail/features.macro:42,74`
+marks `HookOnV2_1` supported and `HookOnV2` unsupported; `src/test/app/SetHook_test.cpp:1666-1693`
+checks the preflight difference. -->
 
 **Validation rules:**<!-- (`SetHook.cpp:458-508`) -->
-- If `sfHookOn` is **absent** on a create, `featureHookOnV2` must be enabled
+- If `sfHookOn` is **absent** on a create, `featureHookOnV2_1` must be enabled
   and **both** `sfHookOnOutgoing` and `sfHookOnIncoming` must be present,
   and they must be **different from each other**.
   <!--
@@ -39,6 +40,11 @@ ter(tesSUCCESS)` assertions at `SetHook_test.cpp:1408-1437` -->
 <!-- - Both rules are exercised directly in `SetHook_test.cpp:1471-1518`
   ("Only Incomig/Outgoing HookOn", "One Incomig/Outgoing HookOn and HookOn",
   "Incoming == Outgoing", "HookOn and both Fields" — all `temMALFORMED`). -->
+- With `featureHookOnV2_1`, the same pair, mutual-exclusion, and unequal-value
+  checks are applied when `HookOn` fields are supplied by install and update,
+  not only by create.<!-- Release commit `d20e8ffb561034101d24668adbe9a513f639cb37`:
+  `src/xrpld/app/tx/detail/SetHook.cpp:427-432,478-483` calls `validateHookOn`
+  for install and update; `src/test/app/SetHook_test.cpp:1747-1781` covers both. -->
 - `hsoDELETE` and `hsoNSDELETE` operations must **not** carry any of `HookOn`,
   `HookOnIncoming`, or `HookOnOutgoing`.<!-- (`SetHook.cpp:263-330`) -->
 

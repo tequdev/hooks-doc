@@ -3,7 +3,7 @@
 **Summary.** Write the 32-byte WASM hash of a hook in the current account's hook chain,
 identifying which code is (or will be) executed at a given position.
 
-<!-- evidence: the `hook_hash` wrapper writes the 32-byte result returned by `HookAPI::hook_hash`; `HookAPI` returns the current execution hash for `hook_no == -1` and otherwise reads `sfHooks` (`src/xrpld/app/hook/detail/applyHook.cpp:2713-2736`, `src/xrpld/app/hook/detail/HookAPI.cpp:1636-1655`). -->
+<!-- evidence: the `hook_hash` wrapper writes the 32-byte result returned by `HookAPI::hook_hash`; `HookAPI` returns the current execution hash for `hook_no == -1` and otherwise reads `sfHooks` (`src/xrpld/app/hook/detail/applyHook.cpp:2775-2800`, `src/xrpld/app/hook/detail/HookAPI.cpp:1701-1720`). -->
 
 **Signature.**
 
@@ -24,7 +24,7 @@ int64_t hook_hash(uint32_t write_ptr, uint32_t write_len, int32_t hook_no);
 `INTERNAL_ERROR` (-2) if the account's hook object cannot be read; `DOESNT_EXIST` (-5) if
 `hook_no` is beyond the chain or that slot has no `sfHookHash`.
 
-<!-- evidence: the wrapper checks the 32-byte minimum and WASM-memory bounds before calling the API; the API returns `INTERNAL_ERROR` for a missing/non-`sfHooks` object and `DOESNT_EXIST` for an out-of-range or hashless slot (`src/xrpld/app/hook/detail/applyHook.cpp:2721-2733`, `src/xrpld/app/hook/detail/HookAPI.cpp:1642-1655`). -->
+<!-- evidence: the wrapper checks the 32-byte minimum and WASM-memory bounds before calling the API; the API returns `INTERNAL_ERROR` for a missing/non-`sfHooks` object and `DOESNT_EXIST` for an out-of-range or hashless slot (`src/xrpld/app/hook/detail/applyHook.cpp:2783-2794`, `src/xrpld/app/hook/detail/HookAPI.cpp:1707-1718`). -->
 
 **Common failure patterns.**
 - Querying a `hook_no` that isn't installed → `DOESNT_EXIST`.
@@ -36,7 +36,7 @@ int64_t hook_hash(uint32_t write_ptr, uint32_t write_len, int32_t hook_no);
 - The hash identifies the `HookDefinition` (WASM bytecode), useful for detecting which hook
   in a multi-hook chain you are, or for feeding [`hook_skip`](hook_skip.md).
 
-<!-- evidence: `hook_no == -1` returns `hookCtx.result.hookHash`; non-negative positions index the on-ledger `sfHooks` array (`src/xrpld/app/hook/detail/HookAPI.cpp:1637-1655`). -->
+<!-- evidence: `hook_no == -1` returns `hookCtx.result.hookHash`; non-negative positions index the on-ledger `sfHooks` array (`src/xrpld/app/hook/detail/HookAPI.cpp:1704-1720`). -->
 
 **Minimal example.**
 

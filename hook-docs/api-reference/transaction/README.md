@@ -9,7 +9,7 @@ the *originating transaction* — the transaction that caused the hook to run �
 lineage (burden and generation) and its carried parameters.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary](../../glossary.md); the values quoted below come from
+error table in [Glossary](../../glossary.md); the values quoted below come from
 <!-- include/xrpl/hook/Enum.h and --> `hook/error.h`.
 
 <!--
@@ -50,7 +50,7 @@ isCallback && (wasmParam & 1). -->
 
 When `cbak` is invoked for a *successful* emitted transaction (low bit clear), `emitFailure`
 is not set and the `otxn_*` functions behave as in a normal execution. See
-[`hook_again`](../control/hook_again.md) and [../../overview](../../overview.md) for the
+[`hook_again`](../control/hook_again.md) and [Overview](../../overview.md) for the
 strong/weak/callback execution model.
 
 ---
@@ -62,7 +62,7 @@ strong/weak/callback execution model.
 | [`otxn_type`](otxn_type.md) | Transaction type of the originating transaction. |
 | [`otxn_id`](otxn_id.md) | Write the originating transaction's hash/ID. |
 | [`otxn_field`](otxn_field.md) | Write (or return) a field of the originating transaction. |
-| [`otxn_param`](otxn_param.md) | Read a HookParameter carried on the originating transaction by key. |
+| [`otxn_param`](otxn_param.md) | Read a HookParameter carried on the originating transaction by key. <!-- evidence: `HookAPI::otxn_param` reads `sfHookParameters`, matches the requested `sfHookParameterName`, and returns its non-empty `sfHookParameterValue` (`src/xrpld/app/hook/detail/HookAPI.cpp:1669-1690` in Xahau/xahaud `release`). --> |
 | [`otxn_slot`](otxn_slot.md) | Load the whole originating transaction into a slot. |
 | [`otxn_burden`](otxn_burden.md) | Burden value of the originating transaction. |
 | [`otxn_generation`](otxn_generation.md) | Emit-generation counter of the originating transaction. |
@@ -70,18 +70,18 @@ strong/weak/callback execution model.
 ## Related documents
 
 - [../../README](../../README.md) — documentation index.
-- [../../overview](../../overview.md) — hook execution model (strong / weak / callback).
-- [../../glossary](../../glossary.md) — full error-code and term reference.
-- [../../macros](../../macros/README.md) — `SBUF`, `ASSERT`, `AMOUNT_TO_DROPS`, and other helpers.
-- [../../best-practices](../../best-practices.md) — validating inputs and guarding loops.
-- [control](../control/README.md) — `accept`, `rollback`, `hook_account`, and the guard system.
-- [state](../state/README.md) — persistent state read/write.
-- [ledger-and-slot](../slot/README.md) — `otxn_slot`, `slot_subfield`, `slot_float`, `meta_slot`.
-- [emit-and-etxn](../emit/README.md) — emitting transactions; `etxn_burden`, `etxn_generation`.
-- [float-and-amount](../float/README.md) — XFL and amount handling.
-- [utility](../utility/README.md) — `util_raddr`, STO helpers for parsing serialized fields.
-- Examples: [payment-filter](../../examples/payment-filter.md),
-  [state-counter](../../examples/state-counter.md),
-  [emitted-transaction](../../examples/emitted-transaction.md),
-  [foreign-state](../../examples/foreign-state.md),
-  [memo-routing](../../examples/memo-routing.md).
+- [Overview](../../overview.md) — hook execution model (strong / weak / callback).
+- [Glossary](../../glossary.md) — full error-code and term reference.
+- [Helper Macros](../../macros/README.md) — `SBUF`, `ASSERT`, `AMOUNT_TO_DROPS`, and other helpers.
+- [Best Practices](../../best-practices.md) — validating inputs and guarding loops.
+- [Control APIs](../control/README.md) — `accept`, `rollback`, `hook_account`, and the guard system.
+- [State APIs](../state/README.md) — persistent state read/write.
+- [Slot APIs](../slot/README.md) — `otxn_slot`, `slot_subfield`, `slot_float`, `meta_slot`.
+- [Emit APIs](../emit/README.md) — emitting transactions; `etxn_burden`, `etxn_generation`.
+- [Float & Amount APIs](../float/README.md) — XFL and amount handling.
+- [Utility APIs](../utility/README.md) — `util_raddr`, STO helpers for parsing serialized fields.
+- Examples: [Payment Filter](../../examples/payment-filter.md),
+  [State Counter](../../examples/state-counter.md),
+  [Emitted Transaction](../../examples/emitted-transaction.md),
+  [Foreign State](../../examples/foreign-state.md),
+  [Memo Routing](../../examples/memo-routing.md).

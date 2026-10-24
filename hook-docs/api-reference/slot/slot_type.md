@@ -21,8 +21,10 @@ int64_t slot_type(uint32_t slot_no, uint32_t flags);
 
 - **`flags == 0`** — returns the slot's field code, `(type << 16) | index` (the `fieldCode` of
   the field's `SField`).
+<!-- evidence: the WASM wrapper returns `base.getFName().fieldCode` for `flags == 0` (`src/xrpld/app/hook/detail/applyHook.cpp:2075-2079` in xahaud `origin/release`). -->
 - **`flags == 1`** — the slot must hold an `STI_AMOUNT`; returns `1` if the amount is native
   (XAH) and `0` if it is an IOU. If the slot is not an amount, returns `NOT_AN_AMOUNT` (-32).
+<!-- evidence: the release API rejects non-amount entries with `NOT_AN_AMOUNT`, and the wrapper returns `amount.native()` for `flags == 1` (`src/xrpld/app/hook/detail/HookAPI.cpp:2297-2305`; `src/xrpld/app/hook/detail/applyHook.cpp:2080-2084`). -->
 
 Errors for both modes: `DOESNT_EXIST` (-5) if the slot is empty; `INTERNAL_ERROR` (-2) if
 corrupt; `INVALID_ARGUMENT` (-7) if `flags` is neither 0 nor 1.
