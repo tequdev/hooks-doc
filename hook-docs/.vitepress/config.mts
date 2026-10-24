@@ -159,6 +159,8 @@ const SIDEBAR_ORDER = [
   "api-reference/utility/util_keylet",
   "api-reference/utility/util_sha512h",
   "api-reference/utility/util_verify",
+  "api-reference/utility/dice",
+  "api-reference/utility/util_random",
 
   // STO: validate before reading, then mutate.
   "api-reference/sto/sto_validate",
