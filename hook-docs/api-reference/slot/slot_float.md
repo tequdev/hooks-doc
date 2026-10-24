@@ -17,6 +17,7 @@ int64_t slot_float(uint32_t slot_no);
 **Return value.** Returns the amount encoded as an XFL (`int64_t`) on success. A zero (or
 underflowing) amount returns `0`. Errors: `DOESNT_EXIST` (-5) if the slot is empty;
 `INTERNAL_ERROR` (-2) if corrupt; `NOT_AN_AMOUNT` (-32) if the slot does not hold an amount.
+<!-- evidence: `HookAPI::slot_float` returns `DOESNT_EXIST` for an absent slot, `INTERNAL_ERROR` for a null entry, converts native and IOU `STAmount` values, maps exponent underflow to `0`, and returns `NOT_AN_AMOUNT` when the slot entry is not an amount (`src/xrpld/app/hook/detail/HookAPI.cpp:2315-2367` in xahaud `release`). -->
 
 **Common failure patterns.**
 - Calling it on a non-amount slot → `NOT_AN_AMOUNT`.
@@ -25,6 +26,7 @@ underflowing) amount returns `0`. Errors: `DOESNT_EXIST` (-5) if the slot is emp
 - Native XAH amounts are normalized to XFL with exponent `-6` (drops); IOU amounts use their
   own mantissa/exponent. Either way you get an XFL you can feed to the
   [`float_*`](../float/README.md) functions.
+  <!-- evidence: the release implementation starts native amounts with exponent `-6` and passes IOU amounts through `make_float` before returning the normalized XFL (`src/xrpld/app/hook/detail/HookAPI.cpp:2330-2357`). -->
 - Combine with [`slot_subfield`](slot_subfield.md) to reach the amount field first (e.g.
   `sfAmount`).
 
