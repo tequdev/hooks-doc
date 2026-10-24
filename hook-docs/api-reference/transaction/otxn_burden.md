@@ -26,7 +26,7 @@ defensively returns `1`.
   number reserved with `etxn_reserve`; reserving `2` therefore doubles it. Compare with
   [`etxn_burden`](../emit/etxn_burden.md), which computes the burden a *new* transaction
   emitted from this hook would carry.
-<!-- evidence: `HookAPI::etxn_burden` multiplies `otxn_burden()` by `expected_etxn_count` and returns `FEE_TOO_LARGE` on overflow (`src/xrpld/app/hook/detail/HookAPI.cpp:852-862` in Xahau/xahaud `release`). -->
+  <!-- evidence: `HookAPI::etxn_burden` multiplies `otxn_burden()` by `expected_etxn_count` and returns `FEE_TOO_LARGE` on overflow (`src/xrpld/app/hook/detail/HookAPI.cpp:852-862` in Xahau/xahaud `release`). -->
 - The value is cached per execution (`hookCtx.burden`).
 
 **Minimal example.**

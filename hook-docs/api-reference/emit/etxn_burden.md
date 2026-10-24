@@ -23,7 +23,7 @@ multiplication overflows.
 **Caveats / notes.**
 - Because burden multiplies the originating burden by the number of transactions reserved,
   reserving a large count inflates every child's burden — reserve only what you will emit.
-<!-- evidence: `HookAPI::etxn_reserve` stores the requested count after enforcing the valid range, and `HookAPI::etxn_burden` uses that stored count (`src/xrpld/app/hook/detail/HookAPI.cpp:980-993, 852-862` in Xahau/xahaud `release`). -->
+  <!-- evidence: `HookAPI::etxn_reserve` stores the requested count after enforcing the valid range, and `HookAPI::etxn_burden` uses that stored count (`src/xrpld/app/hook/detail/HookAPI.cpp:980-993, 852-862` in Xahau/xahaud `release`). -->
 - `emit` checks that the `sfEmitBurden` you wrote equals this computed value, so it cannot be
   understated.
 - [`etxn_details`](etxn_details.md) writes this value into `sfEmitBurden` for you.
