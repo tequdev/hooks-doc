@@ -59,7 +59,14 @@ the custom theme in `hook-docs/.vitepress/theme/`, and the repo-root `middleware
   (or the API group name such as `Slot APIs` for a function page), not the H1 or the
   `Page: Heading` form. Line breaks inside prose are fine; inside tables they are not.
 - Never place an evidence comment between table rows or directly after the last row; it
-  breaks the table. Put it before the table or after a blank line.
+  breaks the table. Put it inside the cell it supports, or after a blank line below the
+  table.
+
+## Evidence comments in lists
+
+- A comment that supports a bullet goes inside that bullet, indented two spaces under it.
+  An unindented `<!-- -->` line between two bullets ends the list, and the next bullet
+  renders as a separate list.
 
 ## Theme
 
