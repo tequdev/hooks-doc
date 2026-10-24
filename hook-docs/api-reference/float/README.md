@@ -4,7 +4,7 @@ sidebarTitle: "Float & Amount APIs"
 
 # Float and Amount APIs
 
-This page documents the sixteen **float-and-amount** Hook APIs: the `float_*` family that
+This page documents the **float-and-amount** Hook APIs: the `float_*` family that
 lets a hook do arbitrary-precision decimal arithmetic on token amounts and serialize the
 result into (or read it out of) the ledger's `Amount` format.
 

@@ -41,7 +41,7 @@ or any other account's chain; see
 [What weak executions can and cannot do](#what-weak-executions-can-and-cannot-do)
 below.
 
-Two APIs let a running hook read its own position in this array:
+A running hook can read its own position in this array:
 `hook_pos()` returns the zero-based index of the currently executing hook,
 and `hook_hash()` returns the WASM hash installed at any position (or of the
 currently running hook, with `hook_no = -1`). See
@@ -159,7 +159,7 @@ within a weak pass.
 
 ## Chain-control APIs
 
-Five APIs let a hook reason about, and act on, its position in the chain
+The following APIs let a hook reason about, and act on, its position in the chain
 described above. Full parameter/error tables live on each function's own
 page — this section is about how they combine.
 
