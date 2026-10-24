@@ -14,7 +14,7 @@ int64_t trace_float(uint32_t read_ptr, uint32_t read_len, int64_t float1);
 | Name | Meaning |
 |---|---|
 | `read_ptr`, `read_len` | Label string, truncated to 128 bytes, trailing NUL stripped. May be empty. |
-| `float1` | The XFL-encoded value to log (see [Float and Amount APIs](../float/README.md)). |
+| `float1` | The XFL-encoded value to log (see [Float & Amount APIs](../float/README.md)). |
 
 **Return value.** `0` on success; `OUT_OF_BOUNDS` (-1) if the label is out of bounds.
 The value `0` (XFL zero) logs as `<ZERO>`; an invalid XFL logs as `<INVALID>` — neither

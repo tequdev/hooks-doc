@@ -17,8 +17,8 @@ contracts in C. This page splits guidance into two tiers:
   just be more likely to ship a bug.
 
 Each point states the rule, why it matters, and — where useful — a short
-snippet. Cross-links point to the [api-reference/](api-reference/) pages and
-worked [examples/](examples/) that demonstrate each idea.
+snippet. Cross-links point to the [API Reference](api-reference/) pages and
+worked [Examples](examples/) that demonstrate each idea.
 
 ## Mandatory rules
 
@@ -76,9 +76,9 @@ for (int i = 0; GUARD(32), i < n && i < 32; ++i) { /* ... */ }
 
 The very first statement of `hook` (and `cbak`) should be `_g(1,1)`: the body
 runs at most once, but the guard is still required by convention for symmetry
-with looped code — see [control](api-reference/control/README.md).
+with looped code — see [Control APIs](api-reference/control/README.md).
 
-See [control](api-reference/control/README.md) for `_g` and [macros](macros/guards.md)
+See [Control APIs](api-reference/control/README.md) for `_g` and [macros](macros/guards.md)
 for the guard macros.
 
 ### No user-defined functions — inline everything
@@ -191,7 +191,7 @@ the fee with `etxn_fee_base` **after** the details are in place, (4) `emit`.
   means the ledger rejected the transaction body itself (e.g. malformed STTx,
   disallowed pseudo-transaction, or a type not permitted by `hookCanEmit`).
 
-See [emit-and-etxn](api-reference/emit/README.md) and the
+See [Emit APIs](api-reference/emit/README.md) and the
 [emitted-transaction example](examples/emitted-transaction.md).
 
 ### Mind the reserve and state limits
@@ -231,7 +231,7 @@ failed for lack of a grant, the failure latches for the rest of the hook's
 execution: a retry returns `PREVIOUS_FAILURE_PREVENTS_RETRY (-35)` without
 re-checking grants.
 
-See [state](api-reference/state/README.md) and the
+See [State APIs](api-reference/state/README.md) and the
 [foreign-state example](examples/foreign-state.md).
 
 ## Recommendations
@@ -243,7 +243,7 @@ still install and run.
 ### Check every API return value
 
 Every Hook API function returns `int64_t`, and a **negative value is an error
-code** (see the full table in [overview](overview.md)). Non-negative returns
+code** (see the full table in [Overview](overview.md)). Non-negative returns
 carry a result: bytes written, a slot number, an XFL value, or `32` for an
 emitted-transaction hash. Never use a returned value without checking its sign
 first — a length you assume is positive may be `DOESNT_EXIST (-5)` or
@@ -300,7 +300,7 @@ otxn_field(key + 1, 20, sfAccount);   // per-account key: 0x01 + AccountID
 Why: two features that both key state by AccountID will overwrite each other if
 they share the exact same key. A one-byte prefix (keys are up to 32 bytes, an
 AccountID is 20) or a distinct namespace keeps them separate. See
-[state](api-reference/state/README.md) and the
+[State APIs](api-reference/state/README.md) and the
 [state-counter example](examples/state-counter.md).
 
 ### Use meaningful `accept` / `rollback` messages and codes
@@ -332,7 +332,7 @@ code, which is naturally unique per site).
 - Locate STObject subfields with `sto_subfield` / `sto_subarray`, which return a
   packed offset+length: unpack with `SUB_OFFSET(x)` and `SUB_LENGTH(x)`.
 
-See [float-and-amount](api-reference/float/README.md),
+See [Float & Amount APIs](api-reference/float/README.md),
 [utility](api-reference/sto/README.md), and [macros](macros/amount-and-sto.md).
 
 ### Don't ship heavy trace calls in production
@@ -359,8 +359,8 @@ missing key, `otxn_param` returns `DOESNT_EXIST (-5)` for an absent parameter,
 Why: "the value isn't set yet" is usually normal control flow (use a default,
 start a counter at zero), whereas `OUT_OF_BOUNDS` or `TOO_BIG` is a bug. Collapsing
 them into one `< 0` branch hides real errors and mishandles first-run cases — see
-the [state-counter](examples/state-counter.md) and
-[foreign-state](examples/foreign-state.md) examples.
+the [State Counter](examples/state-counter.md) and
+[Foreign State](examples/foreign-state.md) examples.
 
 ### Structure hooks for testability
 
@@ -384,21 +384,21 @@ properties.
 
 ## Related documents
 
-- [README](README.md)
-- [overview](overview.md)
-- [glossary](glossary.md)
-- [macros](macros/README.md)
-- [tools/tx-builder](tools/tx-builder.md)
-- [api-reference/control](api-reference/control/README.md)
-- [api-reference/transaction](api-reference/transaction/README.md)
-- [api-reference/state](api-reference/state/README.md)
-- [api-reference/ledger-and-slot](api-reference/slot/README.md)
-- [api-reference/ledger-and-slot](api-reference/ledger/README.md)
-- [api-reference/emit-and-etxn](api-reference/emit/README.md)
-- [api-reference/float-and-amount](api-reference/float/README.md)
-- [api-reference/utility](api-reference/utility/README.md)
-- [examples/payment-filter](examples/payment-filter.md)
-- [examples/state-counter](examples/state-counter.md)
-- [examples/emitted-transaction](examples/emitted-transaction.md)
-- [examples/foreign-state](examples/foreign-state.md)
-- [examples/memo-routing](examples/memo-routing.md)
+- [Home](README.md)
+- [Overview: The Xahau Hook Model](overview.md)
+- [Glossary](glossary.md)
+- [Helper Macros (`hook/macro.h`)](macros/README.md)
+- [Transaction Builder](tools/tx-builder.md)
+- [Control APIs](api-reference/control/README.md)
+- [Transaction APIs](api-reference/transaction/README.md)
+- [State APIs](api-reference/state/README.md)
+- [Slot APIs](api-reference/slot/README.md)
+- [Ledger APIs](api-reference/ledger/README.md)
+- [Emit and Emitted-Transaction APIs](api-reference/emit/README.md)
+- [Float and Amount APIs](api-reference/float/README.md)
+- [Utility APIs](api-reference/utility/README.md)
+- [Example: Payment Filter](examples/payment-filter.md)
+- [Example: State Counter](examples/state-counter.md)
+- [Example: Emitting a Transaction](examples/emitted-transaction.md)
+- [Example: Foreign State](examples/foreign-state.md)
+- [Example: Memo Routing](examples/memo-routing.md)
