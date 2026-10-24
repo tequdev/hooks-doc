@@ -32,14 +32,19 @@ codes, and the execution model.
 | Document | Description |
 |---|---|
 | [Overview](overview.md) | Conceptual foundation: what Hooks are, entry points, execution modes, environment limits, and the typical processing flow. |
-| [SetHook Fields](sethook-fields/README.md) | `SetHook` fields that control hook triggering and permissions: `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, `HookName`. |
+| [Execution Order](execution-order.md) | Hook chains and the order hooks run in for one transaction: strong, weak, and callback passes, the `reserved` argument, and the chain-control APIs. |
 | [TSH](tsh.md) | Transactional Stake Holders: strong vs. weak TSH, the two-condition gate for weak-TSH ("collect call") execution, and a per-transaction-type TSH table. |
-| [Glossary](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
+| [Hook Fees](fees.md) | Deployment, reserve, execution, and emitted-transaction costs in one place: what you pay, when, and who pays it. |
 | [XFL](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
 | [NOP Bytes (0x99)](nop-bytes.md) | The `0x99` NOP byte Xahau's deserializer skips: its rules and limits, which Hook APIs honor it, and how to use it for optional and variable-length fields in an emitted-transaction template. |
-| [Helper Macros](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
-| [Tools](tools/README.md) | Community tooling for building Hooks, including the Transaction Builder code generator and the Binary Visualizer. |
+| [Compiling Hooks](compiling.md) | From C to an installable WASM module: what the `SetHook` validator enforces, the recommended hooks-compiler toolchain, and the install-rejection log codes. |
+| [Validating Hooks](validating.md) | Check a compiled module with the `hook_validate` RPC before installing it: availability, request and response, and reading the guard checker's log. |
 | [Best Practices](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
+| [SetHook Fields](sethook-fields/README.md) | `SetHook` fields that control hook triggering and permissions: `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, `HookName`. |
+| [Helper Macros](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
+| [Tools](tools/README.md) | Community tooling for building Hooks: the hooks-compiler build tool, the Transaction Builder code generator, and the Binary Visualizer. |
+| [Other Languages](other-languages.md) | Writing hooks in Rust, Zig, AssemblyScript, or hand-written WAT: how to satisfy the validator's contract from a non-C toolchain. |
+| [Glossary](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
 
 ### API reference, by group
 
@@ -75,6 +80,7 @@ For newcomers, read in this order:
 3. [Transaction APIs](api-reference/transaction/README.md) — how to read the transaction that triggered the hook.
 4. [State APIs](api-reference/state/README.md) — how to persist data.
 5. The [Examples](examples/) — end-to-end hooks that tie it together.
+6. [Compiling Hooks](compiling.md) and [Validating Hooks](validating.md) — build the module, check it with `hook_validate`, and install it.
 
 Keep [Glossary](glossary.md) and [Helper Macros](macros/README.md) open alongside the
 above; both are lookup references rather than linear reading.
@@ -117,14 +123,19 @@ The consolidated, cross-checked inventory these docs build on is
 ## Related documents
 
 - [Overview: The Xahau Hook Model](overview.md)
-- [SetHook Fields](sethook-fields/README.md)
+- [Execution Order and Hook Chains](execution-order.md)
 - [Transactional Stake Holders (TSH)](tsh.md)
-- [Glossary](glossary.md)
+- [Hook Fees](fees.md)
 - [XFL: Xahau's Fixed-Precision Floating-Point Format](xfl.md)
 - [NOP Bytes: Skippable Padding in Serialized Objects](nop-bytes.md)
+- [Compiling Hooks](compiling.md)
+- [Validating Hooks](validating.md)
+- [Hook Best Practices](best-practices.md)
+- [SetHook Fields](sethook-fields/README.md)
 - [Helper Macros (`hook/macro.h`)](macros/README.md)
 - [Tools](tools/README.md)
-- [Hook Best Practices](best-practices.md)
+- [Developing Hooks in Languages Other Than C](other-languages.md)
+- [Glossary](glossary.md)
 - [Control APIs](api-reference/control/README.md)
 - [Transaction APIs](api-reference/transaction/README.md)
 - [State APIs](api-reference/state/README.md)

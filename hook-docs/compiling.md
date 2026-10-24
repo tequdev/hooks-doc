@@ -193,14 +193,36 @@ apply-time detail.
 
 ## Toolchain pipeline
 
-The repo's own pages name a specific toolchain for producing a conforming
-binary from C source:
-[Overview: Compilation pipeline](overview.md#compilation-pipeline) and
-[Best Practices: No user-defined functions — inline everything](best-practices.md#no-user-defined-functions-—-inline-everything)
-reference:
+The recommended way to produce a conforming binary from C source is
+[hooks-compiler](tools/hooks-compiler.md): one `npx` command that runs clang,
+`wasm-opt`, and `hook-cleaner` as WebAssembly inside Node, needs no toolchain
+install, and produces byte-identical output for the same source.
+
+```sh
+npx hooks-compiler build hook.c -I include -o hook.wasm -Oz
+```
+
+Its output is already the cleaned module, ready for `hook_validate` (see
+[Validating Hooks](validating.md)) and `sfCreateCode`:
+
+```
+hook.c  →  hooks-compiler  →  hook.wasm (clean)  →  hook_validate
+                                      │
+                         hex-encode into sfCreateCode
+                                      │
+                              SetHook transaction
+```
+
+### The underlying tools
+
+hooks-compiler packages the tools the Hooks ecosystem has always used; knowing
+them explains what the one command does, and they remain the way to build when
+you are not compiling from C (see
+[Developing Hooks in Languages Other Than C](other-languages.md)):
 
 1. **`wasmcc`** (from `wasienv`) — a clang-based compiler that targets
-   `wasm32`, producing the raw WASM module from C source.
+   `wasm32`, producing the raw WASM module from C source. hooks-compiler runs
+   clang and `wasm-ld` directly for this step.
 2. **`hook-cleaner`** (from `hook-cleaner-c`) — strips custom sections and
    non-`hook`/`cbak` exports from the raw compiler output. The custom-section
    strip is what actually makes the difference between "installs" and
@@ -209,19 +231,15 @@ reference:
 3. **`wat2wasm`** (from `wabt`) — only needed if you're hand-writing or
    inspecting WebAssembly Text (`.wat`) rather than compiling from C.
 
-The reference hooks used throughout these docs are compiled from C source
-embedded in xahaud's own test suite, via a repeatable local build task.
-<!-- overview.md:302-307 and best-practices.md:100-101 already document these tool names and the mise task; not independently re-verified against the xahaud checkout in this pass since they are build-tooling names, not consensus-affecting runtime behavior. This project's own test hooks are compiled through src/test/app/build_test_hooks.sh, which extracts embedded C source from SetHook_test.cpp and produces SetHook_wasm.h; the repeatable local command is `mise run build-test-hook`. -->
-
-A typical pipeline looks like:
+Run by hand, the pipeline is:
 
 ```
 hook.c  →  wasmcc  →  hook.wasm (raw)  →  hook-cleaner  →  hook.wasm (clean)
-                                                                  │
-                                                     hex-encode into sfCreateCode
-                                                                  │
-                                                          SetHook transaction
 ```
+
+The reference hooks used throughout these docs are compiled from C source
+embedded in xahaud's own test suite, via a repeatable local build task.
+<!-- overview.md and best-practices.md document these tool names and the mise task; not independently re-verified against the xahaud checkout in this pass since they are build-tooling names, not consensus-affecting runtime behavior. This project's own test hooks are compiled through src/test/app/build_test_hooks.sh, which extracts embedded C source from SetHook_test.cpp and produces SetHook_wasm.h; the repeatable local command is `mise run build-test-hook`. -->
 
 The final step — hex-encoding the cleaned WASM bytes into `sfCreateCode` — is
 mechanical; see [CreateCode](sethook-fields/createcode.md)
@@ -236,38 +254,48 @@ A practical development cycle:
 1. **Edit** the C source, following the mandatory rules in
    [Best Practices: Mandatory rules](best-practices.md#mandatory-rules) — guard discipline,
    inlined helpers only, size/instruction budgets.
-2. **Compile and clean** with `wasmcc` then `hook-cleaner`.
-3. **Install** with a `SetHook` transaction — `hsoCREATE` for new code, or
+2. **Compile** with [hooks-compiler](tools/hooks-compiler.md), which also
+   cleans the module (or run `wasmcc` then `hook-cleaner` by hand).
+3. **Validate** the module with the [`hook_validate`](validating.md) RPC on
+   a node whose amendments match your target network. It runs the same
+   checks as `SetHook` preflight and reports the worst-case instruction count,
+   so a module that fails never has to cost you a transaction.
+4. **Install** with a `SetHook` transaction — `hsoCREATE` for new code, or
    `hsoUPDATE`/`hsoINSTALL` for an existing hash. See
    [sethook-fields/README](sethook-fields/README.md) for the full
    operation-inference rules.
-4. **Test** by sending transactions that should trigger the hook and
+5. **Test** by sending transactions that should trigger the hook and
    inspecting `sfHookExecutions` metadata, or by tracing with
    `trace`/`trace_num`/`trace_float` (see the debugging guidance in
    [Best Practices: Don't ship heavy trace calls in production](best-practices.md#don-t-ship-heavy-trace-calls-in-production)).
-5. On a rejection, read the `SetHook` transaction's log code (see the table
-   below) and go back to step 1 — nothing about steps 2-4 tells you *why* a
-   binary was rejected beyond the log code the validator emitted.
+6. On a rejection, read the log code (see the table below) and go back to
+   step 1. `hook_validate` reports it in its `log` array as `HookSet(<number>)`;
+   a rejected `SetHook` transaction records the same code.
 
 ## Common install-rejection causes
 
-| Symptom (log code) | Cause |
-|---|---|
-| `WASM_TOO_BIG` | Compiled (and cleaned) blob exceeds 65,535 bytes. |
-| `CUSTOM_SECTION_DISALLOWED` | Raw compiler output still carries a debug/name custom section — run it through `hook-cleaner`. |
-| `EXPORT_MISSING` / `EXPORT_HOOK_FUNC` | No export named `hook` at all, or it doesn't have type `int64_t hook(uint32_t)`. |
-| `EXPORT_CBAK_FUNC` / `HOOK_CBAK_DIFF_TYPES` | `cbak` is exported with the wrong signature, or a different type than `hook`. |
-| `PARAM_HOOK_CBAK` / `RETURN_HOOK_CBAK` | `hook`/`cbak` doesn't take exactly one `i32` parameter and return exactly one `i64`. |
-| `IMPORT_MODULE_ENV` / `IMPORT_ILLEGAL` | An import isn't from module `env`, or its name isn't a whitelisted Hook API function. |
-| `GUARD_IMPORT` | `_g` is never called anywhere in the hook, so the compiler never emitted its import. |
-| `GUARD_MISSING` | A loop doesn't open with the literal `i32.const, i32.const, call _g` pattern, or `maxiter` is `0`. |
-| `CALL_ILLEGAL` | The module calls a locally-defined (non-inlined) helper function instead of a Hook API import. |
-| `CALL_INDIRECT` | The module uses a function pointer / `call_indirect`. |
-| `MEMORY_GROW` | The module uses `memory.grow`. |
-| `NESTING_LIMIT` | Block/loop/if nesting exceeds 16 levels (32 post-`fixGuardDepth32`). |
-| `INSTRUCTION_EXCESS` | Guard-computed worst-case instruction count reaches 65,535. |
-| `WASM_TEST_FAILURE` | Guard validation passed but WasmEdge couldn't load/validate the module (genuinely malformed WASM). |
-| `API_MISSING` / `API_INVALID` | `sfHookApiVersion` absent, or not `0`, on `hsoCREATE`. |
+The number is the code's numeric value, which is how validator log lines
+print it (`HookSet(28)` is `GUARD_MISSING`); the
+[`hook_validate`](validating.md) RPC returns those lines in its `log` array.
+<!-- include/xrpl/hook/Enum.h:134-273 (2026.10.13-release+4119) — enum hook_log_code : uint16_t; values listed per row below -->
+
+| Symptom (log code) | Code | Cause |
+|---|---|---|
+| `WASM_TOO_BIG` | 79 | Compiled (and cleaned) blob exceeds 65,535 bytes. |
+| `CUSTOM_SECTION_DISALLOWED` | 86 | Raw compiler output still carries a debug/name custom section — run it through `hook-cleaner`. |
+| `EXPORT_MISSING` / `EXPORT_HOOK_FUNC` | 15 / 14 | No export named `hook` at all, or it doesn't have type `int64_t hook(uint32_t)`. |
+| `EXPORT_CBAK_FUNC` / `HOOK_CBAK_DIFF_TYPES` | 13 / 82 | `cbak` is exported with the wrong signature, or a different type than `hook`. |
+| `PARAM_HOOK_CBAK` / `RETURN_HOOK_CBAK` | 70 / 71 | `hook`/`cbak` doesn't take exactly one `i32` parameter and return exactly one `i64`. |
+| `IMPORT_MODULE_ENV` / `IMPORT_ILLEGAL` | 46 / 44 | An import isn't from module `env`, or its name isn't a whitelisted Hook API function. |
+| `GUARD_IMPORT` | 27 | `_g` is never called anywhere in the hook, so the compiler never emitted its import. |
+| `GUARD_MISSING` | 28 | A loop doesn't open with the literal `i32.const, i32.const, call _g` pattern, or `maxiter` is `0`. |
+| `CALL_ILLEGAL` | 6 | The module calls a locally-defined (non-inlined) helper function instead of a Hook API import. |
+| `CALL_INDIRECT` | 7 | The module uses a function pointer / `call_indirect`. |
+| `MEMORY_GROW` | 52 | The module uses `memory.grow`. |
+| `NESTING_LIMIT` | 84 | Block/loop/if nesting exceeds 16 levels (32 post-`fixGuardDepth32`). |
+| `INSTRUCTION_EXCESS` | 51 | Guard-computed worst-case instruction count reaches 65,535. |
+| `WASM_TEST_FAILURE` | 78 | Guard validation passed but WasmEdge couldn't load/validate the module (genuinely malformed WASM). |
+| `API_MISSING` / `API_INVALID` | 4 / 3 | `sfHookApiVersion` absent, or not `0`, on `hsoCREATE`. |
 
 <!-- Row-by-row source verification (same checkout as the rest of this page):
 WASM_TOO_BIG — SetHook.cpp:795-804; CUSTOM_SECTION_DISALLOWED — Guard.h:914-921;
@@ -282,6 +310,8 @@ src/xrpld/app/hook/applyHook.h, src/xrpld/app/tx/detail/SetHook.cpp. -->
 ## Related documents
 
 - [Overview: The Xahau Hook Model](overview.md)
+- [Validating Hooks](validating.md)
+- [hooks-compiler](tools/hooks-compiler.md)
 - [Hook Best Practices](best-practices.md)
 - [Guards](macros/guards.md)
 - [`_g`](api-reference/control/_g.md)

@@ -326,6 +326,12 @@ wasm2wat hook.wasm -o hook.wat
   deepest nesting in the `.wat` output for any function.
 - **File size is at or under 65,535 bytes** (`wc -c hook.wasm`).
 
+Then run the binary through the [`hook_validate`](validating.md) RPC on a
+node with your target network's amendments. It applies every check above
+mechanically, and reports the worst-case instruction count, which is the
+number to watch when a non-C toolchain's verbose codegen approaches the
+65,535 cap.
+
 If a `SetHook` transaction is rejected despite this checklist, the
 transaction's log code identifies exactly which check failed — see the
 [common install-rejection causes table in compiling](compiling.md#common-install-rejection-causes)
@@ -352,6 +358,7 @@ derived and charged.
 
 ## Related documents
 
+- [Validating Hooks](validating.md)
 - [Overview: The Xahau Hook Model](overview.md)
 - [Compiling Hooks](compiling.md)
 - [Hook Best Practices](best-practices.md)
