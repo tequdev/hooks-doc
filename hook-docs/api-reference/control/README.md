@@ -4,7 +4,7 @@ sidebarTitle: "Control APIs"
 
 # Control APIs
 
-This page documents the ten **control** Hook APIs: the functions that terminate hook
+This page documents the **control** Hook APIs: the functions that terminate hook
 execution, guard loops, and inspect or influence the hook's position and parameters within
 the hook chain.
 

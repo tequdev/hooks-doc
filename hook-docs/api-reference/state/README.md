@@ -4,7 +4,7 @@ sidebarTitle: "State APIs"
 
 # State APIs
 
-This page documents the four **state** Hook APIs: the functions that read and write a
+This page documents the **state** Hook APIs: the functions that read and write a
 hook's persistent key/value storage, both on the hook's own account and — with an explicit
 grant — on other accounts.
 

@@ -11,11 +11,11 @@ which consults the active `Rules`/amendments to decide which keylet types are
 available). They are pure helpers you call to prepare data for the state, slot,
 emit, and transaction APIs documented elsewhere.
 
-This page indexes 15 functions in this category. `dice` and `util_random` require
-the `featureRNG` amendment; a few `util_keylet` *keylet types* are individually
-amendment-gated — see below. This page covers the seven utility functions; the STO
-helpers and the trace helpers that used to share this page now have their own
-pages: see [STO APIs](../sto/README.md) and [Trace APIs](../trace/README.md).
+`dice` and `util_random` require the `featureRNG` amendment; a few `util_keylet`
+*keylet types* are individually amendment-gated — see below. This page covers the
+`util_*` functions and the RNG functions; the STO helpers and the trace helpers
+that used to share this page now have their own pages: see
+[STO APIs](../sto/README.md) and [Trace APIs](../trace/README.md).
 
 A note on the calling convention: every `*_ptr`/`*_len` pair refers to a region of
 the hook's own linear WASM memory. Any pointer/length pair that is out of bounds of

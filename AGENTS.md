@@ -20,6 +20,9 @@ the custom theme in `hook-docs/.vitepress/theme/`, and the repo-root `middleware
   text they support. Code that only matters to xahaud developers (for example
   `getTransactionalStakeHolders`) is kept as evidence inside such comments, never as
   reader-facing text.
+- Do not state how many API functions exist, in total or per group ("the ten control
+  APIs"). Every such number becomes stale when an amendment adds a function; describe
+  the group instead.
 - Every page is also served as raw Markdown (`<page>.md`, or `Accept: text/markdown`)
   with frontmatter and HTML comments stripped, so nothing a reader needs may live only in
   frontmatter or comments.

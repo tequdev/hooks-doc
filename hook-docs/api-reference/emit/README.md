@@ -4,7 +4,7 @@ sidebarTitle: "Emit APIs"
 
 # Emit and Emitted-Transaction APIs
 
-This page documents the eight **emit-and-etxn** Hook APIs: the functions a hook uses to
+This page documents the **emit-and-etxn** Hook APIs: the functions a hook uses to
 construct, price, and emit a new transaction of its own, plus the counters that make emitted
 transactions deterministic and loop-safe.
 

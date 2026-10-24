@@ -4,7 +4,7 @@ sidebarTitle: "Transaction APIs"
 
 # Transaction APIs
 
-This page documents the seven **transaction** Hook APIs: the `otxn_*` family, which reads
+This page documents the **transaction** Hook APIs: the `otxn_*` family, which reads
 the *originating transaction* — the transaction that caused the hook to run — along with its
 lineage (burden and generation) and its carried parameters.
 

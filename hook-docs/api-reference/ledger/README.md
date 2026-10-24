@@ -4,7 +4,7 @@ sidebarTitle: "Ledger APIs"
 
 # Ledger APIs
 
-These six APIs read ledger-level data — the current ledger's sequence and base fee, the
+These APIs read ledger-level data — the current ledger's sequence and base fee, the
 last-closed ledger's time and hash, a general-purpose nonce, and keylet range enumeration.
 They were originally documented together with the [slot family](../slot/README.md) on a
 single "Ledger and Slot APIs" page; that page has been split in two, and this page covers

@@ -18,8 +18,8 @@ the transaction. During its run a Hook can:
 - and finally **`accept`** the transaction (allowing it to apply) or **`rollback`** it (rejecting it).
 
 The Hook API is the set of host functions the WASM module imports from the
-`env` module to do all of the above. There are **75** such functions available
-to a hook, registered with the WasmEdge runtime.
+`env` module to do all of the above. Every such function is declared in
+`hook/extern.h` and registered with the WasmEdge runtime.
 <!-- declared in hook/extern.h; registered with the WasmEdge runtime in include/xrpl/hook/hook_api.macro -->
 
 ## Entry points

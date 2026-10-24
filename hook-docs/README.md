@@ -17,14 +17,14 @@ hero:
 features:
   - title: Grounded in source
     details: Every claim is traced to the xahaud repository (branch dev) - hook/extern.h, hook/error.h, hook/macro.h, the execution engine, and the test-suite example hooks.
-  - title: 75 API functions
+  - title: Every API function
     details: Exact C signatures, parameters, return conventions, and error codes for every host function a hook can import, grouped by purpose.
   - title: Worked examples
     details: End-to-end hooks for payment filtering, state counters, memo routing, foreign state, and emitted transactions.
 ---
 
 **Who this is for:** developers writing Hook smart contracts in C, and anyone
-who needs an accurate reference for the 75 Hook API functions, their error
+who needs an accurate reference for the Hook API functions, their error
 codes, and the execution model.
 
 ## Table of contents
@@ -91,7 +91,7 @@ in [Overview](overview.md) and is repeated per function where relevant.
 These documents were derived from the developer-facing Hook API headers
 (repo root `https://github.com/Xahau/xahaud`):
 
-- `hook/extern.h` — canonical developer-facing declarations of all 75 API functions.
+- `hook/extern.h` — canonical developer-facing declarations of all API functions.
 - `hook/error.h` — developer-facing error `#define`s.
 - `hook/macro.h` — helper macros.
 - `hook/hookapi.h` — top-level include; `KEYLET_*` and `COMPARE_*` constants.
