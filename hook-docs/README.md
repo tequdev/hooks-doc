@@ -1,16 +1,27 @@
-# Xahau Hooks: C/WASM API Documentation
-
-Xahau Hooks are small WebAssembly programs attached to accounts. They run
-on-ledger whenever a transaction touches the account they are installed on, and
-they can read the originating transaction, read and write persistent state, read
-ledger objects, emit new transactions, and ultimately `accept` (apply) or
-`rollback` (reject) the transaction.
-
-This doc set describes the **C / WebAssembly Hook API** as it exists in this
-repository (branch `dev`). Every claim here is grounded in repository source —
-primarily `hook/extern.h`, `hook/error.h`, `hook/macro.h`, `hook/hookapi.h`,
-the Hook execution engine, and the example hooks embedded in the test suite.
-<!-- include/xrpl/hook/Enum.h, include/xrpl/hook/hook_api.macro, src/xrpld/app/hook/, and src/test/app/SetHook_test.cpp -->
+---
+layout: home
+hero:
+  name: Xahau Hooks
+  text: C / WebAssembly API Documentation
+  tagline: Small WebAssembly programs attached to accounts. They run on-ledger when a transaction touches the account, read the originating transaction and ledger, keep persistent state, emit transactions, and accept or rollback.
+  actions:
+    - theme: brand
+      text: Start with the overview
+      link: /overview
+    - theme: alt
+      text: API reference
+      link: /api-reference/control/
+    - theme: alt
+      text: Examples
+      link: /examples/payment-filter
+features:
+  - title: Grounded in source
+    details: Every claim is traced to the xahaud repository (branch dev) - hook/extern.h, hook/error.h, hook/macro.h, the execution engine, and the test-suite example hooks.
+  - title: 75 API functions
+    details: Exact C signatures, parameters, return conventions, and error codes for every host function a hook can import, grouped by purpose.
+  - title: Worked examples
+    details: End-to-end hooks for payment filtering, state counters, memo routing, foreign state, and emitted transactions.
+---
 
 **Who this is for:** developers writing Hook smart contracts in C, and anyone
 who needs an accurate reference for the 75 Hook API functions, their error
