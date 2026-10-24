@@ -11,11 +11,11 @@ which consults the active `Rules`/amendments to decide which keylet types are
 available). They are pure helpers you call to prepare data for the state, slot,
 emit, and transaction APIs documented elsewhere.
 
-All 13 functions in this category are always available (no amendment gate on the
-API itself; a few `util_keylet` *keylet types* are individually amendment-gated —
-see below). This page covers the five `util_*` functions; the STO helpers and the
-trace helpers that used to share this page now have their own pages: see
-[STO APIs](../sto/README.md) and [Trace APIs](../trace/README.md).
+This page indexes 15 functions in this category. `dice` and `util_random` require
+the `featureRNG` amendment; a few `util_keylet` *keylet types* are individually
+amendment-gated — see below. This page covers the seven utility functions; the STO
+helpers and the trace helpers that used to share this page now have their own
+pages: see [STO APIs](../sto/README.md) and [Trace APIs](../trace/README.md).
 
 A note on the calling convention: every `*_ptr`/`*_len` pair refers to a region of
 the hook's own linear WASM memory. Any pointer/length pair that is out of bounds of
@@ -38,7 +38,8 @@ keylet length of `34`), and a **negative** return is an error code. Always test
 | `TOO_BIG` | -3 | `NO_SUCH_KEYLET` | -21 |
 | `TOO_SMALL` | -4 | `INVALID_KEY` | -41 |
 | `DOESNT_EXIST` | -5 | `MEM_OVERLAP` | -43 |
-| `INVALID_ARGUMENT` | -7 | | |
+| `INVALID_ARGUMENT` | -7 | `TOO_MANY_NONCES` | -12 |
+| `TOO_LITTLE_ENTROPY` | -46 | | |
 
 See [`error.h` / the full error table](../../glossary.md) for the complete list.
 
@@ -53,6 +54,8 @@ See [`error.h` / the full error table](../../glossary.md) for the complete list.
 | [`util_verify`](util_verify.md) | Verify a secp256k1/ed25519 signature over a payload. <!-- evidence: the release implementation validates the 33-byte public key with `publicKeyType` and calls `ripple::verify` over the supplied data and signature (`src/xrpld/app/hook/detail/HookAPI.cpp:43-59`). --> |
 | [`util_sha512h`](util_sha512h.md) | SHA-512Half (first 32 bytes of SHA-512) of a buffer. |
 | [`util_keylet`](util_keylet.md) | Compute a ledger keylet of a given `KEYLET_*` type. |
+| [`dice`](dice.md) | Draw a uniform integer in `[0, sides)`. |
+| [`util_random`](util_random.md) | Write 1–512 random bytes to WASM memory. |
 
 See also the [STO APIs](../sto/README.md) index (`sto_validate`, `sto_subfield`,
 `sto_subarray`, `sto_emplace`, `sto_erase`) and the [Trace APIs](../trace/README.md)
