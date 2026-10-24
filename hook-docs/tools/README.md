@@ -8,6 +8,10 @@ Third-party and community tools that help you build Xahau Hooks.
 
 ## Available tools
 
+- **[hooks-compiler](hooks-compiler.md)** — compiles a C hook to an
+  install-ready WASM module with one `npx` command. Clang, `wasm-opt`, and
+  `hook-cleaner` run as WebAssembly inside Node, so no toolchain install is
+  needed, and the same source always produces byte-identical output.
 - **[Transaction Builder](tx-builder.md)** — paste a transaction JSON (e.g.
   `{ "TransactionType": "AccountSet" }`) and it generates ready-to-paste C code
   for building and emitting that transaction from a hook: a pre-laid-out

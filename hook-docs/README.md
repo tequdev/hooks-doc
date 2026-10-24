@@ -38,7 +38,7 @@ codes, and the execution model.
 | [XFL](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
 | [NOP Bytes (0x99)](nop-bytes.md) | The `0x99` NOP byte Xahau's deserializer skips: its rules and limits, which Hook APIs honor it, and how to use it for optional and variable-length fields in an emitted-transaction template. |
 | [Helper Macros](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
-| [Tools](tools/README.md) | Community tooling for building Hooks, including the Transaction Builder code generator and the Binary Visualizer. |
+| [Tools](tools/README.md) | Community tooling for building Hooks: the hooks-compiler build tool, the Transaction Builder code generator, and the Binary Visualizer. |
 | [Best Practices](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
 
 ### API reference, by group
