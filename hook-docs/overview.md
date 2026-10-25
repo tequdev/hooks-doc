@@ -18,8 +18,8 @@ the transaction. During its run a Hook can:
 - and finally **`accept`** the transaction (allowing it to apply) or **`rollback`** it (rejecting it).
 
 The Hook API is the set of host functions the WASM module imports from the
-`env` module to do all of the above. There are **75** such functions available
-to a hook, registered with the WasmEdge runtime.
+`env` module to do all of the above. Every such function is declared in
+`hook/extern.h` and registered with the WasmEdge runtime.
 <!-- declared in hook/extern.h; registered with the WasmEdge runtime in include/xrpl/hook/hook_api.macro -->
 
 ## Entry points
@@ -71,7 +71,7 @@ The execution engine distinguishes three modes:
 
 Which accounts a hook fires for is governed by the **TSH** (Transactional Stake
 Holder) mechanism and its flags (`tshROLLBACK`, `tshCOLLECT`, `tshMIXED`). See
-[glossary](glossary.md) for TSH.
+[Glossary](glossary.md) for TSH.
 <!-- tshROLLBACK, tshCOLLECT, tshMIXED in Enum.h -->
 
 ## Execution environment constraints
@@ -125,21 +125,21 @@ at its top. The HookSet validator, with log codes `GUARD_IMPORT` and
 runtime, exceeding a guard's iteration count returns `GUARD_VIOLATION`
 (`-16`). The guard rules are versioned by amendments: `GuardRuleFix20250131`
 and `GuardRuleDepth32`, gated by `fix20250131` and `fixGuardDepth32`. See
-[compiling](compiling.md) for the full validator behavior.
+[Compiling Hooks](compiling.md) for the full validator behavior.
 <!-- include/xrpl/hook/Guard.h; GUARD_IMPORT, GUARD_MISSING in Enum.h; getGuardRulesVersion in Enum.h. GUARD_PARAMETERS (Enum.h:181) is defined but not raised by any code path in this checkout — grep of src/ and include/ finds only its own definition. -->
 
 ## Data available inside a hook
 
 - **The originating transaction** — read fields with `otxn_field`, its type with
   `otxn_type`, its hash with `otxn_id`, and any carried `HookParameter` with
-  `otxn_param`. See [api-reference/transaction](api-reference/transaction/README.md).
+  `otxn_param`. See [Transaction APIs](api-reference/transaction/README.md).
 - **Ledger objects** — compute a **keylet** (`util_keylet`, or one of the
   `KEYLET_*` constants) and load the object into a **slot** with `slot_set`, then
   drill into subfields with `slot_subfield`/`slot_subarray`. See
-  [api-reference/ledger-and-slot](api-reference/slot/README.md).
+  [Slot APIs](api-reference/slot/README.md).
 - **Hook state** — key/value storage under the hook account and a namespace via
   `state`/`state_set` (and the foreign variants). See
-  [api-reference/state](api-reference/state/README.md).
+  [State APIs](api-reference/state/README.md).
 - **Parameters** — install-time parameters via `hook_param`; parameters attached
   to the originating transaction via `otxn_param`.
 - **Ledger info** — sequence (`ledger_seq`), last-close time (`ledger_last_time`),
@@ -181,7 +181,7 @@ int64_t hook(uint32_t reserved)
 ```
 
 `SBUF`, `TRACEHEX`, and the other helpers are documented in
-[macros](macros/README.md).
+[Helper Macros](macros/README.md).
 
 ## Core concepts
 
@@ -192,10 +192,10 @@ int64_t hook(uint32_t reserved)
   sentinels `RC_ACCEPT` (`-20`) / `RC_ROLLBACK` (`-19`).
   <!-- Enum.h -->
 - **`_g` guard** — the required loop guard; see the environment constraints above
-  and [api-reference/control](api-reference/control/README.md).
+  and [Control APIs](api-reference/control/README.md).
 - **`trace*` debugging** — `trace`, `trace_num`, and `trace_float` write to the
   node's debug log (subject to build/log configuration). See
-  [api-reference/utility](api-reference/trace/README.md).
+  [Trace APIs](api-reference/trace/README.md).
 - **Error convention** — API functions return `int64_t`. A value `>= 0` is
   success (often a length or a computed value); a **negative** value is an error
   code from the table below. `accept`/`rollback` are the exceptions: they never
@@ -296,7 +296,7 @@ per-hook operation is one of the `HookSetOperation` values:
 
 For the fields that control *when* an installed hook fires and what it may
 `emit()` — `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, and the
-hook-targeting `HookName` field — see [sethook-fields](sethook-fields/README.md).
+hook-targeting `HookName` field — see [SetHook Fields](sethook-fields/README.md).
 
 The associated `HookSetFlags`:
 <!-- Enum.h -->
@@ -309,30 +309,35 @@ The associated `HookSetFlags`:
 
 ## Compilation pipeline
 
-Hooks are compiled with **wasmcc**, post-processed with **hook-cleaner**, and
-(for WAT-text hooks) with **wat2wasm** — sourced from wasienv, hook-cleaner-c,
-and wabt respectively. See [compiling](compiling.md) for a full walkthrough
-of the toolchain and why a stock build needs cleaning before it validates.
+Hooks are compiled with [hooks-compiler](tools/hooks-compiler.md), a single
+command that runs clang, `wasm-opt`, and `hook-cleaner` and emits an
+install-ready module. Under the hood these are the classic **wasmcc**,
+**hook-cleaner**, and (for WAT-text hooks) **wat2wasm** tools from wasienv,
+hook-cleaner-c, and wabt, which can still be run by hand. See
+[Compiling Hooks](compiling.md) for a full walkthrough of the toolchain and
+why a stock build needs cleaning before it validates, and
+[Validating Hooks](validating.md) for checking the result with the
+`hook_validate` RPC before you install it.
 <!-- Test hooks in this repo are compiled by src/test/app/build_test_hooks.sh, which extracts the C source embedded between the R"[test.hook]( and )[test.hook]" markers in SetHook_test.cpp and produces SetHook_wasm.h. -->
 
 ## Related documents
 
-- [README](README.md)
-- [compiling](compiling.md) — the wasmcc/hook-cleaner/wat2wasm toolchain in depth.
-- [execution-order](execution-order.md) — strong/weak/AAW ordering across a transaction's TSHs.
-- [fees](fees.md) — the full creation/execution/collect-call/emission fee model in one place.
-- [sethook-fields](sethook-fields/README.md)
-- [glossary](glossary.md)
-- [macros](macros/README.md)
-- [best-practices](best-practices.md)
-- [api-reference/control](api-reference/control/README.md)
-- [api-reference/transaction](api-reference/transaction/README.md)
-- [api-reference/state](api-reference/state/README.md)
-- [api-reference/ledger-and-slot](api-reference/slot/README.md)
-- [api-reference/ledger-and-slot](api-reference/ledger/README.md)
-- [api-reference/emit-and-etxn](api-reference/emit/README.md)
-- [api-reference/float-and-amount](api-reference/float/README.md)
-- [api-reference/utility](api-reference/utility/README.md)
-- [api-reference/utility](api-reference/sto/README.md)
-- [api-reference/utility](api-reference/trace/README.md)
-- [examples/payment-filter](examples/payment-filter.md)
+- [Home](README.md)
+- [Compiling Hooks](compiling.md) — the wasmcc/hook-cleaner/wat2wasm toolchain in depth.
+- [Execution Order](execution-order.md) — strong/weak/AAW ordering across a transaction's TSHs.
+- [Hook Fees](fees.md) — the full creation/execution/collect-call/emission fee model in one place.
+- [SetHook Fields](sethook-fields/README.md)
+- [Glossary](glossary.md)
+- [Helper Macros (`hook/macro.h`)](macros/README.md)
+- [Hook Best Practices](best-practices.md)
+- [Control APIs](api-reference/control/README.md)
+- [Transaction APIs](api-reference/transaction/README.md)
+- [State APIs](api-reference/state/README.md)
+- [Slot APIs](api-reference/slot/README.md)
+- [Ledger APIs](api-reference/ledger/README.md)
+- [Emit and Emitted-Transaction APIs](api-reference/emit/README.md)
+- [Float and Amount APIs](api-reference/float/README.md)
+- [Utility APIs](api-reference/utility/README.md)
+- [STO APIs](api-reference/sto/README.md)
+- [Trace APIs](api-reference/trace/README.md)
+- [Example: Payment Filter](examples/payment-filter.md)

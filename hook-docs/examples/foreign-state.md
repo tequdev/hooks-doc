@@ -21,10 +21,10 @@ configuration value, then covers foreign writes and the grant they require.
 |---|---|---|
 | `state_foreign` | Read state from a specified account + namespace. | [state](../api-reference/state/state_foreign.md) |
 | `state_foreign_set` | Write state to another account's namespace (needs a grant). | [state](../api-reference/state/state_foreign_set.md) |
-| `state` / `state_set` | Read/write the hook's own state. | [state](../api-reference/state/README.md) |
+| `state` / `state_set` | Read/write the hook's own state. | [State APIs](../api-reference/state/README.md) |
 | `hook_account` | The account the hook is installed on. | [control](../api-reference/control/hook_account.md) |
 | `util_accid` | Convert an r-address to a 20-byte AccountID (if configuring by address). | [utility](../api-reference/utility/util_accid.md) |
-| `accept` / `rollback` | Terminate the hook. | [control](../api-reference/control/README.md) |
+| `accept` / `rollback` | Terminate the hook. | [Control APIs](../api-reference/control/README.md) |
 
 Helper macros used: `SBUF` — see [macros](../macros/buffer-helpers.md).
 
@@ -168,12 +168,12 @@ calling `state_foreign` once per key; the account and namespace stay constant.
 
 ## Related documents
 
-- [overview](../overview.md)
-- [glossary](../glossary.md)
-- [macros](../macros/README.md)
-- [best-practices](../best-practices.md)
-- [api-reference/state](../api-reference/state/README.md)
-- [api-reference/control](../api-reference/control/README.md)
-- [api-reference/utility](../api-reference/utility/README.md)
-- [examples/state-counter](state-counter.md)
-- [examples/payment-filter](payment-filter.md)
+- [Overview: The Xahau Hook Model](../overview.md)
+- [Glossary](../glossary.md)
+- [Helper Macros (`hook/macro.h`)](../macros/README.md)
+- [Hook Best Practices](../best-practices.md)
+- [State APIs](../api-reference/state/README.md)
+- [Control APIs](../api-reference/control/README.md)
+- [Utility APIs](../api-reference/utility/README.md)
+- [Example: State Counter](state-counter.md)
+- [Example: Payment Filter](payment-filter.md)

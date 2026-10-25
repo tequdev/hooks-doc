@@ -11,7 +11,7 @@ callback executions. This page is the map of that whole sequence: what a
 one transaction, what the `reserved`/`what` argument tells a running hook
 about which pass it is in, and which chain-control APIs let a hook reach
 into that order. It draws together material that is otherwise scattered
-across [tsh](tsh.md) and the individual `api-reference/control/` pages;
+across [TSH](tsh.md) and the individual `api-reference/control/` pages;
 those pages remain the source of truth for per-function detail.
 
 ## The hook chain
@@ -41,7 +41,7 @@ or any other account's chain; see
 [What weak executions can and cannot do](#what-weak-executions-can-and-cannot-do)
 below.
 
-Two APIs let a running hook read its own position in this array:
+A running hook can read its own position in this array:
 `hook_pos()` returns the zero-based index of the currently executing hook,
 and `hook_hash()` returns the WASM hash installed at any position (or of the
 currently running hook, with `hook_no = -1`). See
@@ -62,7 +62,7 @@ steps 4–6 happen after.
 
 2. **Strong TSH chains run next**, still before apply, each with
    `isOutgoing = false` (filtered by `sfHookOnIncoming`). The order across
-   accounts is the order [tsh](tsh.md) describes for that specific
+   accounts is the order [TSH](tsh.md) describes for that specific
    transaction type — for example, for a `Payment` this is simply
    `sfDestination` (there is only one strong TSH slot for that type), but
    for transaction types that nominate several accounts the order is the
@@ -97,9 +97,9 @@ steps 4–6 happen after.
    (When `featureIOUIssuerWeakTSH` is not enabled, the TSH list is
    re-derived from ledger state after apply rather than reusing the
    pre-apply list, so that TSH rules depending on post-application state
-   resolve correctly; see [tsh](tsh.md#a-separate-amendment-gated-source-of-weak-tshs).)
+   resolve correctly; see [TSH: A separate, amendment-gated source of weak TSHs](tsh.md#a-separate-amendment-gated-source-of-weak-tshs).)
    Each hook in each chain still needs `hsfCOLLECT` set and its account's
-   `lsfTshCollect` flag set, exactly as [tsh](tsh.md#conditions-for-weak-tsh-execution)
+   `lsfTshCollect` flag set, exactly as [TSH: Conditions for Weak TSH execution](tsh.md#conditions-for-weak-tsh-execution)
    describes — this pass does not relax those gates.
    <!-- src/xrpld/app/tx/detail/Transactor.cpp:2382-2390 — tsh re-derived if !featureIOUIssuerWeakTSH, then doTSH(false, tsh, stateMap, weakResults, proMeta) -->
 
@@ -153,13 +153,13 @@ For `cbak(uint32_t what)`:
 A single `if (reserved > 0)` (or checking `reserved` against 0/1/2
 explicitly) is enough for a hook to know which of the three `hook()` passes
 it is in without any other API call — see the worked example in
-[api-reference/control/hook_again](api-reference/control/hook_again.md),
+[`hook_again`](api-reference/control/hook_again.md),
 which checks exactly this to refuse a second `hook_again()` request from
 within a weak pass.
 
 ## Chain-control APIs
 
-Five APIs let a hook reason about, and act on, its position in the chain
+The following APIs let a hook reason about, and act on, its position in the chain
 described above. Full parameter/error tables live on each function's own
 page — this section is about how they combine.
 
@@ -242,7 +242,7 @@ built specifically for this pass), read and write its own hook state, and
 emit new transactions exactly as a strong execution can — none of that is
 restricted by strength, only the ability to affect the *originating*
 transaction's outcome is gone. This matches
-[tsh](tsh.md#strong-tsh-vs-weak-tsh)'s description exactly: a weak TSH
+[TSH: Strong TSH vs Weak TSH](tsh.md#strong-tsh-vs-weak-tsh)'s description exactly: a weak TSH
 "observes the transaction but cannot change its outcome."
 
 ## Where to observe order
@@ -252,15 +252,15 @@ touched by a transaction — is recorded as one `sfHookExecution` object in
 the transaction metadata's `sfHookExecutions` array, in the order the engine
 actually ran them: originator, then strong TSHs, then (post-apply) `cbak`
 if applicable, then weak TSHs, then again-as-weak. See
-[overview](overview.md#execution-results-in-transaction-metadata) for the
+[Overview: Execution results in transaction metadata](overview.md#execution-results-in-transaction-metadata) for the
 full field list on each `sfHookExecution` entry.
 
 ## Related documents
 
-- [tsh](tsh.md)
-- [overview](overview.md)
-- [api-reference/control/hook_pos](api-reference/control/hook_pos.md)
-- [api-reference/control/hook_skip](api-reference/control/hook_skip.md)
-- [api-reference/control/hook_again](api-reference/control/hook_again.md)
-- [api-reference/control/hook_param_set](api-reference/control/hook_param_set.md)
+- [Transactional Stake Holders (TSH)](tsh.md)
+- [Overview: The Xahau Hook Model](overview.md)
+- [`hook_pos`](api-reference/control/hook_pos.md)
+- [`hook_skip`](api-reference/control/hook_skip.md)
+- [`hook_again`](api-reference/control/hook_again.md)
+- [`hook_param_set`](api-reference/control/hook_param_set.md)
 - [api-reference/emit/README](api-reference/emit/README.md)

@@ -11,7 +11,7 @@ enumeration). The slot family is documented here; the ledger-info family has its
 [Ledger APIs](../ledger/README.md).
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary](../../glossary.md); values come from <!-- include/xrpl/hook/Enum.h and -->
+error table in [Glossary](../../glossary.md); values come from <!-- include/xrpl/hook/Enum.h and -->
 `hook/error.h`. The implementation is split between core lookup/read logic and the
 WASM-facing wrappers that marshal arguments across the guest boundary.
 <!-- core logic: `src/xrpld/app/hook/detail/HookAPI.cpp`; WASM-facing wrappers: `src/xrpld/app/hook/detail/applyHook.cpp` -->
@@ -66,16 +66,16 @@ produces the 34-byte serialized keylet these functions expect.
 ## Related documents
 
 - [../../README](../../README.md) — documentation index.
-- [../../overview](../../overview.md) — hook execution model and lifecycle.
-- [../../glossary](../../glossary.md) — full error-code and term reference.
-- [../../macros](../../macros/README.md) — `SBUF`, `GUARD`, and buffer helpers.
-- [../../best-practices](../../best-practices.md) — slot budgets and iterating ledger objects.
+- [Overview](../../overview.md) — hook execution model and lifecycle.
+- [Glossary](../../glossary.md) — full error-code and term reference.
+- [Helper Macros](../../macros/README.md) — `SBUF`, `GUARD`, and buffer helpers.
+- [Best Practices](../../best-practices.md) — slot budgets and iterating ledger objects.
 - [Ledger APIs](../ledger/README.md) — `fee_base`, `ledger_seq`, `ledger_nonce`, and the rest of the ledger-info family.
-- [control](../control/README.md) — `hook_again` and the strong/weak execution model.
-- [transaction](../transaction/README.md) — `otxn_slot`, `otxn_field`, and originating-txn access.
-- [state](../state/README.md) — persistent state read/write.
-- [emit-and-etxn](../emit/README.md) — `etxn_fee_base`, `etxn_nonce`, and emission.
-- [float-and-amount](../float/README.md) — XFL math for `slot_float` values.
-- [utility](../utility/README.md) — `util_keylet` for building the keylets `slot_set`/`ledger_keylet` consume.
-- [../../examples/emitted-transaction](../../examples/emitted-transaction.md) — reading slots and emitting.
-- [../../examples/memo-routing](../../examples/memo-routing.md) — drilling arrays and subfields.
+- [Control APIs](../control/README.md) — `hook_again` and the strong/weak execution model.
+- [Transaction APIs](../transaction/README.md) — `otxn_slot`, `otxn_field`, and originating-txn access.
+- [State APIs](../state/README.md) — persistent state read/write.
+- [Emit APIs](../emit/README.md) — `etxn_fee_base`, `etxn_nonce`, and emission.
+- [Float & Amount APIs](../float/README.md) — XFL math for `slot_float` values.
+- [Utility APIs](../utility/README.md) — `util_keylet` for building the keylets `slot_set`/`ledger_keylet` consume.
+- [Emitted Transaction](../../examples/emitted-transaction.md) — reading slots and emitting.
+- [Memo Routing](../../examples/memo-routing.md) — drilling arrays and subfields.

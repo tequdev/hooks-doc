@@ -25,6 +25,7 @@ const SIDEBAR_ORDER = [
   "xfl",
   "nop-bytes",
   "compiling",
+  "validating",
   "best-practices",
 
   "sethook-fields",
@@ -48,6 +49,7 @@ const SIDEBAR_ORDER = [
   "macros/proposed-helpers",
 
   // Tools: the dedicated Transaction Builder page orders under the tools index.
+  "tools/hooks-compiler",
   "tools/tx-builder",
 
   // SetHook: operation selection, installation fields, runtime behavior, then permissions.
@@ -159,6 +161,8 @@ const SIDEBAR_ORDER = [
   "api-reference/utility/util_keylet",
   "api-reference/utility/util_sha512h",
   "api-reference/utility/util_verify",
+  "api-reference/utility/dice",
+  "api-reference/utility/util_random",
 
   // STO: validate before reading, then mutate.
   "api-reference/sto/sto_validate",
@@ -310,6 +314,19 @@ export default defineConfig({
   description: "Reference documentation for Xahau Hook smart contracts.",
   srcDir: ".",
   cleanUrls: true,
+
+  // Source Code Pro is the design system's mono face; VitePress already bundles Inter.
+  head: [
+    ["link", { rel: "preconnect", href: "https://fonts.googleapis.com" }],
+    ["link", { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" }],
+    [
+      "link",
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;700&display=swap",
+      },
+    ],
+  ],
 
   // README.md and best-practices.md link to the bare "api-reference/" and
   // "examples/" directories (no index page exists there, unlike the

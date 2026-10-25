@@ -21,13 +21,13 @@ content. It closes with a section on debugging via `trace`.
 | API | Purpose | Reference |
 |---|---|---|
 | `otxn_slot` | Load the whole originating transaction into a slot. | [transaction](../api-reference/transaction/otxn_slot.md) |
-| `slot_subfield` | Narrow a slot to a subfield (`sfMemos`, `sfMemoData`). | [ledger-and-slot](../api-reference/slot/slot_subfield.md) |
-| `slot_count` | Number of elements in a slotted array. | [ledger-and-slot](../api-reference/slot/slot_count.md) |
-| `slot_subarray` | Expand one array element into its own slot. | [ledger-and-slot](../api-reference/slot/slot_subarray.md) |
-| `slot` | Copy a slot's bytes into memory. | [ledger-and-slot](../api-reference/slot/slot.md) |
+| `slot_subfield` | Narrow a slot to a subfield (`sfMemos`, `sfMemoData`). | [Slot APIs](../api-reference/slot/slot_subfield.md) |
+| `slot_count` | Number of elements in a slotted array. | [Slot APIs](../api-reference/slot/slot_count.md) |
+| `slot_subarray` | Expand one array element into its own slot. | [Slot APIs](../api-reference/slot/slot_subarray.md) |
+| `slot` | Copy a slot's bytes into memory. | [Slot APIs](../api-reference/slot/slot.md) |
 | `otxn_param` | Read a HookParameter by key (the simpler alternative). | [transaction](../api-reference/transaction/otxn_param.md) |
 | `trace` / `trace_num` / `trace_float` | Emit debug output. | [utility](../api-reference/trace/README.md) |
-| `accept` / `rollback` | Terminate the hook. | [control](../api-reference/control/README.md) |
+| `accept` / `rollback` | Terminate the hook. | [Control APIs](../api-reference/control/README.md) |
 
 Helper macros used: `SBUF`, `GUARD`, `BUFFER_EQUAL_STR_GUARD`, `TRACEHEX`,
 `TRACEVAR` — see [macros](../macros/tracing.md).
@@ -201,13 +201,13 @@ output — it is purely a server-side diagnostic.
 
 ## Related documents
 
-- [overview](../overview.md)
-- [glossary](../glossary.md)
-- [macros](../macros/README.md)
-- [best-practices](../best-practices.md)
-- [api-reference/transaction](../api-reference/transaction/README.md)
-- [api-reference/ledger-and-slot](../api-reference/slot/README.md)
-- [api-reference/utility](../api-reference/trace/README.md)
-- [api-reference/control](../api-reference/control/README.md)
-- [examples/payment-filter](payment-filter.md)
-- [examples/emitted-transaction](emitted-transaction.md)
+- [Overview: The Xahau Hook Model](../overview.md)
+- [Glossary](../glossary.md)
+- [Helper Macros (`hook/macro.h`)](../macros/README.md)
+- [Hook Best Practices](../best-practices.md)
+- [Transaction APIs](../api-reference/transaction/README.md)
+- [Slot APIs](../api-reference/slot/README.md)
+- [Trace APIs](../api-reference/trace/README.md)
+- [Control APIs](../api-reference/control/README.md)
+- [Example: Payment Filter](payment-filter.md)
+- [Example: Emitting a Transaction](emitted-transaction.md)

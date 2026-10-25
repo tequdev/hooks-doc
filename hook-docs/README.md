@@ -1,71 +1,88 @@
-# Xahau Hooks: C/WASM API Documentation
-
-Xahau Hooks are small WebAssembly programs attached to accounts. They run
-on-ledger whenever a transaction touches the account they are installed on, and
-they can read the originating transaction, read and write persistent state, read
-ledger objects, emit new transactions, and ultimately `accept` (apply) or
-`rollback` (reject) the transaction.
-
-This doc set describes the **C / WebAssembly Hook API** as it exists in this
-repository (branch `dev`). Every claim here is grounded in repository source —
-primarily `hook/extern.h`, `hook/error.h`, `hook/macro.h`, `hook/hookapi.h`,
-the Hook execution engine, and the example hooks embedded in the test suite.
-<!-- include/xrpl/hook/Enum.h, include/xrpl/hook/hook_api.macro, src/xrpld/app/hook/, and src/test/app/SetHook_test.cpp -->
+---
+layout: home
+hero:
+  name: Xahau Hooks
+  text: C / WebAssembly API Documentation
+  tagline: Small WebAssembly programs attached to accounts. They run on-ledger when a transaction touches the account, read the originating transaction and ledger, keep persistent state, emit transactions, and accept or rollback.
+  actions:
+    - theme: brand
+      text: Start with the overview
+      link: /overview
+    - theme: alt
+      text: API reference
+      link: /api-reference/control/
+    - theme: alt
+      text: Examples
+      link: /examples/payment-filter
+features:
+  - title: Grounded in source
+    details: Every claim is traced to the xahaud repository (branch dev) - hook/extern.h, hook/error.h, hook/macro.h, the execution engine, and the test-suite example hooks.
+  - title: Every API function
+    details: Exact C signatures, parameters, return conventions, and error codes for every host function a hook can import, grouped by purpose.
+  - title: Worked examples
+    details: End-to-end hooks for payment filtering, state counters, memo routing, foreign state, and emitted transactions.
+---
 
 **Who this is for:** developers writing Hook smart contracts in C, and anyone
-who needs an accurate reference for the 75 Hook API functions, their error
+who needs an accurate reference for the Hook API functions, their error
 codes, and the execution model.
 
 ## Table of contents
 
 | Document | Description |
 |---|---|
-| [overview](overview.md) | Conceptual foundation: what Hooks are, entry points, execution modes, environment limits, and the typical processing flow. |
-| [sethook-fields/](sethook-fields/README.md) | `SetHook` fields that control hook triggering and permissions: `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, `HookName`. |
-| [tsh](tsh.md) | Transactional Stake Holders: strong vs. weak TSH, the two-condition gate for weak-TSH ("collect call") execution, and a per-transaction-type TSH table. |
-| [glossary](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
-| [xfl](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
-| [nop-bytes](nop-bytes.md) | The `0x99` NOP byte Xahau's deserializer skips: its rules and limits, which Hook APIs honor it, and how to use it for optional and variable-length fields in an emitted-transaction template. |
-| [macros/](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
-| [tools/](tools/README.md) | Community tooling for building Hooks, including the Transaction Builder code generator and the Binary Visualizer. |
-| [best-practices](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
+| [Overview](overview.md) | Conceptual foundation: what Hooks are, entry points, execution modes, environment limits, and the typical processing flow. |
+| [Execution Order](execution-order.md) | Hook chains and the order hooks run in for one transaction: strong, weak, and callback passes, the `reserved` argument, and the chain-control APIs. |
+| [TSH](tsh.md) | Transactional Stake Holders: strong vs. weak TSH, the two-condition gate for weak-TSH ("collect call") execution, and a per-transaction-type TSH table. |
+| [Hook Fees](fees.md) | Deployment, reserve, execution, and emitted-transaction costs in one place: what you pay, when, and who pays it. |
+| [XFL](xfl.md) | XFL concept page: the fixed-precision floating-point format's bit encoding, valid range, and relationship to the ledger's `Amount` format. |
+| [NOP Bytes (0x99)](nop-bytes.md) | The `0x99` NOP byte Xahau's deserializer skips: its rules and limits, which Hook APIs honor it, and how to use it for optional and variable-length fields in an emitted-transaction template. |
+| [Compiling Hooks](compiling.md) | From C to an installable WASM module: what the `SetHook` validator enforces, the recommended hooks-compiler toolchain, and the install-rejection log codes. |
+| [Validating Hooks](validating.md) | Check a compiled module with the `hook_validate` RPC before installing it: availability, request and response, and reading the guard checker's log. |
+| [Best Practices](best-practices.md) | Practical guidance: guarding loops, buffer sizing, state and reserve management, error handling. |
+| [SetHook Fields](sethook-fields/README.md) | `SetHook` fields that control hook triggering and permissions: `HookOn`, `HookOnIncoming`, `HookOnOutgoing`, `HookCanEmit`, `HookName`. |
+| [Helper Macros](macros/README.md) | Helper macros from `hook/macro.h`: control flow, guards, buffer helpers, integer conversion, comparison. |
+| [Tools](tools/README.md) | Community tooling for building Hooks: the hooks-compiler build tool, the Transaction Builder code generator, and the Binary Visualizer. |
+| [Other Languages](other-languages.md) | Writing hooks in Rust, Zig, AssemblyScript, or hand-written WAT: how to satisfy the validator's contract from a non-C toolchain. |
+| [Glossary](glossary.md) | Alphabetical glossary of Hook terminology (Slot, Keylet, XFL, Namespace, Grant, Burden, TSH, and more). |
 
 ### API reference, by group
 
 | Group | Description |
 |---|---|
-| [api-reference/control/](api-reference/control/README.md) | Control functions: `_g`, `accept`, `rollback`, `hook_account`, `hook_hash`, `hook_param`, `hook_param_set`, `hook_again`, `hook_skip`, `hook_pos`. |
-| [api-reference/transaction/](api-reference/transaction/README.md) | Originating-transaction functions: `otxn_field`, `otxn_id`, `otxn_type`, `otxn_slot`, `otxn_param`, `otxn_burden`, `otxn_generation`. |
-| [api-reference/state/](api-reference/state/README.md) | Hook state: `state`, `state_set`, `state_foreign`, `state_foreign_set`. |
-| [api-reference/slot/](api-reference/slot/README.md) | The slot system: `slot_set`, `slot*`, `meta_slot`, `xpop_slot`. |
-| [api-reference/ledger/](api-reference/ledger/README.md) | Ledger info: `ledger_*`, `fee_base`. |
-| [api-reference/emit/](api-reference/emit/README.md) | Emitting transactions: `etxn_*`, `prepare`, `emit`. |
-| [api-reference/float/](api-reference/float/README.md) | XFL floating-point math and amount serialization: `float_*`. |
-| [api-reference/utility/](api-reference/utility/README.md) | Cryptography, address conversion, and keylet computation: `util_*`. |
-| [api-reference/sto/](api-reference/sto/README.md) | Serialized-object (STO) inspection/editing: `sto_*`. |
-| [api-reference/trace/](api-reference/trace/README.md) | Debug tracing: `trace*`. |
+| [Control APIs](api-reference/control/README.md) | Control functions: `_g`, `accept`, `rollback`, `hook_account`, `hook_hash`, `hook_param`, `hook_param_set`, `hook_again`, `hook_skip`, `hook_pos`. |
+| [Transaction APIs](api-reference/transaction/README.md) | Originating-transaction functions: `otxn_field`, `otxn_id`, `otxn_type`, `otxn_slot`, `otxn_param`, `otxn_burden`, `otxn_generation`. |
+| [State APIs](api-reference/state/README.md) | Hook state: `state`, `state_set`, `state_foreign`, `state_foreign_set`. |
+| [Slot APIs](api-reference/slot/README.md) | The slot system: `slot_set`, `slot*`, `meta_slot`, `xpop_slot`. |
+| [Ledger APIs](api-reference/ledger/README.md) | Ledger info: `ledger_*`, `fee_base`. |
+| [Emit APIs](api-reference/emit/README.md) | Emitting transactions: `etxn_*`, `prepare`, `emit`. |
+| [Float & Amount APIs](api-reference/float/README.md) | XFL floating-point math and amount serialization: `float_*`. |
+| [Utility APIs](api-reference/utility/README.md) | Cryptography, address conversion, and keylet computation: `util_*`. |
+| [STO APIs](api-reference/sto/README.md) | Serialized-object (STO) inspection/editing: `sto_*`. |
+| [Trace APIs](api-reference/trace/README.md) | Debug tracing: `trace*`. |
 
 ### Worked examples
 
 | Document | Description |
 |---|---|
-| [examples/payment-filter](examples/payment-filter.md) | Worked example: inspect an incoming Payment and accept or rollback. |
-| [examples/state-counter](examples/state-counter.md) | Worked example: read/increment/write a counter in hook state. |
-| [examples/emitted-transaction](examples/emitted-transaction.md) | Worked example: reserve, prepare, and emit a transaction. |
-| [examples/foreign-state](examples/foreign-state.md) | Worked example: read another account's state via `state_foreign`. |
-| [examples/memo-routing](examples/memo-routing.md) | Worked example: route behavior based on transaction memos/parameters. |
+| [Payment Filter](examples/payment-filter.md) | Worked example: inspect an incoming Payment and accept or rollback. |
+| [State Counter](examples/state-counter.md) | Worked example: read/increment/write a counter in hook state. |
+| [Emitted Transaction](examples/emitted-transaction.md) | Worked example: reserve, prepare, and emit a transaction. |
+| [Foreign State](examples/foreign-state.md) | Worked example: read another account's state via `state_foreign`. |
+| [Memo Routing](examples/memo-routing.md) | Worked example: route behavior based on transaction memos/parameters. |
 
 ## Suggested reading order
 
 For newcomers, read in this order:
 
-1. [overview](overview.md) — the model and vocabulary.
-2. [api-reference/control/](api-reference/control/README.md) — how a hook starts, guards loops, and terminates.
-3. [api-reference/transaction/](api-reference/transaction/README.md) — how to read the transaction that triggered the hook.
-4. [api-reference/state/](api-reference/state/README.md) — how to persist data.
-5. The [examples/](examples/) — end-to-end hooks that tie it together.
+1. [Overview](overview.md) — the model and vocabulary.
+2. [Control APIs](api-reference/control/README.md) — how a hook starts, guards loops, and terminates.
+3. [Transaction APIs](api-reference/transaction/README.md) — how to read the transaction that triggered the hook.
+4. [State APIs](api-reference/state/README.md) — how to persist data.
+5. The [Examples](examples/) — end-to-end hooks that tie it together.
+6. [Compiling Hooks](compiling.md) and [Validating Hooks](validating.md) — build the module, check it with `hook_validate`, and install it.
 
-Keep [glossary](glossary.md) and [macros/](macros/README.md) open alongside the
+Keep [Glossary](glossary.md) and [Helper Macros](macros/README.md) open alongside the
 above; both are lookup references rather than linear reading.
 
 ## Reference use
@@ -73,14 +90,14 @@ above; both are lookup references rather than linear reading.
 Experienced developers can jump straight to the relevant `api-reference/*` page.
 Each function is documented with its exact C signature from `hook/extern.h`, its
 parameters, return convention, and error codes. The full error-code table lives
-in [overview](overview.md) and is repeated per function where relevant.
+in [Overview](overview.md) and is repeated per function where relevant.
 
 ## Source of truth
 
 These documents were derived from the developer-facing Hook API headers
 (repo root `https://github.com/Xahau/xahaud`):
 
-- `hook/extern.h` — canonical developer-facing declarations of all 75 API functions.
+- `hook/extern.h` — canonical developer-facing declarations of all API functions.
 - `hook/error.h` — developer-facing error `#define`s.
 - `hook/macro.h` — helper macros.
 - `hook/hookapi.h` — top-level include; `KEYLET_*` and `COMPARE_*` constants.
@@ -105,27 +122,32 @@ The consolidated, cross-checked inventory these docs build on is
 
 ## Related documents
 
-- [overview](overview.md)
-- [sethook-fields/](sethook-fields/README.md)
-- [tsh](tsh.md)
-- [glossary](glossary.md)
-- [xfl](xfl.md)
-- [nop-bytes](nop-bytes.md)
-- [macros/](macros/README.md)
-- [tools/](tools/README.md)
-- [best-practices](best-practices.md)
-- [api-reference/control/](api-reference/control/README.md)
-- [api-reference/transaction/](api-reference/transaction/README.md)
-- [api-reference/state/](api-reference/state/README.md)
-- [api-reference/slot/](api-reference/slot/README.md)
-- [api-reference/ledger/](api-reference/ledger/README.md)
-- [api-reference/emit/](api-reference/emit/README.md)
-- [api-reference/float/](api-reference/float/README.md)
-- [api-reference/utility/](api-reference/utility/README.md)
-- [api-reference/sto/](api-reference/sto/README.md)
-- [api-reference/trace/](api-reference/trace/README.md)
-- [examples/payment-filter](examples/payment-filter.md)
-- [examples/state-counter](examples/state-counter.md)
-- [examples/emitted-transaction](examples/emitted-transaction.md)
-- [examples/foreign-state](examples/foreign-state.md)
-- [examples/memo-routing](examples/memo-routing.md)
+- [Overview: The Xahau Hook Model](overview.md)
+- [Execution Order and Hook Chains](execution-order.md)
+- [Transactional Stake Holders (TSH)](tsh.md)
+- [Hook Fees](fees.md)
+- [XFL: Xahau's Fixed-Precision Floating-Point Format](xfl.md)
+- [NOP Bytes: Skippable Padding in Serialized Objects](nop-bytes.md)
+- [Compiling Hooks](compiling.md)
+- [Validating Hooks](validating.md)
+- [Hook Best Practices](best-practices.md)
+- [SetHook Fields](sethook-fields/README.md)
+- [Helper Macros (`hook/macro.h`)](macros/README.md)
+- [Tools](tools/README.md)
+- [Developing Hooks in Languages Other Than C](other-languages.md)
+- [Glossary](glossary.md)
+- [Control APIs](api-reference/control/README.md)
+- [Transaction APIs](api-reference/transaction/README.md)
+- [State APIs](api-reference/state/README.md)
+- [Slot APIs](api-reference/slot/README.md)
+- [Ledger APIs](api-reference/ledger/README.md)
+- [Emit and Emitted-Transaction APIs](api-reference/emit/README.md)
+- [Float and Amount APIs](api-reference/float/README.md)
+- [Utility APIs](api-reference/utility/README.md)
+- [STO APIs](api-reference/sto/README.md)
+- [Trace APIs](api-reference/trace/README.md)
+- [Example: Payment Filter](examples/payment-filter.md)
+- [Example: State Counter](examples/state-counter.md)
+- [Example: Emitting a Transaction](examples/emitted-transaction.md)
+- [Example: Foreign State](examples/foreign-state.md)
+- [Example: Memo Routing](examples/memo-routing.md)

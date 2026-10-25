@@ -4,14 +4,14 @@ sidebarTitle: "Ledger APIs"
 
 # Ledger APIs
 
-These six APIs read ledger-level data — the current ledger's sequence and base fee, the
+These APIs read ledger-level data — the current ledger's sequence and base fee, the
 last-closed ledger's time and hash, a general-purpose nonce, and keylet range enumeration.
 They were originally documented together with the [slot family](../slot/README.md) on a
 single "Ledger and Slot APIs" page; that page has been split in two, and this page covers
 the ledger-info half.
 
 All signatures are copied verbatim from `hook/extern.h`. Return codes reference the shared
-error table in [../../glossary](../../glossary.md); values come from <!-- include/xrpl/hook/Enum.h and -->
+error table in [Glossary](../../glossary.md); values come from <!-- include/xrpl/hook/Enum.h and -->
 `hook/error.h`. The implementation is split between core lookup/read logic and the
 WASM-facing wrappers that marshal arguments across the guest boundary.
 <!-- core logic: `src/xrpld/app/hook/detail/HookAPI.cpp`; WASM-facing wrappers: `src/xrpld/app/hook/detail/applyHook.cpp` -->
@@ -32,12 +32,12 @@ WASM-facing wrappers that marshal arguments across the guest boundary.
 ## Related documents
 
 - [../../README](../../README.md) — documentation index.
-- [../../overview](../../overview.md) — hook execution model and lifecycle.
-- [../../glossary](../../glossary.md) — full error-code and term reference.
-- [../../macros](../../macros/README.md) — `SBUF`, `GUARD`, and buffer helpers.
-- [../../best-practices](../../best-practices.md) — slot budgets and iterating ledger objects.
+- [Overview](../../overview.md) — hook execution model and lifecycle.
+- [Glossary](../../glossary.md) — full error-code and term reference.
+- [Helper Macros](../../macros/README.md) — `SBUF`, `GUARD`, and buffer helpers.
+- [Best Practices](../../best-practices.md) — slot budgets and iterating ledger objects.
 - [Slot APIs](../slot/README.md) — `slot_set`, `slot_subfield`, `meta_slot`, `xpop_slot`, and the rest of the slot family.
-- [control](../control/README.md) — `hook_again` and the strong/weak execution model.
-- [transaction](../transaction/README.md) — `otxn_slot`, `otxn_field`, and originating-txn access.
-- [emit-and-etxn](../emit/README.md) — `etxn_fee_base`, `etxn_nonce`, and emission.
-- [utility](../utility/README.md) — `util_keylet` for building the keylets `slot_set`/`ledger_keylet` consume.
+- [Control APIs](../control/README.md) — `hook_again` and the strong/weak execution model.
+- [Transaction APIs](../transaction/README.md) — `otxn_slot`, `otxn_field`, and originating-txn access.
+- [Emit APIs](../emit/README.md) — `etxn_fee_base`, `etxn_nonce`, and emission.
+- [Utility APIs](../utility/README.md) — `util_keylet` for building the keylets `slot_set`/`ledger_keylet` consume.
