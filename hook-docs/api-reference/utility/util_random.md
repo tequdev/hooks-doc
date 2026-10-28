@@ -39,7 +39,8 @@ per-execution draw limit (`src/xrpld/app/hook/detail/applyHook.cpp:2900-2924`,
 `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 
 **Common failure patterns.**
-- Requesting `0` bytes → `TOO_SMALL`; requesting more than `512` → `TOO_BIG`.
+- Requesting `0` bytes → `TOO_SMALL`; requesting more than `512` → `TOO_BIG`, provided the destination region is in bounds.
+  <!-- evidence: the generated wrapper checks `NOT_IN_BOUNDS` before calling `HookAPI::util_random`, so an invalid destination returns `OUT_OF_BOUNDS` before the length checks (`src/xrpld/app/hook/detail/applyHook.cpp:2907-2914`, release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 - A destination buffer that runs past the end of WASM memory → `OUT_OF_BOUNDS`.
 - Drawing in a ledger that has no usable entropy → `TOO_LITTLE_ENTROPY`.
 - Drawing more than 256 times in one execution → `TOO_MANY_NONCES`.
