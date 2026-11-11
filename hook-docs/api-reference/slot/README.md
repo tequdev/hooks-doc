@@ -32,8 +32,8 @@ server-side handle — and then drills into it.
   free slot for me", and the chosen slot number is returned. Passing a specific number targets
   that slot (overwriting whatever was there).
 - Typical lifecycle:
-  1. [`slot_set`](slot_set.md) loads an object from a **keylet** (34 bytes) or a **transaction
-     id** (32 bytes) into a slot.
+  1. [`slot_set`](slot_set.md) loads an object from a **keylet** (34 bytes) into a slot.
+     <!-- evidence: `fix20261005` makes the former 32-byte transaction-id form return `INVALID_ARGUMENT`; the release implementation accepts only 34-byte keylets (`src/xrpld/app/hook/detail/HookAPI.cpp:2293-2328`, commit `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
   2. [`slot_subfield`](slot_subfield.md) / [`slot_subarray`](slot_subarray.md) drill into that slot,
      placing a subfield or array element into another slot.
   3. [`slot`](slot.md), [`slot_size`](slot_size.md), [`slot_count`](slot_count.md),
@@ -50,7 +50,7 @@ produces the 34-byte serialized keylet these functions expect.
 
 | Function | Purpose |
 |---|---|
-| [`slot_set`](slot_set.md) | Load a ledger object or transaction into a slot. |
+| [`slot_set`](slot_set.md) | Load a ledger object by keylet into a slot. <!-- evidence: `slot_set` accepts only 34-byte keylets under the release's `fix20261005` rules (`src/xrpld/app/hook/detail/HookAPI.cpp:2293-2328`, commit `d20e8ffb561034101d24668adbe9a513f639cb37`). --> |
 | [`slot`](slot.md) | Write a slot's serialized contents to memory (or return as `int64_t`). |
 | [`slot_size`](slot_size.md) | Byte size of the data in a slot. |
 | [`slot_clear`](slot_clear.md) | Free a slot. |
