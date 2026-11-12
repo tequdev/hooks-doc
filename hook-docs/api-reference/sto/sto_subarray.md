@@ -25,7 +25,11 @@ int64_t sto_subarray(uint32_t read_ptr, uint32_t read_len, uint32_t array_id);
 unwraps it before indexing; a raw array from `sto_subfield`/`slot_subfield` works
 directly. The `fixHookAPI20251128` amendment corrects unwrapping for field values > 15
 (two-byte wrappers `0xF0 nn`) — behavior differs slightly before/after that amendment
-for such arrays. Up to 1024 elements are scanned.
+for such arrays. Under `fix20260929`, the input is validated before indexing, so malformed
+serialized data (including invalid trailing data after a wrapped array) returns
+`PARSE_ERROR`; this pre-validation is not performed before that amendment. Up to 1024
+elements are scanned.
+<!-- evidence: in release commit `d20e8ffb561034101d24668adbe9a513f639cb37`, `HookAPI::sto_subarray` validates the input and wrapped-array trailing terminator when `fix20260929` is enabled (`src/xrpld/app/hook/detail/HookAPI.cpp:175-195`). -->
 
 **Minimal example.**
 
