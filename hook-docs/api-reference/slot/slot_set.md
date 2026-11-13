@@ -37,6 +37,8 @@ retrievable transaction.
   allocated slot number.
 - A keylet with a zero key returns `DOESNT_EXIST`.
 <!-- evidence: slot `0` is replaced with a free slot before the object is stored; a non-zero slot is assigned directly, and a zero key is rejected (`src/xrpld/app/hook/detail/HookAPI.cpp:2093-2105,2129-2140`). -->
+- A hook running later in the same ledger can load a newly stored emitted transaction by its emitted-transaction keylet and then extract `sfEmittedTxn` with [`slot_subfield`](slot_subfield.md). This same-ledger lookup depends on `fix20261005`.
+<!-- evidence: release commit `d20e8ffb561034101d24668adbe9a513f639cb37` stores `sfEmittedTxn` in the template slot with `set()` under `fix20261005`, and the release test verifies that a later hook can load the keylet and find `sfEmittedTxn` (`src/xrpld/app/hook/detail/applyHook.cpp:1547-1579`; `src/test/app/HookAPI_test.cpp:664-717`). -->
 
 **Minimal example.**
 
