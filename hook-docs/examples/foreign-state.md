@@ -151,6 +151,9 @@ calling `state_foreign` once per key; the account and namespace stay constant.
   state from other hooks; only writes are gated.
 - Foreign state you write still counts against the *target* account's reserve and
   the combined per-chain state-modification limits.
+- With `fix20261005`, a successful foreign write touches the target account once in the
+  transaction, so the target AccountRoot is included as a stakeholder.
+  <!-- evidence: The release test reads the target account's `sfTouchCount`, checks that a foreign Hook State write increments it once under `fix20261005`, and checks that rejected writes do not (`src/test/app/SetHook_test.cpp:11654-11743`, release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 
 ## Common mistakes
 

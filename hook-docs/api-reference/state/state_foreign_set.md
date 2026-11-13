@@ -69,6 +69,10 @@ A successful grant is cached per (account, namespace) so later writes skip the e
   before attempting foreign writes; a single unauthorized attempt blocks the rest.
 - Reserve for new foreign entries is charged to the foreign (target) account, not the hook
   account.
+- Under `fix20261005`, a successful foreign state write also touches the target account once
+  per transaction. This keeps the target AccountRoot as a transaction stakeholder; it does not
+  change the grant requirement or the reserve account.
+  <!-- evidence: Under `fix20261005`, the transaction touches each account whose Hook State was written through `state_foreign_set`, so the target account is threaded into the transaction as a touched AccountRoot (`src/xrpld/app/tx/detail/Transactor.cpp:1220-1229`, release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 - Deletion (zero-length value) works the same as for [`state_set`](state_set.md).
 
 **Minimal example.**
