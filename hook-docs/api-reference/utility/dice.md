@@ -21,14 +21,15 @@ int64_t dice(uint32_t sides);
 | Code | Value | Cause |
 |---|---|---|
 | `INVALID_ARGUMENT` | -7 | `sides == 0`. |
-| `TOO_LITTLE_ENTROPY` | -46 | The current ledger has no usable random seed, is not sufficiently seeded, or has no qualifying entropy contribution. |
+| `TOO_LITTLE_ENTROPY` | -46 | The current ledger has no usable random seed, or fewer than 80% of the UNLReport contributed entropy (at least one validator must contribute when there is no UNLReport). |
 | `TOO_MANY_NONCES` | -12 | More than 256 RNG draws in one Hook execution. |
 
 <!-- evidence: `HookAPI::dice` rejects zero before drawing and returns `word % sides` after rejection sampling (`src/xrpld/app/hook/detail/HookAPI.cpp:1994-2024`); `rng_next` checks the feature, random object, ledger seed, and the 80%-of-UNLReport contribution threshold, rejects when `rng_draws >= 256`, and increments the draw counter after a successful draw (`src/xrpld/app/hook/detail/HookAPI.cpp:1935-1991`, `include/xrpl/hook/Enum.h:390-404`; release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 
 **Common failure patterns.**
 - Passing `sides == 0` → `INVALID_ARGUMENT`.
-- Drawing in a ledger that has no usable entropy → `TOO_LITTLE_ENTROPY`; treat a
+- Drawing in a ledger that has no usable entropy, or has fewer than 80% of the
+  UNLReport contributing entropy → `TOO_LITTLE_ENTROPY`; treat a
   negative return as "no randomness available" rather than as a value.
 - Drawing more than 256 times in one execution → `TOO_MANY_NONCES`.
 
