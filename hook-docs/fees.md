@@ -150,6 +150,11 @@ candidate transaction and runs it through the same fee calculation the
 network itself uses to price a transaction (routed through a dedicated
 invoke path once `fixHookAPI20251128` is enabled).
 <!-- src/xrpld/app/hook/detail/HookAPI.cpp:826-851 — HookAPI::etxn_fee_base parses txBlob and calls Transactor::calculateBaseFee / invoke_calculateBaseFee against it -->
+With `fix20260929` enabled, it performs that calculation against the view being
+applied, not the node-local open ledger; this keeps the consensus-visible fee
+calculation based on the state being applied. Before that amendment, it uses
+the open ledger instead.
+<!-- evidence: `HookAPI::etxn_fee_base` uses `applyCtx.view()` for `fix20260929` and `openLedger().current()` otherwise (`src/xrpld/app/hook/detail/HookAPI.cpp:880-895`, xahaud commit `d20e8ffb561034101d24668adbe9a513f639cb37`). `src/test/app/HookAPI_test.cpp:864-911` verifies the applied-view callback fee is included only when the amendment is enabled. -->
 Because the candidate already carries `sfEmitDetails` (written by
 `etxn_details` in the step before), the fee calculation prices it as an
 emitted transaction: it adds the emitting hook's `sfHookCallbackFee` (its
