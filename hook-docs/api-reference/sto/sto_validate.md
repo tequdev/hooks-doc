@@ -13,7 +13,7 @@ int64_t sto_validate(uint32_t tread_ptr, uint32_t tread_len);
 
 | Name | Meaning |
 |---|---|
-| `tread_ptr`, `tread_len` | The candidate serialized object. Must be at least 2 bytes. |
+| `tread_ptr`, `tread_len` | The candidate serialized object. |
 
 **Return value.**
 
@@ -21,8 +21,9 @@ int64_t sto_validate(uint32_t tread_ptr, uint32_t tread_len);
 |---|---|---|
 | valid | 1 | Fields parse cleanly and end exactly at the buffer end. |
 | invalid | 0 | A field failed to parse, or trailing/short bytes remain. |
-| `TOO_SMALL` | -4 | `tread_len < 2`. |
 | `OUT_OF_BOUNDS` | -1 | Region out of bounds. |
+
+<!-- evidence: With `fix20261005`, `sto_validate` returns false for buffers shorter than two bytes instead of `TOO_SMALL`; the release test covers empty, one-byte, and one-byte field-code inputs (`src/xrpld/app/hook/detail/HookAPI.cpp:72-81`, `src/test/app/HookAPI_test.cpp:4711-4741`, release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 
 **Caveats.** Validation is structural (well-formed field encoding), not semantic — it
 does not check that required fields are present for a given object type, nor that
