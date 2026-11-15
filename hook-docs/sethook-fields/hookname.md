@@ -86,8 +86,21 @@ message and the code agree once you account for the hex encoding. The name
 must also be valid UTF-8 — a purely random 4-byte
 blob like `DEADBEEF` (hex) fails this even though it passes the length check
 while `"41424344"` encodes ASCII `ABCD`.
-<!-- `URIToken::validateUTF8`; `SetHook_test.cpp:1718-1723`,
+<!-- `URIToken::validateUTF8`; `SetHook_test.cpp:1990-2012`,
 `"DEADBEEF" // not utf-8`; `"41424344"` is used in passing tests. -->
+
+**Transaction-level empty-name rule.** The `sfHookName` carried by the
+triggering transaction is different from an empty `sfHookName` inside a
+`SetHook` `sfHook` object. With `fix20260929` enabled, a transaction that
+includes an empty `HookName` is rejected as `temMALFORMED`; omit the field
+when no transaction-level hook target is intended. The empty value remains
+valid in a `SetHook` hook object because it removes the installed hook's name.
+<!-- `src/xrpld/app/tx/detail/Transactor.cpp:152-163` rejects an empty
+transaction-level `sfHookName` when `fix20260929` is enabled;
+`src/test/app/SetHook_test.cpp:2083-2097` and `:2180-2213` verify that an
+empty `sfHookName` in a SetHook update removes the installed name, while
+`:2390-2410` verifies the amendment-gated transaction-level rejection.
+Release commit: `d20e8ffb561034101d24668adbe9a513f639cb37`. -->
 
 **Runtime semantics — targeting, not filtering.** During execution and fee
 calculation, each `sfHook` entry with a
