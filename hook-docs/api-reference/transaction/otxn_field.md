@@ -21,7 +21,7 @@ int64_t otxn_field(uint32_t write_ptr, uint32_t write_len, uint32_t field_id);
 `write_ptr == 0` and `write_len == 0`: the field value packed into an `int64_t` (via
 `data_as_int64`), useful for small numeric fields. Errors:
 
-<!-- evidence: `otxn_field` serializes the field, then `WRITE_WASM_MEMORY_OR_RETURN_AS_INT64` strips the leading variable-length byte for account fields and returns the number of payload bytes written (`src/xrpld/app/hook/detail/applyHook.cpp:1906-1916`, `include/xrpl/hook/Macro.h:272-297`, xahaud `origin/release`). -->
+<!-- evidence: `otxn_field` serializes the field, then `WRITE_WASM_MEMORY_OR_RETURN_AS_INT64` strips the leading variable-length byte for account fields and returns the number of payload bytes written (`src/xrpld/app/hook/detail/applyHook.cpp:1914-1949`, `include/xrpl/hook/Macro.h:278-303`, Xahau release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 `INVALID_ARGUMENT` (-7) if `write_ptr == 0` but `write_len != 0`;
 `OUT_OF_BOUNDS` (-1) for a bad buffer; `INVALID_FIELD` (-17) if `field_id` resolves to
 `sfInvalid`; `DOESNT_EXIST` (-5) if the field is not present on the transaction;
@@ -31,10 +31,9 @@ int64 form for a field larger than 8 bytes, or if the encoded value would set th
 
 <!--
 Evidence:
-- xahaud: src/xrpld/app/hook/detail/applyHook.cpp
-- xahaud: src/xrpld/app/hook/detail/HookAPI.cpp
-- commit: bb244ef7729503a0317bcff0f8fdaa93ca5cb7d2
-- notes: otxn_field serializes the requested field, returns DOESNT_EXIST for absent fields and INVALID_FIELD for unknown codes, and the int64 conversion rejects values longer than 8 bytes or with bit 63 set.
+- xahaud: src/xrpld/app/hook/detail/applyHook.cpp:1914-1949; src/xrpld/app/hook/detail/HookAPI.cpp:1579-1606
+- commit: d20e8ffb561034101d24668adbe9a513f639cb37
+- notes: the release wrapper validates the pointer/length mode and serializes the field; the API returns INVALID_FIELD for sfInvalid and DOESNT_EXIST for an absent field, while the int64 conversion rejects values longer than 8 bytes or with bit 63 set.
 -->
 
 **Common failure patterns.**
@@ -57,6 +56,11 @@ Evidence:
 - For an `STI_AMOUNT` field like `sfAmount` the serialized form is 8 bytes for native XAH
   (drops with the high bits set) or 48 bytes for an IOU/issued amount; size your buffer for
   the worse case (see [Amount and STO helpers](../../macros/amount-and-sto.md) `AMOUNT_TO_DROPS`).
+- During an emit-failure callback with `fix20261005` enabled, `otxn_field` reads from the
+  original emitted transaction rather than the `ttEMIT_FAILURE` pseudo-transaction. A field
+  present only on the emitted transaction is therefore available, while a field present only
+  on the pseudo-transaction returns `DOESNT_EXIST`.
+<!-- evidence: `fix20261005` captures the original emitted transaction for the callback (`src/xrpld/app/hook/detail/applyHook.cpp:1048-1065`), and `HookAPI::otxn_field` checks field presence on that object before returning it (`src/xrpld/app/hook/detail/HookAPI.cpp:1587-1606`), Xahau release commit `d20e8ffb561034101d24668adbe9a513f639cb37`. -->
 - To parse a returned amount as a floating value, prefer loading the transaction into a slot
   and using [`slot_float`](../slot/slot_float.md), or the STO helpers in
   [utility](../sto/README.md).

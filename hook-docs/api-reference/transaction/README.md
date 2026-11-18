@@ -40,8 +40,10 @@ internal `emitFailure` object with the *emitted* transaction (read back from the
 ledger directory), and the `otxn_*` functions read from **that** transaction instead of the
 incoming one. Concretely:
 
-<!-- verified in applyHook.cpp: emitFailure is set to the emitted STObject when
-isCallback && (wasmParam & 1). -->
+<!-- evidence: on a failure callback (`isCallback && (wasmParam & 1)`),
+`fix20261005` supplies the original emitted transaction to `emitFailure`
+(`src/xrpld/app/hook/detail/applyHook.cpp:1048-1065`, Xahau release commit
+`d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 
 - `otxn_type` returns the *emitted* transaction's `sfTransactionType`.
 - `otxn_field` reads fields from the *emitted* transaction.
