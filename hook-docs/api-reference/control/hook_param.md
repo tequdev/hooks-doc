@@ -35,7 +35,7 @@ key exists (or it was "deleted" via an override with an empty value).
   [`hook_param_set`](hook_param_set.md); an override with an empty value hides the parameter
   and yields `DOESNT_EXIST`. This also means a hook can override its own parameters and
   see the new value on later reads in the same execution when it targets its own hash.
-<!-- evidence: `HookAPI::hook_param` checks `hookParamOverrides[hookHash]` before `hookParams`, and returns `DOESNT_EXIST` for empty override values (`src/xrpld/app/hook/detail/HookAPI.cpp:1682-1704`). -->
+<!-- evidence: In xahaud `2026.10.13-release+4119` (`d20e8ffb561034101d24668adbe9a513f639cb37`), `HookAPI::hook_param` checks the current hook hash's overrides before `hookParams` and returns `DOESNT_EXIST` for an empty override (`src/xrpld/app/hook/detail/HookAPI.cpp:1738-1774`). -->
 
 **Minimal example.**
 
