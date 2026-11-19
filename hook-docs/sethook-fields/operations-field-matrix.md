@@ -130,15 +130,21 @@ condition" above) makes the object something other than NOOP.
 [^ns-update]: If both `sfHookNamespace` and `hsfNSDELETE` (in `sfFlags`)
     are present, the object infers `hsoNSDELETE`, not `hsoUPDATE` — see
     [HookNamespace](hooknamespace.md).
-[^onv2]: Before `featureHookOnV2_1`: `sfHookOn` alone is required. With
-    `featureHookOnV2_1`: either `sfHookOn` alone, **or** both
+[^onv2]: Before either `featureHookOnV2` or `featureHookOnV2_1`: `sfHookOn`
+    alone is required. With either directional amendment: either `sfHookOn`
+    alone, **or** both
     `sfHookOnIncoming` and `sfHookOnOutgoing` together (and they must
     differ) — never a mix of `sfHookOn` with either directional field. See
     [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md).
-[^onv2-gate]: Directional `HookOn` fields are only valid when
-    `featureHookOnV2_1` is enabled and **both** `sfHookOnIncoming` and
-    `sfHookOnOutgoing` are supplied together with different values. See
+[^onv2-gate]: Directional `HookOn` fields require `featureHookOnV2` or
+    `featureHookOnV2_1`, and **both** `sfHookOnIncoming` and
+    `sfHookOnOutgoing` must be supplied together with different values. The
+    current release uses `featureHookOnV2_1`. See
     [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md).
+    <!-- Release commit `d20e8ffb561034101d24668adbe9a513f639cb37`:
+    `src/xrpld/app/tx/detail/SetHook.cpp:253-305`; the release test exercises
+    both `featureHookOnV2` and `featureHookOnV2_1` at
+    `src/test/app/SetHook_test.cpp:1664-1742`. -->
 [^canemit]: Gated globally: any non-blank `sfHook` object carrying
     `sfHookCanEmit` without `featureHookCanEmit` enabled is `temDISABLED`,
     independent of which operation it is.
@@ -181,7 +187,8 @@ condition" above) makes the object something other than NOOP.
 - `sfHookApiVersion` required, must equal `0` (`API_MISSING`/`API_INVALID`).
 - Exactly one of `sfHookOn` alone, or `sfHookOnIncoming` +
   `sfHookOnOutgoing` together (distinct values, requires
-  `featureHookOnV2_1`); before the amendment, `sfHookOn` alone is mandatory.
+  `featureHookOnV2` or `featureHookOnV2_1`); before either amendment,
+  `sfHookOn` alone is mandatory.
 - `sfHookGrants`/`sfHookParameters`, if present, validated by
   `validateHookGrants`/`validateHookParams` and become the new
   definition's *default* set — not merged against anything, since there is
@@ -297,8 +304,8 @@ condition" above) makes the object something other than NOOP.
 
 - `featureHooks` gates the entire transaction type.
   <!-- include/xrpl/protocol/detail/features.macro:99; SetHook.cpp:733-739 -->
-- `featureHookOnV2_1` governs the directional
-  `HookOn` form: use plain `sfHookOn`, or use the
+- `featureHookOnV2` or its replacement `featureHookOnV2_1` governs the
+  directional `HookOn` form: use plain `sfHookOn`, or use the
   `sfHookOnIncoming`/`sfHookOnOutgoing` pair with different values. See
   [HookOnIncoming / HookOnOutgoing](hookon-incoming-outgoing.md).
   <!-- Release commit `d20e8ffb561034101d24668adbe9a513f639cb37`: `include/xrpl/protocol/detail/features.macro:42,74`; `src/xrpld/app/tx/detail/SetHook.cpp:427-432,478-483`. -->
