@@ -88,7 +88,7 @@ if (!hook::canEmit(txType, hookCanEmit))
 -->
 
 **Worked examples** (values reflect actual `emit()` results in a running hook):
-<!-- Verified by `SetHook_test.cpp:14964-15048`. -->
+<!-- evidence: Release commit `d20e8ffb561034101d24668adbe9a513f639cb37`, `src/test/app/SetHook_test.cpp:16260-16279` verifies the default, all-zero, and all-one `HookCanEmit` outcomes via `emit()` return values. -->
 
 | `HookCanEmit` value | Effect |
 |---|---|
