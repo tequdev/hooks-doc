@@ -121,7 +121,7 @@ reservation.
 | [`etxn_nonce`](etxn_nonce.md) | Write a unique nonce for an emitted transaction. <!-- evidence: `HookAPI::etxn_nonce` hashes the transaction ID, counter, hook account, hook hash, and flags, then increments the counter and records the nonce for emission validation (`src/xrpld/app/hook/detail/HookAPI.cpp:1003-1025`; release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). --> |
 | [`etxn_details`](etxn_details.md) | Write the `sfEmitDetails` object required in every emitted transaction. |
 | [`etxn_fee_base`](etxn_fee_base.md) | Compute the minimum fee an emitted transaction must pay. |
-| [`etxn_generation`](etxn_generation.md) | Generation counter that an emitted transaction will carry. |
+| [`etxn_generation`](etxn_generation.md) | Generation counter that an emitted transaction will carry. <!-- evidence: `HookAPI::etxn_generation` returns `otxn_generation() + 1` and its wrapper is proxy-only (`src/xrpld/app/hook/detail/HookAPI.cpp:997-1000`; `src/xrpld/app/hook/detail/applyHook.cpp:1868-1872` in xahaud `2026.10.13-release+4119`, commit `d20e8ffb561034101d24668adbe9a513f639cb37`). --> |
 | [`etxn_burden`](etxn_burden.md) | Burden value that an emitted transaction will carry. |
 | [`emit`](emit.md) | Validate and queue a fully-formed transaction; write its hash. |
 | [`prepare`](prepare.md) | Fill in the common emit fields on a template transaction (requires `HooksUpdate2`). |
