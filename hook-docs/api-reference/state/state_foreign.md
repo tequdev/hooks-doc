@@ -28,7 +28,10 @@ int64_t state_foreign(uint32_t write_ptr, uint32_t write_len,
 `TOO_SMALL` (-4) if `kread_len < 1`; `TOO_BIG` (-3) if `kread_len > 32`;
 `INVALID_ARGUMENT` (-7) if `aread_len` is neither 0 nor 20, if `nread_len` is neither 0
 (local only) nor 32, or if the key cannot be formed; `DOESNT_EXIST` (-5) if the entry does not
-exist. `write_ptr == 0` returns the value as an `int64_t` (`TOO_BIG` if > 8 bytes).
+exist. `TOO_SMALL` (-4) is returned when `write_ptr` is nonzero and `write_len` is zero, or when
+the destination buffer is smaller than the value; the value is not truncated. `write_ptr == 0`
+returns the value as an `int64_t` (`TOO_BIG` if > 8 bytes).
+<!-- Evidence: `state_foreign` checks `write_len < 1 && write_ptr != 0` in `src/xrpld/app/hook/detail/applyHook.cpp:1720-1721`; `WRITE_WASM_MEMORY_OR_RETURN_AS_INT64` returns `TOO_SMALL` when the destination is shorter than the value in `include/xrpl/hook/Macro.h:293-296`. -->
 
 **Common failure patterns.**
 - Passing a non-32-byte namespace for a foreign read → `INVALID_ARGUMENT` (a foreign read
@@ -36,6 +39,11 @@ exist. `write_ptr == 0` returns the value as an `int64_t` (`TOO_BIG` if > 8 byte
   convenience).
 - An account buffer that is not exactly 20 bytes → `INVALID_ARGUMENT`.
 - Reading an entry that another account never set → `DOESNT_EXIST`.
+- Supplying a destination buffer smaller than the stored value → `TOO_SMALL`; the value is not
+  truncated.
+<!-- Evidence: the wrapper passes the requested value and destination length to
+`WRITE_WASM_MEMORY_OR_RETURN_AS_INT64` in `src/xrpld/app/hook/detail/applyHook.cpp:1749-1755`,
+which checks the length before writing in `include/xrpl/hook/Macro.h:295-303`. -->
 
 **Caveats / notes.**
 - Reading foreign state requires **no** grant — any hook can read any account's state if it
