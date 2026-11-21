@@ -20,8 +20,8 @@ int64_t util_accid(
 | `write_ptr`, `write_len` | Output buffer for the AccountID. `write_len` must be at least 20; exactly 20 bytes are written. |
 | `read_ptr`, `read_len` | The r-address string. `read_len` must be at most 49. The string does not need to be NUL-terminated in memory (the API copies `read_len` bytes and NUL-terminates internally). |
 
-**Return value.** On success, the number of bytes written (`write_len` is passed
-through; 20 bytes of AccountID are written). Errors:
+**Return value.** On success, returns `20` (the number of AccountID bytes written),
+regardless of whether `write_len` is larger. <!-- evidence: the release wrapper passes `write_len` only as the destination capacity, while `WRITE_WASM_MEMORY_AND_RETURN` returns the actual bytes written from the 20-byte `accountID` source (`src/xrpld/app/hook/detail/applyHook.cpp:3130-3153`, `include/xrpl/hook/Macro.h:209-227` in xahaud `origin/release`). --> Errors:
 
 | Code | Value | Cause |
 |---|---|---|
