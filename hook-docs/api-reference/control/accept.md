@@ -18,13 +18,18 @@ int64_t accept(uint32_t read_ptr, uint32_t read_len, int64_t error_code);
 | `error_code` | `int64_t` | An arbitrary application-defined code recorded in metadata as `sfHookReturnCode`. |
 
 **Return value.** Does not return to the caller in the normal sense — it terminates hook
-execution. Internally returns the sentinel `RC_ACCEPT` (-20) to the VM. The only error it
-can produce is `OUT_OF_BOUNDS` (-1), if `read_ptr`/`read_len` point outside WASM memory
-while a reason string is supplied.
+execution. Internally returns the sentinel `RC_ACCEPT` (-20) to the VM. If a supplied reason
+string is out of bounds, behavior depends on the `fix20260929` amendment: with the fix active,
+the hook terminates as a visible rollback with `OUT_OF_BOUNDS` (-1) recorded as its exit code;
+before the fix, the API returns `OUT_OF_BOUNDS` directly.
 
 <!-- evidence: `HOOK_EXIT` caps `read_len` at 256, skips the memory read when `read_ptr` is
-zero, validates non-zero pointers after truncation, stores the reason, and returns `RC_ACCEPT`
-(`include/xrpl/hook/Macro.h:235-269` from `origin/release`). -->
+zero, validates non-zero pointers after truncation, stores the reason, and returns `RC_ACCEPT`.
+When `fix20260929` is enabled, an out-of-bounds reason sets `ExitType::ROLLBACK`, records
+`OUT_OF_BOUNDS`, and returns `RC_ROLLBACK`; the release marks this fix supported and
+DefaultYes (`include/xrpl/hook/Macro.h:235-275`; `include/xrpl/protocol/detail/features.macro:41`
+from xahaud commit `d20e8ffb561034101d24668adbe9a513f639cb37`, release
+`2026.10.13-release+4119`). -->
 
 **Common failure patterns.**
 - Passing a non-zero `read_ptr` with a `read_len` that runs past the end of memory returns

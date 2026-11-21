@@ -17,13 +17,16 @@ int64_t rollback(uint32_t read_ptr, uint32_t read_len, int64_t error_code);
 | `read_len` | `uint32_t` | Length of the reason string. Capped at 256 bytes (longer input is truncated). |
 | `error_code` | `int64_t` | Application-defined code recorded as `sfHookReturnCode`. |
 
-<!-- evidence: `HOOK_EXIT` in `include/xrpl/hook/Macro.h:235-264` caps `read_len` at 256, skips the memory read when `read_ptr` is zero, and validates a non-zero pointer after truncation. -->
+<!-- evidence: `HOOK_EXIT` in `include/xrpl/hook/Macro.h:235-275` caps `read_len` at 256, skips the memory read when `read_ptr` is zero, validates a non-zero pointer after truncation, and normally returns `RC_ROLLBACK`. With `fix20260929` enabled, an out-of-bounds reason also sets `ExitType::ROLLBACK`, records `OUT_OF_BOUNDS`, and returns `RC_ROLLBACK`; the release marks this fix supported and DefaultYes (`include/xrpl/protocol/detail/features.macro:41` from xahaud commit `d20e8ffb561034101d24668adbe9a513f639cb37`, release `2026.10.13-release+4119`). -->
 
-**Return value.** Terminates execution; internally returns `RC_ROLLBACK` (-19) to the VM.
-Can return `OUT_OF_BOUNDS` (-1) if a supplied reason string is out of bounds.
+**Return value.** Terminates execution and normally returns `RC_ROLLBACK` (-19) to the VM.
+If a supplied reason string is out of bounds, the active `fix20260929` behavior still
+terminates as a rollback, but records `OUT_OF_BOUNDS` (-1) as the hook execution exit code.
+Before that fix, the API returned `OUT_OF_BOUNDS` directly.
 
 **Common failure patterns.**
-- Same as `accept`: an out-of-bounds reason string yields `OUT_OF_BOUNDS`.
+- An out-of-bounds reason string is a visible rollback under `fix20260929`, with
+  `OUT_OF_BOUNDS` recorded as the exit code.
 - Assuming rollback only aborts "your" logic — it rejects the whole originating transaction.
 
 **Caveats / notes.**
