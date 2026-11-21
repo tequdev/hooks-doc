@@ -44,7 +44,8 @@ serialized keylet; `DOES_NOT_MATCH` (-40) if the lo and hi keylets are of differ
   low bound and loop until `DOESNT_EXIST`.
   <!-- evidence: `Ledger::succ` searches strictly above its low-key argument, so the returned keylet
   itself can be reused as the next low bound (`src/xrpld/app/ledger/Ledger.cpp:471-478`). -->
-- Build the input keylets with [`util_keylet`](../utility/util_keylet.md).
+- Build the input keylets with [`util_keylet`](../utility/util_keylet.md). This is also how a Hook can enumerate on-ledger validator manifests: use `KEYLET_MANIFEST` (37) to derive the bounds, then pass same-type manifest keylets to `ledger_keylet`.
+  <!-- evidence: `keylet_code::MANIFEST` is type 37, `util_keylet` derives a manifest keylet when `featureOnChainManifests` is enabled, and `ledger_keylet` accepts any two same-type keylets before searching the ledger (`include/xrpl/hook/Enum.h:300-318`, `src/xrpld/app/hook/detail/applyHook.cpp:2265-2291`, `src/xrpld/app/hook/detail/HookAPI.cpp:2054-2073`). -->
 
 **Minimal example.**
 
