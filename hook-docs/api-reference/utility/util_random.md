@@ -28,7 +28,7 @@ written beginning at `write_ptr`. Errors:
 | `OUT_OF_BOUNDS` | -1 | The destination region is outside WASM memory. |
 | `TOO_SMALL` | -4 | `write_len == 0`. |
 | `TOO_BIG` | -3 | `write_len > 512`. |
-| `TOO_LITTLE_ENTROPY` | -46 | The current ledger has no usable random seed, is not sufficiently seeded, or has no qualifying entropy contribution. |
+| `TOO_LITTLE_ENTROPY` | -46 | The current ledger has no usable random seed, or fewer than 80% of the UNLReport contributed entropy (at least one validator must contribute when there is no UNLReport). |
 | `TOO_MANY_NONCES` | -12 | More than 256 RNG draws in one Hook execution. |
 
 <!-- evidence: the wrapper checks WASM bounds before the API call; `HookAPI::util_random`
@@ -42,7 +42,8 @@ per-execution draw limit (`src/xrpld/app/hook/detail/applyHook.cpp:2900-2924`,
 - Requesting `0` bytes → `TOO_SMALL`; requesting more than `512` → `TOO_BIG`, provided the destination region is in bounds.
   <!-- evidence: the generated wrapper checks `NOT_IN_BOUNDS` before calling `HookAPI::util_random`, so an invalid destination returns `OUT_OF_BOUNDS` before the length checks (`src/xrpld/app/hook/detail/applyHook.cpp:2907-2914`, release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 - A destination buffer that runs past the end of WASM memory → `OUT_OF_BOUNDS`.
-- Drawing in a ledger that has no usable entropy → `TOO_LITTLE_ENTROPY`.
+- Drawing in a ledger that has no usable entropy, or has fewer than 80% of the
+  UNLReport contributing entropy → `TOO_LITTLE_ENTROPY`.
 - Drawing more than 256 times in one execution → `TOO_MANY_NONCES`.
 
 **Caveats / notes.**
