@@ -28,6 +28,9 @@ for a bad buffer; `PREREQUISITE_NOT_MET` (-9) if `etxn_reserve` was not called;
 - Internally this runs the transaction through the same base-fee calculation the network
   uses (`calculateBaseFee` / `invoke_calculateBaseFee` under `fixHookAPI20251128`), so it
   doubles as a sanity check that the blob is a valid transaction.
+- With `fix20260929` enabled, the calculation uses the view being applied rather than the
+  node-local open ledger; before that amendment, it uses the open ledger.
+  <!-- evidence: `HookAPI::etxn_fee_base` selects `applyCtx.view()` when `fix20260929` is enabled and otherwise uses `openLedger().current()` (`src/xrpld/app/hook/detail/HookAPI.cpp:880-895`, xahaud commit `d20e8ffb561034101d24668adbe9a513f639cb37`). The release test inserts a callback-fee hook definition only into the applied view and expects it to affect the result only with `fix20260929` (`src/test/app/HookAPI_test.cpp:864-911`, same commit). -->
 - Compute the fee *after* the transaction is otherwise complete (including `sfEmitDetails`),
   then write the returned value into `sfFee`. `emit` rejects a transaction whose `sfFee` is
   below this minimum with `EMISSION_FAILURE`.
