@@ -21,6 +21,7 @@ callback, or `116` (`138 - 22`) if it does not. Errors: `OUT_OF_BOUNDS` (-1) for
 buffer; `TOO_SMALL` (-4) if `write_len` is below the required size;
 `PREREQUISITE_NOT_MET` (-9) if `etxn_reserve` was not called; `FEE_TOO_LARGE` (-10) if the
 burden overflows; `INTERNAL_ERROR` (-2) if the nonce cannot be generated.
+<!-- evidence: release `d20e8ffb561034101d24668adbe9a513f639cb37`: `HookAPI::etxn_details` requires a reservation, propagates burden overflow, serializes the details fields, and returns `INTERNAL_ERROR` when `etxn_nonce()` has no value (`src/xrpld/app/hook/detail/HookAPI.cpp:905-976`); the generated wrapper validates memory bounds and the callback-dependent 116/138-byte minimum (`src/xrpld/app/hook/detail/applyHook.cpp:3413-3436`). -->
 
 **Fields written (verified in `HookAPI::etxn_details`).** In serialized order:
 
@@ -42,6 +43,7 @@ burden overflows; `INTERNAL_ERROR` (-2) if the nonce cannot be generated.
 - Each call also consumes a nonce, so call it once per emitted transaction. The test hooks
   call `etxn_details(tx + offset, 138)` again before emitting a *second* transaction, to
   refresh both the nonce and generation/burden in that transaction's copy of the object.
+<!-- evidence: `HookAPI::etxn_details` calls `etxn_nonce()` while building `sfEmitNonce` (`src/xrpld/app/hook/detail/HookAPI.cpp:946-955`); the release unit test verifies one nonce-counter increment on both the no-callback and callback success paths (`src/test/app/HookAPI_test.cpp:761-790`). -->
 - `emit` re-validates every field this object contains, so writing it by hand is
   error-prone; prefer this API (or [`prepare`](prepare.md)).
 
