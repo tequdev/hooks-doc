@@ -9,17 +9,19 @@ differently depending on whether the triggering transaction is outgoing from
 the hook's own account or incoming to it (from some other account's
 transaction).
 
-**Amendment gating:** both fields require `featureHookOnV2_1`, which replaces
-unsupported `featureHookOnV2`. Before the replacement amendment, only plain
-`HookOn` is accepted; supplying `HookOnIncoming`/`HookOnOutgoing` without the
-directional amendment is rejected (`temMALFORMED`).<!-- Release commit
+**Amendment gating:** the directional form is enabled by either
+`featureHookOnV2` or its replacement, `featureHookOnV2_1`; the current release
+supports `featureHookOnV2_1` and marks `featureHookOnV2` unsupported. Before
+either amendment is enabled, plain `HookOn` is mandatory.<!-- Release commit
 `d20e8ffb561034101d24668adbe9a513f639cb37`: `include/xrpl/protocol/detail/features.macro:42,74`
-marks `HookOnV2_1` supported and `HookOnV2` unsupported; `src/test/app/SetHook_test.cpp:1666-1693`
-checks the preflight difference. -->
+marks `HookOnV2_1` supported and `HookOnV2` unsupported; `src/xrpld/app/tx/detail/SetHook.cpp:253-305`
+accepts the directional pair when either amendment is enabled; `src/test/app/SetHook_test.cpp:1664-1742`
+checks the preflight behavior for both feature variants. -->
 
-**Validation rules:**<!-- (`SetHook.cpp:458-508`) -->
-- If `sfHookOn` is **absent** on a create, `featureHookOnV2_1` must be enabled
-  and **both** `sfHookOnOutgoing` and `sfHookOnIncoming` must be present,
+**Validation rules:**<!-- (`SetHook.cpp:253-305`) -->
+- If `sfHookOn` is **absent** on a create, `featureHookOnV2` or
+  `featureHookOnV2_1` must be enabled and **both** `sfHookOnOutgoing` and
+  `sfHookOnIncoming` must be present,
   and they must be **different from each other**.
   <!--
   ```cpp
