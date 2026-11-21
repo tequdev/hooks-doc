@@ -16,13 +16,16 @@ int64_t float_set(int32_t exponent, int64_t mantissa);
 | `mantissa` | `int64_t` | Signed mantissa; its sign becomes the XFL's sign. |
 
 **Return value.** The normalized XFL. A `mantissa` of `0` returns the XFL `0` (the `exponent`
-is ignored). Errors: `INVALID_FLOAT` (-10024) if the value overflows the XFL range or
-normalizes to a value that cannot be represented; otherwise the specific normalization error
-(`MANTISSA_OVERSIZED` -26, `EXPONENT_OVERSIZED` -28, etc.).
+is ignored). After normalization, an exponent above the XFL range returns
+`EXPONENT_OVERSIZED` (-28), and an exponent below the range returns `EXPONENT_UNDERSIZED`
+(-29). Other normalization failures return the corresponding error (`MANTISSA_OVERSIZED` -26,
+etc.).
+<!-- evidence: in release commit `d20e8ffb561034101d24668adbe9a513f639cb37`, `HookAPI::float_set` maps normalized overflow and underflow to `EXPONENT_OVERSIZED` and `EXPONENT_UNDERSIZED` when `fix20261005` is enabled (`src/xrpld/app/hook/detail/HookAPI.cpp:1039-1060`). -->
 
 **Common failure patterns.**
-- An exponent/mantissa combination outside the representable range → `INVALID_FLOAT` (on
-  overflow) or a specific mantissa/exponent size error.
+- An exponent/mantissa combination that normalizes above or below the representable range →
+  `EXPONENT_OVERSIZED` or `EXPONENT_UNDERSIZED`, respectively.
+<!-- evidence: release tests assert `float_set(-97, 1)` returns the undersized-exponent code and `float_set(+97, 1)` returns the oversized-exponent code (`src/test/app/HookAPI_test.cpp:1959-1978`). -->
 
 **Caveats / notes.**
 - The mantissa need not be pre-normalized; `float_set` normalizes it to 16 significant digits

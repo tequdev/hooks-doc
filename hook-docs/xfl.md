@@ -50,9 +50,10 @@ An XFL's 64 bits are laid out as follows:
   <!-- see normalize_xfl in the same file -->
 - **Exponent** — ranges from `-96` (`minExponent`) to `80` (`maxExponent`).
   <!-- src/xrpld/app/hook/HookAPI.h:41-42 -->
-  `set_exponent` rejects anything outside
-  that range with `EXPONENT_OVERSIZED` (-28) or `EXPONENT_UNDERSIZED` (-29)
-  before it ever reaches the caller as `INVALID_FLOAT`.
+  `set_exponent` rejects anything outside that range with `EXPONENT_OVERSIZED` (-28) or
+  `EXPONENT_UNDERSIZED` (-29). `float_set` also reports those specific errors when its
+  normalized result falls outside the range.
+  <!-- evidence: in release commit `d20e8ffb561034101d24668adbe9a513f639cb37`, `HookAPI::float_set` returns the specific exponent errors after normalization (`src/xrpld/app/hook/detail/HookAPI.cpp:1039-1060`). -->
 - **Zero** — the one XFL with no mantissa. It is represented by the literal
   `int64_t` value `0`, not by a zero mantissa inside the sign/exponent/mantissa
   layout above.

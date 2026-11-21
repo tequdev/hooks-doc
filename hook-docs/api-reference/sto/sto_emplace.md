@@ -42,9 +42,11 @@ int64_t sto_emplace(
 - Undersizing the output; always allocate `sread_len + fread_len`.
 
 **Caveats.** The field is placed in canonical field order — you do not control the
-insertion index. If a field with `field_id` already exists it is replaced. Use
-[`sto_erase`](sto_erase.md) to remove a field. This is the workhorse for assembling
-transaction blobs before [`emit`](../emit/emit.md).
+insertion index. If a field with `field_id` already exists it is replaced. Under
+`fix20260929`, the source object is validated before insertion; malformed source data
+returns `PARSE_ERROR`. Use [`sto_erase`](sto_erase.md) to remove a field. This is the
+workhorse for assembling transaction blobs before [`emit`](../emit/emit.md).
+<!-- evidence: in release commit `d20e8ffb561034101d24668adbe9a513f639cb37`, `HookAPI::sto_emplace` validates `source_object` and returns `PARSE_ERROR` when `fix20260929` is enabled (`src/xrpld/app/hook/detail/HookAPI.cpp:265-296`). -->
 
 **Minimal example.**
 

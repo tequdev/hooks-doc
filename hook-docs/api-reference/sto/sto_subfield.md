@@ -46,7 +46,10 @@ Because a valid result is always non-negative and an error is always negative, t
   is 8 bytes (XAH) or 48 bytes (IOU), not the header+payload.
 
 **Caveats.** The returned offset is relative to `read_ptr`, so the absolute pointer is
-`read_ptr + SUB_OFFSET(result)`.
+`read_ptr + SUB_OFFSET(result)`. Under `fix20260929`, the input is validated before the
+field scan; malformed serialized data returns `PARSE_ERROR`, rather than being scanned
+as-is. This pre-validation is not performed before that amendment.
+<!-- evidence: in release commit `d20e8ffb561034101d24668adbe9a513f639cb37`, `HookAPI::sto_subfield` calls `sto_validate` and returns `PARSE_ERROR` when `fix20260929` is enabled (`src/xrpld/app/hook/detail/HookAPI.cpp:107-119`). -->
 
 **Minimal example.**
 
