@@ -3,8 +3,8 @@
 **Summary.** Write the 32-byte hash of the last closed ledger into hook memory.
 <!-- evidence: `HookAPI::ledger_last_hash` returns `view().info().parentHash`, and the WASM wrapper
 requires an in-bounds buffer of at least 32 bytes before copying exactly 32 bytes
-(`src/xrpld/app/hook/detail/HookAPI.cpp:1814-1818`; `src/xrpld/app/hook/detail/applyHook.cpp:1851-1867`,
-from xahaud `origin/release`). -->
+(`src/xrpld/app/hook/detail/HookAPI.cpp:1879-1883`; `src/xrpld/app/hook/detail/applyHook.cpp:1884-1902`,
+from xahaud commit `d20e8ffb561034101d24668adbe9a513f639cb37`, release `2026.10.13-release+4119`). -->
 
 **Signature.**
 
@@ -28,7 +28,7 @@ bad buffer; `TOO_SMALL` (-4) if `write_len < 32`.
 **Caveats / notes.**
 - This is `view().info().parentHash` — the hash of the most recently closed ledger.
   <!-- evidence: the release implementation reads `hookCtx.applyCtx.view().info().parentHash`
-  (`src/xrpld/app/hook/detail/HookAPI.cpp:1814-1818`). -->
+  (`src/xrpld/app/hook/detail/HookAPI.cpp:1879-1883`). -->
 
 **Minimal example.**
 

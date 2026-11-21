@@ -11,7 +11,7 @@ int64_t ledger_seq();
 **Parameters.** None.
 
 **Return value.** The current ledger sequence (`view().info().seq`). Does not return an error.
-<!-- evidence: `HookAPI::ledger_seq()` returns `hookCtx.applyCtx.view().info().seq`; the WASM wrapper returns that value directly (`src/xrpld/app/hook/detail/HookAPI.cpp:1808-1812`, `src/xrpld/app/hook/detail/applyHook.cpp:1841-1848` from xahaud `origin/release`). -->
+<!-- evidence: `HookAPI::ledger_seq()` returns `hookCtx.applyCtx.view().info().seq`; the WASM wrapper returns that value directly (`src/xrpld/app/hook/detail/HookAPI.cpp:1873-1877`, `src/xrpld/app/hook/detail/applyHook.cpp:1875-1882` from xahaud commit `d20e8ffb561034101d24668adbe9a513f639cb37`, release `2026.10.13-release+4119`). -->
 
 **Common failure patterns.** None — a pure accessor.
 
