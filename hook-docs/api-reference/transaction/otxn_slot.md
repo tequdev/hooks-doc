@@ -19,6 +19,7 @@ int64_t otxn_slot(uint32_t slot_no);
 passed, or the auto-allocated one when you passed `0`). Errors: `INVALID_ARGUMENT` (-7) if
 `slot_no` is greater than `max_slots` (255); `NO_FREE_SLOTS` (-6) if `slot_no == 0` and no
 slot is free.
+<!-- evidence: `HookAPI::otxn_slot` rejects values above `max_slots`, auto-allocates only when `slot_into == 0`, stores the current or failed-emission transaction in the selected slot, and returns that slot number (`src/xrpld/app/hook/detail/HookAPI.cpp:1631-1657` in Xahau/xahaud release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). The release test covers the invalid-argument, no-free-slot, auto-allocation, and explicit-slot cases (`src/test/app/HookAPI_test.cpp:3176-3241`). -->
 
 **Common failure patterns.**
 - Passing a `slot_no` above 255 → `INVALID_ARGUMENT`.
@@ -35,6 +36,7 @@ slot is free.
   [`otxn_field`](otxn_field.md).
 - During a failed-emit callback the slotted object is the emitted transaction (same
   `emitFailure` rule as the rest of the family).
+  <!-- evidence: `otxn_slot` selects `hookCtx.emitFailure` when present and otherwise uses the applied transaction (`src/xrpld/app/hook/detail/HookAPI.cpp:1648-1651` in Xahau/xahaud release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 
 **Minimal example.**
 
