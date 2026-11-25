@@ -8,7 +8,7 @@ paying for a transaction. It performs the same two checks that
 (`validateGuards`) and the WasmEdge load-and-validate smoke test. It also
 reports the worst-case instruction count the guard checker computed, so you
 can see how much of the 65,535 budget a hook consumes before you install it.
-<!-- xahaud 2026.10.13-release+4119, src/xrpld/rpc/handlers/HookValidate.cpp:79-104 — validateGuards(*blob, logger, "", getImportWhitelist(rules), getGuardRulesVersion(rules)) followed by hook::HookExecutor::validateWasm(blob->data(), blob->size()); the RPC was introduced by commit 22e6ad21b4 "Add hook_validate RPC to run the hook guard checker (#882)", which is contained in that release tag -->
+<!-- evidence: xahaud `d20e8ffb561034101d24668adbe9a513f639cb37`, `src/xrpld/rpc/handlers/HookValidate.cpp:79-104` — `hook_validate` runs `validateGuards(...)` and then `HookExecutor::validateWasm(...)`; the release tag is `2026.10.13-release+4119`. -->
 
 Use it as the step between "the compiler produced a `.wasm`" and "submit
 `SetHook`": a module that `hook_validate` reports as valid will not be
@@ -25,13 +25,13 @@ The method is enabled per node by the `[hook_validate_rpc]` config section:
 | Standalone (`xahaud -a`) | On | Nothing to do; `[hook_validate_rpc]` `0` turns it off |
 | Networked (mainnet, testnet, your own node) | Off | `[hook_validate_rpc]` `1` in `xahaud.cfg` |
 
-<!-- src/xrpld/core/detail/Config.cpp:860-862 — HOOK_VALIDATE_RPC = RUN_STANDALONE, then overridden by SECTION_HOOK_VALIDATE_RPC when present; cfg/xahaud-example.cfg:1591-1601 documents the section -->
+<!-- evidence: xahaud `d20e8ffb561034101d24668adbe9a513f639cb37`, `src/xrpld/core/detail/Config.cpp:858-862`, `cfg/xahaud-example.cfg:1591-1602`, and `src/test/rpc/HookValidate_test.cpp:170-184` — the default is enabled in standalone mode and disabled on networked nodes, with `[hook_validate_rpc]` overriding it; enabled calls are available to user-role clients. -->
 
 When the method is off the node answers with the `notSupported` error. When
 it is on it is open to non-admin clients, so it works on a node's public
 JSON-RPC and WebSocket ports as well as the admin port; the node accounts it
 as a heavy-burden request for rate limiting.
-<!-- HookValidate.cpp:40-43 — rpcError(rpcNOT_SUPPORTED) when HOOK_VALIDATE_RPC is false; loadType = Resource::feeHeavyBurdenRPC; src/xrpld/rpc/detail/Handler.cpp:117 — {"hook_validate", byRef(&doHookValidate), Role::USER, NO_CONDITION}. Verified live on the 2026.10.13-release+4119 Docker image in standalone mode: the call succeeds on both the admin port (5005) and the public port (5007) with no config change -->
+<!-- evidence: xahaud `d20e8ffb561034101d24668adbe9a513f639cb37`, `src/xrpld/rpc/handlers/HookValidate.cpp:40-43`, `src/xrpld/rpc/detail/Handler.cpp:117`, and `cfg/xahaud-example.cfg:1591-1602` — disabled nodes return `notSupported`; the handler is registered for `Role::USER` and uses the heavy-burden resource class when enabled. -->
 
 For local development the simplest setup is a standalone node, where the
 method is on by default and every amendment can be enabled. See
