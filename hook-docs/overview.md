@@ -255,6 +255,8 @@ The error codes a Hook API function can return are the following named values
 | `MEM_OVERLAP` | -43 | Two specified buffers overlap in memory. |
 | `TOO_MANY_STATE_MODIFICATIONS` | -44 | Exceeded the 256-entry state-modification limit (see [Execution environment constraints](#execution-environment-constraints) above). |
 | `TOO_MANY_NAMESPACES` | -45 | Exceeded the namespace limit. |
+| `TOO_LITTLE_ENTROPY` | -46 | The RNG has no usable seed, or too few validators contributed to the current ledger's entropy. |
+<!-- evidence: the release Hook API enum assigns `TOO_LITTLE_ENTROPY = -46`; the RNG implementation returns it when the feature, random object, ledger seed, or 80%-of-UNLReport contribution requirement is unavailable (`include/xrpl/hook/Enum.h:390-391`; `src/xrpld/app/hook/detail/HookAPI.cpp:1944-1968`, release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). -->
 
 Note the deliberate gap: the sequence goes `-23`, then `INVALID_FLOAT = -10024`,
 then `-25`; the value `-24` is unused.
