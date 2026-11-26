@@ -70,7 +70,7 @@ value (its length partner must be 0); "u64" = a 64-bit value split as `(high, lo
 | `KEYLET_PAGE` (19) | u256 (ptr,32) | u64 index (high,low) | 0,0 | — |
 | `KEYLET_ORACLE` (32)* | acc | oracle seq as u32 in `c` (`d=0`) | 0,0 | `featurePriceOracle` |
 | `KEYLET_CRON` (26) | acc | seq as u32 in `c` (`d=0`) | 0,0 | `featureCron` |
-| `KEYLET_MANIFEST` (37) | validator public key | 0,0 | 0,0 | `featureOnChainManifests` |
+| `KEYLET_MANIFEST` (37) | validator public key (33 bytes) | 0,0 | 0,0 | `featureOnChainManifests` <!-- evidence: the release wrapper accepts only a well-formed 33-byte public key: `0xED` selects ed25519 and `0x02`/`0x03` selects secp256k1; malformed input returns `INVALID_ARGUMENT` (`src/xrpld/app/hook/detail/applyHook.cpp:2266-2291`, `src/libxrpl/protocol/PublicKey.cpp:207-218`, release commit `d20e8ffb561034101d24668adbe9a513f639cb37`). --> |
 | `KEYLET_OFFER` (10) | acc | seq: u32 in `c` if `d=0`, else `c`=ptr to u256, `d=32` | 0,0 | — |
 | `KEYLET_CHECK` (15) | acc | seq (as OFFER) | 0,0 | — |
 | `KEYLET_ESCROW` (20) | acc | seq (as OFFER) | 0,0 | — |
